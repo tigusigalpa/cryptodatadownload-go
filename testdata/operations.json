@@ -1,0 +1,1359 @@
+[
+    {
+        "service": "Aggregates",
+        "type": "AggregatesService",
+        "method": "FeaturesMlAll",
+        "params": "FeaturesMlAllParams",
+        "path": "/data/aggregates/features/ml/all/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Aggregates",
+        "type": "AggregatesService",
+        "method": "OnchainDashboard",
+        "params": "OnchainDashboardParams",
+        "path": "/data/aggregates/onchain/dashboard/",
+        "shape": "rows",
+        "required": [
+            "chain",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Aggregates",
+        "type": "AggregatesService",
+        "method": "OptionsDashboard",
+        "params": "OptionsDashboardParams",
+        "path": "/data/aggregates/options/dashboard/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Aggregates",
+        "type": "AggregatesService",
+        "method": "RiskPanel",
+        "params": "RiskPanelParams",
+        "path": "/data/aggregates/risk/panel/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Breadth",
+        "type": "BreadthService",
+        "method": "N52wkHighsLows",
+        "params": "N52wkHighsLowsParams",
+        "path": "/data/breadth/52wk-highs-lows/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": false
+    },
+    {
+        "service": "Breadth",
+        "type": "BreadthService",
+        "method": "AdvanceDecline",
+        "params": "AdvanceDeclineParams",
+        "path": "/data/breadth/advance-decline/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "Breadth",
+        "type": "BreadthService",
+        "method": "MovingAverageTracking",
+        "params": "MovingAverageTrackingParams",
+        "path": "/data/breadth/moving-average-tracking/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": false
+    },
+    {
+        "service": "Govt",
+        "type": "GovtService",
+        "method": "CftcCot",
+        "params": "CftcCotParams",
+        "path": "/data/cftc/cot/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "Govt",
+        "type": "GovtService",
+        "method": "TreasuryParYieldsReal",
+        "params": "TreasuryParYieldsRealParams",
+        "path": "/data/treasury/par-yields-real/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "Govt",
+        "type": "GovtService",
+        "method": "TreasuryParYields",
+        "params": "TreasuryParYieldsParams",
+        "path": "/data/treasury/par-yields/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "Catalog",
+        "type": "CatalogService",
+        "method": "CftcCotAvailable",
+        "params": "CftcCotAvailableParams",
+        "path": "/data/cftc/cot/available/",
+        "shape": "object",
+        "required": [],
+        "hasRaw": false
+    },
+    {
+        "service": "Catalog",
+        "type": "CatalogService",
+        "method": "OhlcBinanceAllAvailable",
+        "params": "OhlcBinanceAllAvailableParams",
+        "path": "/data/ohlc/binance/all/available/",
+        "shape": "object",
+        "required": [],
+        "hasRaw": false
+    },
+    {
+        "service": "Catalog",
+        "type": "CatalogService",
+        "method": "OhlcDeribitFuturesAvailable",
+        "params": "OhlcDeribitFuturesAvailableParams",
+        "path": "/data/ohlc/deribit/futures/available/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": false
+    },
+    {
+        "service": "Catalog",
+        "type": "CatalogService",
+        "method": "OhlcDeribitFuturesFundingAvailable",
+        "params": "OhlcDeribitFuturesFundingAvailableParams",
+        "path": "/data/ohlc/deribit/futures/funding/available/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": false
+    },
+    {
+        "service": "Catalog",
+        "type": "CatalogService",
+        "method": "OhlcDeribitOptionsAvailable",
+        "params": "OhlcDeribitOptionsAvailableParams",
+        "path": "/data/ohlc/deribit/options/available/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": false
+    },
+    {
+        "service": "Catalog",
+        "type": "CatalogService",
+        "method": "SummaryBinanceFuturesFundingAvailable",
+        "params": "SummaryBinanceFuturesFundingAvailableParams",
+        "path": "/data/summary/binance/futures/funding/available/",
+        "shape": "object",
+        "required": [],
+        "hasRaw": false
+    },
+    {
+        "service": "Catalog",
+        "type": "CatalogService",
+        "method": "SummaryBinanceSpotTransactionalAvailable",
+        "params": "SummaryBinanceSpotTransactionalAvailableParams",
+        "path": "/data/summary/binance/spot/transactional/available/",
+        "shape": "object",
+        "required": [],
+        "hasRaw": false
+    },
+    {
+        "service": "Catalog",
+        "type": "CatalogService",
+        "method": "SummaryDeribitOptionsGreeksAvailable",
+        "params": "SummaryDeribitOptionsGreeksAvailableParams",
+        "path": "/data/summary/deribit/options/greeks/available/",
+        "shape": "object",
+        "required": [],
+        "hasRaw": false
+    },
+    {
+        "service": "Catalog",
+        "type": "CatalogService",
+        "method": "TransactionsDeribitOptionsAvailable",
+        "params": "TransactionsDeribitOptionsAvailableParams",
+        "path": "/data/transactions/deribit/options/available/",
+        "shape": "object",
+        "required": [],
+        "hasRaw": false
+    },
+    {
+        "service": "MLMarket",
+        "type": "MLMarketService",
+        "method": "FuturesBasisTerm",
+        "params": "FuturesBasisTermParams",
+        "path": "/data/features/futures/basis-term/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLMarket",
+        "type": "MLMarketService",
+        "method": "MacroYieldSpreads",
+        "params": "MacroYieldSpreadsParams",
+        "path": "/data/features/macro/yield-spreads/",
+        "shape": "rows",
+        "required": [
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLMarket",
+        "type": "MLMarketService",
+        "method": "SpotReturns",
+        "params": "SpotReturnsParams",
+        "path": "/data/features/spot/returns/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLMarket",
+        "type": "MLMarketService",
+        "method": "SpotVwap",
+        "params": "SpotVwapParams",
+        "path": "/data/features/spot/vwap/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLFutures",
+        "type": "MLFuturesService",
+        "method": "FundingRegime",
+        "params": "FundingRegimeParams",
+        "path": "/data/features/futures/funding-regime/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLFutures",
+        "type": "MLFuturesService",
+        "method": "OiChange",
+        "params": "OiChangeParams",
+        "path": "/data/features/futures/oi-change/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLFutures",
+        "type": "MLFuturesService",
+        "method": "PerpBasisTs",
+        "params": "PerpBasisTsParams",
+        "path": "/data/features/futures/perp-basis-ts/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLMacro",
+        "type": "MLMacroService",
+        "method": "CotPositioning",
+        "params": "CotPositioningParams",
+        "path": "/data/features/macro/cot-positioning/",
+        "shape": "rows",
+        "required": [
+            "category",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLMacro",
+        "type": "MLMacroService",
+        "method": "RealRateRegime",
+        "params": "RealRateRegimeParams",
+        "path": "/data/features/macro/real-rate-regime/",
+        "shape": "rows",
+        "required": [
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLMacro",
+        "type": "MLMacroService",
+        "method": "YieldCurvePca",
+        "params": "YieldCurvePcaParams",
+        "path": "/data/features/macro/yield-curve-pca/",
+        "shape": "rows",
+        "required": [
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLCrossSectional",
+        "type": "MLCrossSectionalService",
+        "method": "BetaBtc",
+        "params": "BetaBtcParams",
+        "path": "/data/features/ml/beta-btc/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLCrossSectional",
+        "type": "MLCrossSectionalService",
+        "method": "Momentum",
+        "params": "MomentumParams",
+        "path": "/data/features/ml/momentum/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLCrossSectional",
+        "type": "MLCrossSectionalService",
+        "method": "ReturnRank",
+        "params": "ReturnRankParams",
+        "path": "/data/features/ml/return-rank/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLCrossSectional",
+        "type": "MLCrossSectionalService",
+        "method": "Reversal",
+        "params": "ReversalParams",
+        "path": "/data/features/ml/reversal/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLCrossSectional",
+        "type": "MLCrossSectionalService",
+        "method": "VolRank",
+        "params": "VolRankParams",
+        "path": "/data/features/ml/vol-rank/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLMicrostructure",
+        "type": "MLMicrostructureService",
+        "method": "LargeTradeShare",
+        "params": "LargeTradeShareParams",
+        "path": "/data/features/ml/large-trade-share/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLMicrostructure",
+        "type": "MLMicrostructureService",
+        "method": "OrderFlowImbalance",
+        "params": "OrderFlowImbalanceParams",
+        "path": "/data/features/ml/order-flow-imbalance/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLMicrostructure",
+        "type": "MLMicrostructureService",
+        "method": "VolumeProfile",
+        "params": "VolumeProfileParams",
+        "path": "/data/features/ml/volume-profile/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLMicrostructure",
+        "type": "MLMicrostructureService",
+        "method": "XexchangeSpread",
+        "params": "XexchangeSpreadParams",
+        "path": "/data/features/ml/xexchange-spread/",
+        "shape": "rows",
+        "required": [
+            "pair",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "FeaturesOnchainAddressVelocity",
+        "params": "FeaturesOnchainAddressVelocityParams",
+        "path": "/data/features/onchain/address-velocity/",
+        "shape": "rows",
+        "required": [
+            "chain",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "FeaturesOnchainContractGrowth",
+        "params": "FeaturesOnchainContractGrowthParams",
+        "path": "/data/features/onchain/contract-growth/",
+        "shape": "rows",
+        "required": [
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "FeaturesOnchainNetworkCongestion",
+        "params": "FeaturesOnchainNetworkCongestionParams",
+        "path": "/data/features/onchain/network-congestion/",
+        "shape": "rows",
+        "required": [
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "FeaturesOnchainNvt",
+        "params": "FeaturesOnchainNvtParams",
+        "path": "/data/features/onchain/nvt/",
+        "shape": "rows",
+        "required": [
+            "chain",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "FeaturesOnchainSupplyVelocity",
+        "params": "FeaturesOnchainSupplyVelocityParams",
+        "path": "/data/features/onchain/supply-velocity/",
+        "shape": "rows",
+        "required": [
+            "chain",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "FeaturesOnchainWhale",
+        "params": "FeaturesOnchainWhaleParams",
+        "path": "/data/features/onchain/whale/",
+        "shape": "rows",
+        "required": [
+            "chain",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "OnchainBtcMempool",
+        "params": "OnchainBtcMempoolParams",
+        "path": "/data/onchain/btc/mempool/",
+        "shape": "rows",
+        "required": [
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "OnchainEthExchangeFlows",
+        "params": "OnchainEthExchangeFlowsParams",
+        "path": "/data/onchain/eth/exchange-flows/",
+        "shape": "rows",
+        "required": [
+            "exchange",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "OnchainEthExchangeReserves",
+        "params": "OnchainEthExchangeReservesParams",
+        "path": "/data/onchain/eth/exchange-reserves/",
+        "shape": "rows",
+        "required": [
+            "exchange",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "OnchainEthGas",
+        "params": "OnchainEthGasParams",
+        "path": "/data/onchain/eth/gas/",
+        "shape": "rows",
+        "required": [
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "OnchainEthTransactions",
+        "params": "OnchainEthTransactionsParams",
+        "path": "/data/onchain/eth/transactions/",
+        "shape": "rows",
+        "required": [
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "SummaryBitcoinMarketcap",
+        "params": "SummaryBitcoinMarketcapParams",
+        "path": "/data/summary/bitcoin/marketcap/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "SummaryBlockchainBchain",
+        "params": "SummaryBlockchainBchainParams",
+        "path": "/data/summary/blockchain/bchain/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "SummaryBlockchainBlocks",
+        "params": "SummaryBlockchainBlocksParams",
+        "path": "/data/summary/blockchain/blocks/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "SummaryBlockchainEthContracts",
+        "params": "SummaryBlockchainEthContractsParams",
+        "path": "/data/summary/blockchain/eth/contracts/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "SummaryBlockchainTransactions",
+        "params": "SummaryBlockchainTransactionsParams",
+        "path": "/data/summary/blockchain/transactions/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "SummaryBlockchainTransactionsCoinbase",
+        "params": "SummaryBlockchainTransactionsCoinbaseParams",
+        "path": "/data/summary/blockchain/transactions/coinbase/",
+        "shape": "rows",
+        "required": [
+            "date"
+        ],
+        "hasRaw": true
+    },
+    {
+        "service": "OnChain",
+        "type": "OnChainService",
+        "method": "SummaryBlockchainTransactionsLargest",
+        "params": "SummaryBlockchainTransactionsLargestParams",
+        "path": "/data/summary/blockchain/transactions/largest/",
+        "shape": "rows",
+        "required": [
+            "date"
+        ],
+        "hasRaw": true
+    },
+    {
+        "service": "MLOptions",
+        "type": "MLOptionsService",
+        "method": "ImpliedMove",
+        "params": "ImpliedMoveParams",
+        "path": "/data/features/options/implied-move/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLOptions",
+        "type": "MLOptionsService",
+        "method": "OiConcentration",
+        "params": "OiConcentrationParams",
+        "path": "/data/features/options/oi-concentration/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLOptions",
+        "type": "MLOptionsService",
+        "method": "SkewSignal",
+        "params": "SkewSignalParams",
+        "path": "/data/features/options/skew-signal/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLOptions",
+        "type": "MLOptionsService",
+        "method": "SmileCurvature",
+        "params": "SmileCurvatureParams",
+        "path": "/data/features/options/smile-curvature/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLRegime",
+        "type": "MLRegimeService",
+        "method": "AnomalyScore",
+        "params": "AnomalyScoreParams",
+        "path": "/data/features/regime/anomaly-score/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLRegime",
+        "type": "MLRegimeService",
+        "method": "ClusterMembership",
+        "params": "ClusterMembershipParams",
+        "path": "/data/features/regime/cluster-membership/",
+        "shape": "rows",
+        "required": [
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "MLRegime",
+        "type": "MLRegimeService",
+        "method": "RegimeState",
+        "params": "RegimeStateParams",
+        "path": "/data/features/regime/regime-state/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Funding",
+        "type": "FundingService",
+        "method": "FundingAligned",
+        "params": "FundingAlignedParams",
+        "path": "/data/funding/aligned/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Funding",
+        "type": "FundingService",
+        "method": "FundingBinance",
+        "params": "FundingBinanceParams",
+        "path": "/data/funding/binance/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Funding",
+        "type": "FundingService",
+        "method": "FundingBybit",
+        "params": "FundingBybitParams",
+        "path": "/data/funding/bybit/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Funding",
+        "type": "FundingService",
+        "method": "FundingOkx",
+        "params": "FundingOkxParams",
+        "path": "/data/funding/okx/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Funding",
+        "type": "FundingService",
+        "method": "SummaryBinanceFuturesFunding",
+        "params": "SummaryBinanceFuturesFundingParams",
+        "path": "/data/summary/binance/futures/funding/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "Funding",
+        "type": "FundingService",
+        "method": "SummaryFundingComparison",
+        "params": "SummaryFundingComparisonParams",
+        "path": "/data/summary/funding/comparison/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "BinanceOHLC",
+        "type": "BinanceOHLCService",
+        "method": "FuturesCm",
+        "params": "FuturesCmParams",
+        "path": "/data/ohlc/binance/futures/cm/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceOHLC",
+        "type": "BinanceOHLCService",
+        "method": "FuturesUm",
+        "params": "FuturesUmParams",
+        "path": "/data/ohlc/binance/futures/um/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceOHLC",
+        "type": "BinanceOHLCService",
+        "method": "Options",
+        "params": "OptionsParams",
+        "path": "/data/ohlc/binance/options/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceOHLC",
+        "type": "BinanceOHLCService",
+        "method": "Spot",
+        "params": "SpotParams",
+        "path": "/data/ohlc/binance/spot/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceOHLC",
+        "type": "BinanceOHLCService",
+        "method": "Tick",
+        "params": "TickParams",
+        "path": "/data/ohlc/binance/tick/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "DeribitOHLC",
+        "type": "DeribitOHLCService",
+        "method": "Futures",
+        "params": "FuturesParams",
+        "path": "/data/ohlc/deribit/futures/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "DeribitOHLC",
+        "type": "DeribitOHLCService",
+        "method": "FuturesFunding",
+        "params": "FuturesFundingParams",
+        "path": "/data/ohlc/deribit/futures/funding/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "DeribitOHLC",
+        "type": "DeribitOHLCService",
+        "method": "Options",
+        "params": "DeribitOHLCServiceOptionsParams",
+        "path": "/data/ohlc/deribit/options/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "DeribitOHLC",
+        "type": "DeribitOHLCService",
+        "method": "Volatility",
+        "params": "VolatilityParams",
+        "path": "/data/ohlc/deribit/volatility/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "OptionsAnalytics",
+        "type": "OptionsAnalyticsService",
+        "method": "OptionsStrikeHeatmap",
+        "params": "OptionsStrikeHeatmapParams",
+        "path": "/data/options/strike-heatmap/",
+        "shape": "rows",
+        "required": [
+            "underlying"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OptionsAnalytics",
+        "type": "OptionsAnalyticsService",
+        "method": "SummaryDeribitOptionsGreeksHigherOrder",
+        "params": "SummaryDeribitOptionsGreeksHigherOrderParams",
+        "path": "/data/summary/deribit/options/greeks/higher-order/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OptionsAnalytics",
+        "type": "OptionsAnalyticsService",
+        "method": "SummaryDeribitOptionsPinCandidate",
+        "params": "SummaryDeribitOptionsPinCandidateParams",
+        "path": "/data/summary/deribit/options/pin-candidate/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OptionsAnalytics",
+        "type": "OptionsAnalyticsService",
+        "method": "SummaryDeribitOptionsTerm",
+        "params": "SummaryDeribitOptionsTermParams",
+        "path": "/data/summary/deribit/options/term/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OptionsAnalytics",
+        "type": "OptionsAnalyticsService",
+        "method": "SummaryOptionsVwapPerStrike",
+        "params": "SummaryOptionsVwapPerStrikeParams",
+        "path": "/data/summary/options/vwap-per-strike/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OptionsAnalytics",
+        "type": "OptionsAnalyticsService",
+        "method": "VolatilityCone",
+        "params": "VolatilityConeParams",
+        "path": "/data/volatility/cone/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OptionsAnalytics",
+        "type": "OptionsAnalyticsService",
+        "method": "VolatilityIvRvSpread",
+        "params": "VolatilityIvRvSpreadParams",
+        "path": "/data/volatility/iv-rv-spread/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "OptionsAnalytics",
+        "type": "OptionsAnalyticsService",
+        "method": "VolatilitySurface",
+        "params": "VolatilitySurfaceParams",
+        "path": "/data/volatility/surface/",
+        "shape": "rows",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Risk",
+        "type": "RiskService",
+        "method": "RiskCorrelations",
+        "params": "RiskCorrelationsParams",
+        "path": "/data/risk/correlations/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "Risk",
+        "type": "RiskService",
+        "method": "RiskCorrelationsRolling",
+        "params": "RiskCorrelationsRollingParams",
+        "path": "/data/risk/correlations/rolling/",
+        "shape": "rows",
+        "required": [
+            "window",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Risk",
+        "type": "RiskService",
+        "method": "RiskDrawdown",
+        "params": "RiskDrawdownParams",
+        "path": "/data/risk/drawdown/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Risk",
+        "type": "RiskService",
+        "method": "RiskDrawdownUnderwater",
+        "params": "RiskDrawdownUnderwaterParams",
+        "path": "/data/risk/drawdown/underwater/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Risk",
+        "type": "RiskService",
+        "method": "RiskRegime",
+        "params": "RiskRegimeParams",
+        "path": "/data/risk/regime/",
+        "shape": "rows",
+        "required": [
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Risk",
+        "type": "RiskService",
+        "method": "RiskVarByMethod",
+        "params": "RiskVarByMethodParams",
+        "path": "/data/risk/var/by-method/",
+        "shape": "rows",
+        "required": [
+            "method",
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Risk",
+        "type": "RiskService",
+        "method": "RiskVarPortfolio",
+        "params": "RiskVarPortfolioParams",
+        "path": "/data/risk/var/portfolio/",
+        "shape": "rows",
+        "required": [
+            "portfolio",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "Risk",
+        "type": "RiskService",
+        "method": "RiskVarStandalone",
+        "params": "RiskVarStandaloneParams",
+        "path": "/data/risk/var/standalone/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "Risk",
+        "type": "RiskService",
+        "method": "VolatilityRealized",
+        "params": "VolatilityRealizedParams",
+        "path": "/data/volatility/realized/",
+        "shape": "rows",
+        "required": [
+            "symbol",
+            "date"
+        ],
+        "hasRaw": false
+    },
+    {
+        "service": "BinanceSummary",
+        "type": "BinanceSummaryService",
+        "method": "Basis",
+        "params": "BasisParams",
+        "path": "/data/summary/binance/basis/",
+        "shape": "rows",
+        "required": [
+            "symbol"
+        ],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceSummary",
+        "type": "BinanceSummaryService",
+        "method": "FuturesMetrics",
+        "params": "FuturesMetricsParams",
+        "path": "/data/summary/binance/futures/metrics/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceSummary",
+        "type": "BinanceSummaryService",
+        "method": "OptionsOi",
+        "params": "OptionsOiParams",
+        "path": "/data/summary/binance/options/oi/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceSummary",
+        "type": "BinanceSummaryService",
+        "method": "OptionsOiInstrument",
+        "params": "OptionsOiInstrumentParams",
+        "path": "/data/summary/binance/options/oi/instrument/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceSummary",
+        "type": "BinanceSummaryService",
+        "method": "OptionsOiMaturity",
+        "params": "OptionsOiMaturityParams",
+        "path": "/data/summary/binance/options/oi/maturity/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceSummary",
+        "type": "BinanceSummaryService",
+        "method": "SpotFlow",
+        "params": "SpotFlowParams",
+        "path": "/data/summary/binance/spot/flow/",
+        "shape": "object",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceSummary",
+        "type": "BinanceSummaryService",
+        "method": "SpotLargeTrades",
+        "params": "SpotLargeTradesParams",
+        "path": "/data/summary/binance/spot/large-trades/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceSummary",
+        "type": "BinanceSummaryService",
+        "method": "SpotTransactional",
+        "params": "SpotTransactionalParams",
+        "path": "/data/summary/binance/spot/transactional/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceSummary",
+        "type": "BinanceSummaryService",
+        "method": "SpotTransactionalDaily",
+        "params": "SpotTransactionalDailyParams",
+        "path": "/data/summary/binance/spot/transactional/daily/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceSummary",
+        "type": "BinanceSummaryService",
+        "method": "SpotTransactionalHourly",
+        "params": "SpotTransactionalHourlyParams",
+        "path": "/data/summary/binance/spot/transactional/hourly/",
+        "shape": "object",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "BinanceSummary",
+        "type": "BinanceSummaryService",
+        "method": "SpotVolumeProfile",
+        "params": "SpotVolumeProfileParams",
+        "path": "/data/summary/binance/spot/volume-profile/",
+        "shape": "object",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "DeribitSummary",
+        "type": "DeribitSummaryService",
+        "method": "SummaryDeribitOptionsFlow",
+        "params": "SummaryDeribitOptionsFlowParams",
+        "path": "/data/summary/deribit/options/flow/",
+        "shape": "object",
+        "required": [
+            "underlying"
+        ],
+        "hasRaw": true
+    },
+    {
+        "service": "DeribitSummary",
+        "type": "DeribitSummaryService",
+        "method": "SummaryDeribitOptionsGreeks",
+        "params": "SummaryDeribitOptionsGreeksParams",
+        "path": "/data/summary/deribit/options/greeks/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "DeribitSummary",
+        "type": "DeribitSummaryService",
+        "method": "SummaryDeribitOptionsGreeksMaturities",
+        "params": "SummaryDeribitOptionsGreeksMaturitiesParams",
+        "path": "/data/summary/deribit/options/greeks/maturities/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "DeribitSummary",
+        "type": "DeribitSummaryService",
+        "method": "SummaryDeribitOptionsLargeTrades",
+        "params": "SummaryDeribitOptionsLargeTradesParams",
+        "path": "/data/summary/deribit/options/large-trades/",
+        "shape": "object",
+        "required": [
+            "underlying"
+        ],
+        "hasRaw": true
+    },
+    {
+        "service": "DeribitSummary",
+        "type": "DeribitSummaryService",
+        "method": "SummaryDeribitOptionsRatios",
+        "params": "SummaryDeribitOptionsRatiosParams",
+        "path": "/data/summary/deribit/options/ratios/",
+        "shape": "object",
+        "required": [
+            "underlying"
+        ],
+        "hasRaw": true
+    },
+    {
+        "service": "DeribitSummary",
+        "type": "DeribitSummaryService",
+        "method": "SummaryDeribitOptionsTransactionsLargest",
+        "params": "SummaryDeribitOptionsTransactionsLargestParams",
+        "path": "/data/summary/deribit/options/transactions/largest/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "DeribitSummary",
+        "type": "DeribitSummaryService",
+        "method": "SummaryDeribitOptionsVolume",
+        "params": "SummaryDeribitOptionsVolumeParams",
+        "path": "/data/summary/deribit/options/volume/",
+        "shape": "object",
+        "required": [
+            "underlying"
+        ],
+        "hasRaw": true
+    },
+    {
+        "service": "DeribitSummary",
+        "type": "DeribitSummaryService",
+        "method": "TransactionsDeribitOptions",
+        "params": "TransactionsDeribitOptionsParams",
+        "path": "/data/transactions/deribit/options/",
+        "shape": "object",
+        "required": [
+            "underlying",
+            "date"
+        ],
+        "hasRaw": true
+    },
+    {
+        "service": "Technicals",
+        "type": "TechnicalsService",
+        "method": "TechnicalsTA",
+        "params": "TechnicalsTAParams",
+        "path": "/data/technicals/TA/",
+        "shape": "rows",
+        "required": [],
+        "hasRaw": true
+    },
+    {
+        "service": "OptionsPricing",
+        "type": "OptionsPricingService",
+        "method": "PricingGreeks",
+        "params": "PricingGreeksParams",
+        "path": "/risk/options/pricing/greeks/",
+        "shape": "rows",
+        "required": [
+            "putcall",
+            "strike",
+            "spot",
+            "rfr",
+            "days_to_maturity",
+            "buysell"
+        ],
+        "hasRaw": false
+    }
+]
