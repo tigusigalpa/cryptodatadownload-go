@@ -31,24 +31,45 @@ type FundingRegimeParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1futures~1funding-regime~1/get
 func (s *MLFuturesService) FundingRegime(ctx context.Context, p FundingRegimeParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FundingRegimeWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FundingRegimeWithResponse returns FundingRegime's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1futures~1funding-regime~1/get
+func (s *MLFuturesService) FundingRegimeWithResponse(ctx context.Context, p FundingRegimeParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLFutures.fundingRegime", "/data/features/futures/funding-regime/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLFutures.fundingRegime", resp, err)
 	}
 	v, err := decodeResult("mLFutures.fundingRegime", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLFutures.fundingRegime", resp, err)
 	}
-	return asRows("mLFutures.fundingRegime", v)
+	result, err := asRows("mLFutures.fundingRegime", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLFutures.fundingRegime", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OiChangeParams are the parameters for MLFuturesService.OiChange.
@@ -66,24 +87,45 @@ type OiChangeParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1futures~1oi-change~1/get
 func (s *MLFuturesService) OiChange(ctx context.Context, p OiChangeParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OiChangeWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OiChangeWithResponse returns OiChange's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1futures~1oi-change~1/get
+func (s *MLFuturesService) OiChangeWithResponse(ctx context.Context, p OiChangeParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLFutures.oiChange", "/data/features/futures/oi-change/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLFutures.oiChange", resp, err)
 	}
 	v, err := decodeResult("mLFutures.oiChange", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLFutures.oiChange", resp, err)
 	}
-	return asRows("mLFutures.oiChange", v)
+	result, err := asRows("mLFutures.oiChange", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLFutures.oiChange", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // PerpBasisTsParams are the parameters for MLFuturesService.PerpBasisTs.
@@ -101,22 +143,43 @@ type PerpBasisTsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1futures~1perp-basis-ts~1/get
 func (s *MLFuturesService) PerpBasisTs(ctx context.Context, p PerpBasisTsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.PerpBasisTsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// PerpBasisTsWithResponse returns PerpBasisTs's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1futures~1perp-basis-ts~1/get
+func (s *MLFuturesService) PerpBasisTsWithResponse(ctx context.Context, p PerpBasisTsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLFutures.perpBasisTs", "/data/features/futures/perp-basis-ts/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLFutures.perpBasisTs", resp, err)
 	}
 	v, err := decodeResult("mLFutures.perpBasisTs", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLFutures.perpBasisTs", resp, err)
 	}
-	return asRows("mLFutures.perpBasisTs", v)
+	result, err := asRows("mLFutures.perpBasisTs", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLFutures.perpBasisTs", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }

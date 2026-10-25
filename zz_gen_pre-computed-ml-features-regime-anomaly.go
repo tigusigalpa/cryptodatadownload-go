@@ -31,24 +31,45 @@ type AnomalyScoreParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1regime~1anomaly-score~1/get
 func (s *MLRegimeService) AnomalyScore(ctx context.Context, p AnomalyScoreParams) ([]map[string]interface{}, error) {
+	result, _, err := s.AnomalyScoreWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// AnomalyScoreWithResponse returns AnomalyScore's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1regime~1anomaly-score~1/get
+func (s *MLRegimeService) AnomalyScoreWithResponse(ctx context.Context, p AnomalyScoreParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLRegime.anomalyScore", "/data/features/regime/anomaly-score/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLRegime.anomalyScore", resp, err)
 	}
 	v, err := decodeResult("mLRegime.anomalyScore", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLRegime.anomalyScore", resp, err)
 	}
-	return asRows("mLRegime.anomalyScore", v)
+	result, err := asRows("mLRegime.anomalyScore", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLRegime.anomalyScore", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // ClusterMembershipParams are the parameters for MLRegimeService.ClusterMembership.
@@ -64,20 +85,41 @@ type ClusterMembershipParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1regime~1cluster-membership~1/get
 func (s *MLRegimeService) ClusterMembership(ctx context.Context, p ClusterMembershipParams) ([]map[string]interface{}, error) {
+	result, _, err := s.ClusterMembershipWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// ClusterMembershipWithResponse returns ClusterMembership's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1regime~1cluster-membership~1/get
+func (s *MLRegimeService) ClusterMembershipWithResponse(ctx context.Context, p ClusterMembershipParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLRegime.clusterMembership", "/data/features/regime/cluster-membership/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLRegime.clusterMembership", resp, err)
 	}
 	v, err := decodeResult("mLRegime.clusterMembership", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLRegime.clusterMembership", resp, err)
 	}
-	return asRows("mLRegime.clusterMembership", v)
+	result, err := asRows("mLRegime.clusterMembership", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLRegime.clusterMembership", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // RegimeStateParams are the parameters for MLRegimeService.RegimeState.
@@ -95,22 +137,43 @@ type RegimeStateParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1regime~1regime-state~1/get
 func (s *MLRegimeService) RegimeState(ctx context.Context, p RegimeStateParams) ([]map[string]interface{}, error) {
+	result, _, err := s.RegimeStateWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// RegimeStateWithResponse returns RegimeState's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1regime~1regime-state~1/get
+func (s *MLRegimeService) RegimeStateWithResponse(ctx context.Context, p RegimeStateParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLRegime.regimeState", "/data/features/regime/regime-state/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLRegime.regimeState", resp, err)
 	}
 	v, err := decodeResult("mLRegime.regimeState", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLRegime.regimeState", resp, err)
 	}
-	return asRows("mLRegime.regimeState", v)
+	result, err := asRows("mLRegime.regimeState", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLRegime.regimeState", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }

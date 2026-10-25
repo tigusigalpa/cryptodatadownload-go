@@ -31,24 +31,45 @@ type LargeTradeShareParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1large-trade-share~1/get
 func (s *MLMicrostructureService) LargeTradeShare(ctx context.Context, p LargeTradeShareParams) ([]map[string]interface{}, error) {
+	result, _, err := s.LargeTradeShareWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// LargeTradeShareWithResponse returns LargeTradeShare's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1large-trade-share~1/get
+func (s *MLMicrostructureService) LargeTradeShareWithResponse(ctx context.Context, p LargeTradeShareParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLMicrostructure.largeTradeShare", "/data/features/ml/large-trade-share/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMicrostructure.largeTradeShare", resp, err)
 	}
 	v, err := decodeResult("mLMicrostructure.largeTradeShare", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLMicrostructure.largeTradeShare", resp, err)
 	}
-	return asRows("mLMicrostructure.largeTradeShare", v)
+	result, err := asRows("mLMicrostructure.largeTradeShare", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMicrostructure.largeTradeShare", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OrderFlowImbalanceParams are the parameters for MLMicrostructureService.OrderFlowImbalance.
@@ -66,24 +87,45 @@ type OrderFlowImbalanceParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1order-flow-imbalance~1/get
 func (s *MLMicrostructureService) OrderFlowImbalance(ctx context.Context, p OrderFlowImbalanceParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OrderFlowImbalanceWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OrderFlowImbalanceWithResponse returns OrderFlowImbalance's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1order-flow-imbalance~1/get
+func (s *MLMicrostructureService) OrderFlowImbalanceWithResponse(ctx context.Context, p OrderFlowImbalanceParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLMicrostructure.orderFlowImbalance", "/data/features/ml/order-flow-imbalance/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMicrostructure.orderFlowImbalance", resp, err)
 	}
 	v, err := decodeResult("mLMicrostructure.orderFlowImbalance", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLMicrostructure.orderFlowImbalance", resp, err)
 	}
-	return asRows("mLMicrostructure.orderFlowImbalance", v)
+	result, err := asRows("mLMicrostructure.orderFlowImbalance", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMicrostructure.orderFlowImbalance", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // VolumeProfileParams are the parameters for MLMicrostructureService.VolumeProfile.
@@ -101,24 +143,45 @@ type VolumeProfileParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1volume-profile~1/get
 func (s *MLMicrostructureService) VolumeProfile(ctx context.Context, p VolumeProfileParams) ([]map[string]interface{}, error) {
+	result, _, err := s.VolumeProfileWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// VolumeProfileWithResponse returns VolumeProfile's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1volume-profile~1/get
+func (s *MLMicrostructureService) VolumeProfileWithResponse(ctx context.Context, p VolumeProfileParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLMicrostructure.volumeProfile", "/data/features/ml/volume-profile/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMicrostructure.volumeProfile", resp, err)
 	}
 	v, err := decodeResult("mLMicrostructure.volumeProfile", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLMicrostructure.volumeProfile", resp, err)
 	}
-	return asRows("mLMicrostructure.volumeProfile", v)
+	result, err := asRows("mLMicrostructure.volumeProfile", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMicrostructure.volumeProfile", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // XexchangeSpreadParams are the parameters for MLMicrostructureService.XexchangeSpread.
@@ -136,22 +199,43 @@ type XexchangeSpreadParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1xexchange-spread~1/get
 func (s *MLMicrostructureService) XexchangeSpread(ctx context.Context, p XexchangeSpreadParams) ([]map[string]interface{}, error) {
+	result, _, err := s.XexchangeSpreadWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// XexchangeSpreadWithResponse returns XexchangeSpread's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1xexchange-spread~1/get
+func (s *MLMicrostructureService) XexchangeSpreadWithResponse(ctx context.Context, p XexchangeSpreadParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("pair", p.Pair); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("pair", p.Pair)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLMicrostructure.xexchangeSpread", "/data/features/ml/xexchange-spread/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMicrostructure.xexchangeSpread", resp, err)
 	}
 	v, err := decodeResult("mLMicrostructure.xexchangeSpread", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLMicrostructure.xexchangeSpread", resp, err)
 	}
-	return asRows("mLMicrostructure.xexchangeSpread", v)
+	result, err := asRows("mLMicrostructure.xexchangeSpread", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMicrostructure.xexchangeSpread", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }

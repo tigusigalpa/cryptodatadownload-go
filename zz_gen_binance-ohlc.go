@@ -35,6 +35,17 @@ type FuturesCmParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1futures~1cm~1/get
 func (s *BinanceOHLCService) FuturesCm(ctx context.Context, p FuturesCmParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FuturesCmWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FuturesCmWithResponse returns FuturesCm's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1futures~1cm~1/get
+func (s *BinanceOHLCService) FuturesCmWithResponse(ctx context.Context, p FuturesCmParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -46,17 +57,30 @@ func (s *BinanceOHLCService) FuturesCm(ctx context.Context, p FuturesCmParams) (
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceOHLC.futuresCm", "/data/ohlc/binance/futures/cm/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.futuresCm", resp, err)
 	}
 	v, err := decodeResult("binanceOHLC.futuresCm", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.futuresCm", resp, err)
 	}
-	return asRows("binanceOHLC.futuresCm", v)
+	result, err := asRows("binanceOHLC.futuresCm", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.futuresCm", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FuturesCmRaw — Binance Futures CM Data, raw download.
@@ -68,6 +92,9 @@ func (s *BinanceOHLCService) FuturesCm(ctx context.Context, p FuturesCmParams) (
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1futures~1cm~1/get
 func (s *BinanceOHLCService) FuturesCmRaw(ctx context.Context, p FuturesCmParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -80,6 +107,9 @@ func (s *BinanceOHLCService) FuturesCmRaw(ctx context.Context, p FuturesCmParams
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceOHLC.futuresCmRaw", "/data/ohlc/binance/futures/cm/", q)
@@ -87,6 +117,35 @@ func (s *BinanceOHLCService) FuturesCmRaw(ctx context.Context, p FuturesCmParams
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// FuturesCmStream opens a streaming FuturesCm download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1futures~1cm~1/get
+func (s *BinanceOHLCService) FuturesCmStream(ctx context.Context, p FuturesCmParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.Interval != nil {
+		q.Set("interval", *p.Interval)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "binanceOHLC.futuresCmStream", "/data/ohlc/binance/futures/cm/", q)
 }
 
 // FuturesUmParams are the parameters for BinanceOHLCService.FuturesUm.
@@ -108,6 +167,17 @@ type FuturesUmParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1futures~1um~1/get
 func (s *BinanceOHLCService) FuturesUm(ctx context.Context, p FuturesUmParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FuturesUmWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FuturesUmWithResponse returns FuturesUm's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1futures~1um~1/get
+func (s *BinanceOHLCService) FuturesUmWithResponse(ctx context.Context, p FuturesUmParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -119,17 +189,30 @@ func (s *BinanceOHLCService) FuturesUm(ctx context.Context, p FuturesUmParams) (
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceOHLC.futuresUm", "/data/ohlc/binance/futures/um/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.futuresUm", resp, err)
 	}
 	v, err := decodeResult("binanceOHLC.futuresUm", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.futuresUm", resp, err)
 	}
-	return asRows("binanceOHLC.futuresUm", v)
+	result, err := asRows("binanceOHLC.futuresUm", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.futuresUm", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FuturesUmRaw — Binance Futures UM Data, raw download.
@@ -141,6 +224,9 @@ func (s *BinanceOHLCService) FuturesUm(ctx context.Context, p FuturesUmParams) (
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1futures~1um~1/get
 func (s *BinanceOHLCService) FuturesUmRaw(ctx context.Context, p FuturesUmParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -153,6 +239,9 @@ func (s *BinanceOHLCService) FuturesUmRaw(ctx context.Context, p FuturesUmParams
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceOHLC.futuresUmRaw", "/data/ohlc/binance/futures/um/", q)
@@ -160,6 +249,35 @@ func (s *BinanceOHLCService) FuturesUmRaw(ctx context.Context, p FuturesUmParams
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// FuturesUmStream opens a streaming FuturesUm download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1futures~1um~1/get
+func (s *BinanceOHLCService) FuturesUmStream(ctx context.Context, p FuturesUmParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.Interval != nil {
+		q.Set("interval", *p.Interval)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "binanceOHLC.futuresUmStream", "/data/ohlc/binance/futures/um/", q)
 }
 
 // OptionsParams are the parameters for BinanceOHLCService.Options.
@@ -185,6 +303,17 @@ type OptionsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1options~1/get
 func (s *BinanceOHLCService) Options(ctx context.Context, p OptionsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OptionsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OptionsWithResponse returns Options's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1options~1/get
+func (s *BinanceOHLCService) OptionsWithResponse(ctx context.Context, p OptionsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Underlying != nil {
 		q.Set("underlying", *p.Underlying)
@@ -202,17 +331,30 @@ func (s *BinanceOHLCService) Options(ctx context.Context, p OptionsParams) ([]ma
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceOHLC.options", "/data/ohlc/binance/options/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.options", resp, err)
 	}
 	v, err := decodeResult("binanceOHLC.options", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.options", resp, err)
 	}
-	return asRows("binanceOHLC.options", v)
+	result, err := asRows("binanceOHLC.options", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.options", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OptionsRaw — Binance Options Data, raw download.
@@ -224,6 +366,9 @@ func (s *BinanceOHLCService) Options(ctx context.Context, p OptionsParams) ([]ma
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1options~1/get
 func (s *BinanceOHLCService) OptionsRaw(ctx context.Context, p OptionsParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Underlying != nil {
@@ -242,6 +387,9 @@ func (s *BinanceOHLCService) OptionsRaw(ctx context.Context, p OptionsParams, f 
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceOHLC.optionsRaw", "/data/ohlc/binance/options/", q)
@@ -249,6 +397,41 @@ func (s *BinanceOHLCService) OptionsRaw(ctx context.Context, p OptionsParams, f 
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// OptionsStream opens a streaming Options download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1options~1/get
+func (s *BinanceOHLCService) OptionsStream(ctx context.Context, p OptionsParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Underlying != nil {
+		q.Set("underlying", *p.Underlying)
+	}
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.Type != nil {
+		q.Set("type", *p.Type)
+	}
+	if p.Maturity != nil {
+		q.Set("maturity", *p.Maturity)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "binanceOHLC.optionsStream", "/data/ohlc/binance/options/", q)
 }
 
 // SpotParams are the parameters for BinanceOHLCService.Spot.
@@ -270,6 +453,17 @@ type SpotParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1spot~1/get
 func (s *BinanceOHLCService) Spot(ctx context.Context, p SpotParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SpotWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SpotWithResponse returns Spot's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1spot~1/get
+func (s *BinanceOHLCService) SpotWithResponse(ctx context.Context, p SpotParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -281,17 +475,30 @@ func (s *BinanceOHLCService) Spot(ctx context.Context, p SpotParams) ([]map[stri
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceOHLC.spot", "/data/ohlc/binance/spot/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.spot", resp, err)
 	}
 	v, err := decodeResult("binanceOHLC.spot", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.spot", resp, err)
 	}
-	return asRows("binanceOHLC.spot", v)
+	result, err := asRows("binanceOHLC.spot", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.spot", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SpotRaw — Binance Spot Data, raw download.
@@ -303,6 +510,9 @@ func (s *BinanceOHLCService) Spot(ctx context.Context, p SpotParams) ([]map[stri
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1spot~1/get
 func (s *BinanceOHLCService) SpotRaw(ctx context.Context, p SpotParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -315,6 +525,9 @@ func (s *BinanceOHLCService) SpotRaw(ctx context.Context, p SpotParams, f Return
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceOHLC.spotRaw", "/data/ohlc/binance/spot/", q)
@@ -322,6 +535,35 @@ func (s *BinanceOHLCService) SpotRaw(ctx context.Context, p SpotParams, f Return
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SpotStream opens a streaming Spot download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1spot~1/get
+func (s *BinanceOHLCService) SpotStream(ctx context.Context, p SpotParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.Interval != nil {
+		q.Set("interval", *p.Interval)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "binanceOHLC.spotStream", "/data/ohlc/binance/spot/", q)
 }
 
 // TickParams are the parameters for BinanceOHLCService.Tick.
@@ -345,6 +587,17 @@ type TickParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1tick~1/get
 func (s *BinanceOHLCService) Tick(ctx context.Context, p TickParams) ([]map[string]interface{}, error) {
+	result, _, err := s.TickWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// TickWithResponse returns Tick's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1tick~1/get
+func (s *BinanceOHLCService) TickWithResponse(ctx context.Context, p TickParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -356,6 +609,9 @@ func (s *BinanceOHLCService) Tick(ctx context.Context, p TickParams) ([]map[stri
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Interval != nil {
@@ -363,13 +619,23 @@ func (s *BinanceOHLCService) Tick(ctx context.Context, p TickParams) ([]map[stri
 	}
 	resp, err := s.client.do(ctx, "binanceOHLC.tick", "/data/ohlc/binance/tick/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.tick", resp, err)
 	}
 	v, err := decodeResult("binanceOHLC.tick", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.tick", resp, err)
 	}
-	return asRows("binanceOHLC.tick", v)
+	result, err := asRows("binanceOHLC.tick", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceOHLC.tick", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // TickRaw — Binance Tick Data, raw download.
@@ -381,6 +647,9 @@ func (s *BinanceOHLCService) Tick(ctx context.Context, p TickParams) ([]map[stri
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1tick~1/get
 func (s *BinanceOHLCService) TickRaw(ctx context.Context, p TickParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -393,6 +662,9 @@ func (s *BinanceOHLCService) TickRaw(ctx context.Context, p TickParams, f Return
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Interval != nil {
@@ -403,4 +675,36 @@ func (s *BinanceOHLCService) TickRaw(ctx context.Context, p TickParams, f Return
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// TickStream opens a streaming Tick download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1tick~1/get
+func (s *BinanceOHLCService) TickStream(ctx context.Context, p TickParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.Year != nil {
+		q.Set("year", *p.Year)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	if p.Interval != nil {
+		q.Set("interval", *p.Interval)
+	}
+	return s.client.doStream(ctx, "binanceOHLC.tickStream", "/data/ohlc/binance/tick/", q)
 }

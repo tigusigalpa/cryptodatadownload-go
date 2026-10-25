@@ -25,7 +25,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FeaturesMlAll",
 			path: "/data/aggregates/features/ml/all/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"symbol\":\"BTCUSDT\",\"date\":\"2026-05-30\",\"return_rank_z_1d\":0.002,\"vol_rank_z\":-0.776,\"momentum_12_1\":-0.36,\"reversal_signal\":0.045,\"hurst_60d\":0.512,\"hurst_regime\":\"mixed\",\"order_flow_imbalance_z\":1.739,\"large_trade_share\":0.136,\"volume_profile_poc\":73619.6,\"xexchange_spread_pct\":-0.165,\"atm_iv_30d\":38.74,\"implied_move_30d\":8.88,\"skew_25d_30d\":-4.15,\"smile_width_30d\":1.316,\"oi_concentration_hhi\":0.032,\"funding_regime_label\":\"neutral\",\"funding_percentile_1y\":63.7,\"oi_change_pct_1d\":-0.37,\"perp_basis_ann_pct\":-13.6,\"anomaly_score\":2.34,\"regime_state\":\"trending_up\",\"regime_prob_trending_up\":1,\"cluster_id\":0,\"cluster_size\":25}]}",
 			call: func(c *Client) error {
 				_, err := c.Aggregates.FeaturesMlAll(context.Background(), FeaturesMlAllParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -42,7 +42,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OnchainDashboard",
 			path: "/data/aggregates/onchain/dashboard/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"chain\":\"BTC\",\"mempool_congestion_pct\":100,\"composite_congestion_score\":0.75,\"congestion_label\":\"extreme\",\"whale_large_tx_share\":0.359,\"nvt_ratio\":18.69,\"nvt_z_score\":0.67,\"supply_velocity_pct\":5.35}]}",
 			call: func(c *Client) error {
 				_, err := c.Aggregates.OnchainDashboard(context.Background(), OnchainDashboardParams{Chain: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -59,7 +59,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OptionsDashboard",
 			path: "/data/aggregates/options/dashboard/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"base_currency\":\"BTC\",\"atm_iv_30d\":38.74,\"atm_iv_7d\":40.21,\"term_contango_flag\":1,\"iv_rv_spread_pct\":12.12,\"variance_risk_premium_pct\":791.97,\"skew_25d_30d\":-4.15,\"skew_label\":\"bearish_skew\",\"smile_width_30d\":1.316,\"pin_strike_top1\":73500,\"pin_score_top1\":32.67,\"dvol_close\":48.2}]}",
 			call: func(c *Client) error {
 				_, err := c.Aggregates.OptionsDashboard(context.Background(), OptionsDashboardParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -76,7 +76,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "RiskPanel",
 			path: "/data/aggregates/risk/panel/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"symbol\":\"BTCUSDT\",\"date\":\"2026-05-30\",\"rv_30d_cc\":26.62,\"rv_30d_yz\":30.21,\"atm_iv_30d\":38.74,\"iv_rv_spread\":12.12,\"drawdown_current_pct\":-2.1,\"drawdown_max_pct\":-77.4,\"var_95_historical\":-0.043,\"var_95_parametric\":-0.041,\"regime_label\":\"neutral\",\"regime_score\":0.12}]}",
 			call: func(c *Client) error {
 				_, err := c.Aggregates.RiskPanel(context.Background(), RiskPanelParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -94,7 +94,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "N52wkHighsLows",
 			path: "/data/breadth/52wk-highs-lows/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2024-07-03\",\"new_52week_highs\":127,\"new_52week_lows\":43,\"total\":5782},{\"date\":\"2024-07-02\",\"new_52week_highs\":156,\"new_52week_lows\":52,\"total\":5787}]}",
 			call: func(c *Client) error {
 				_, err := c.Breadth.N52wkHighsLows(context.Background(), N52wkHighsLowsParams{})
 				return err
@@ -103,7 +103,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "AdvanceDecline",
 			path: "/data/breadth/advance-decline/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"tradeDate\":\"2025-03-16\",\"advances\":55,\"declines\":410,\"unchanged\":13,\"total\":478,\"net\":-355,\"advance_percent\":11.5063},{\"tradeDate\":\"2025-03-15\",\"advances\":366,\"declines\":93,\"unchanged\":19,\"total\":478,\"net\":273,\"advance_percent\":76.569}]}",
 			call: func(c *Client) error {
 				_, err := c.Breadth.AdvanceDecline(context.Background(), AdvanceDeclineParams{})
 				return err
@@ -112,7 +112,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "MovingAverageTracking",
 			path: "/data/breadth/moving-average-tracking/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2025-03-19\",\"total_pairs\":531,\"above_ma50\":77,\"above_ma100\":51,\"above_ma200\":71,\"percent_above_ma50\":14.5,\"percent_above_ma100\":9.6,\"percent_above_ma200\":13.37},{\"date\":\"2025-03-18\",\"total_pairs\":531,\"above_ma50\":76,\"above_ma100\":49,\"above_ma200\":71,\"percent_above_ma50\":14.31,\"percent_above_ma100\":9.23,\"percent_above_ma200\":13.37}]}",
 			call: func(c *Client) error {
 				_, err := c.Breadth.MovingAverageTracking(context.Background(), MovingAverageTrackingParams{})
 				return err
@@ -122,7 +122,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "CftcCot",
 			path: "/data/cftc/cot/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2024-06-25\",\"contract\":\"BITCOIN\",\"contract_group\":\"BITCOIN\",\"Open_Interest_All\":32277,\"Dealer_Positions_Long_All\":1187,\"Dealer_Positions_Short_All\":3669,\"Dealer_Positions_Spread_All\":1033,\"Asset_Mgr_Positions_Long_All\":17531,\"Asset_Mgr_Positions_Short_All\":493,\"Asset_Mgr_Positions_Spread_All\":255,\"Lev_Money_Positions_Long_All\":1675,\"Lev_Money_Positions_Short_All\":18846,\"Lev_Money_Positions_Spread_All\":5034,\"Other_Rept_Positions_Long_All\":2692,\"Other_Rept_Positions_Short_All\":552,\"Other_Rept_Positions_Spread_All\":1238,\"Tot_Rept_Positions_Long_All\":30645,\"Tot_Rept_Positions_Short_All\":31120,\"NonRept_Positions_Long_All\":1632,\"NonRept_Positions_Short_All\":1157,\"Change_in_Open_Interest_All\":-285,\"Change_in_Dealer_Long_All\":-27,\"Change_in_Dealer_Short_All\":-17,\"Change_in_Dealer_Spread_All\":329,\"Change_in_Asset_Mgr_Long_All\":-493,\"Change_in_Asset_Mgr_Short_All\":-161,\"Change_in_Asset_Mgr_Spread_All\":87,\"Change_in_Lev_Money_Long_All\":-807,\"Change_in_Lev_Money_Short_All\":-944,\"Change_in_Lev_Money_Spread_All\":913,\"Change_in_Other_Rept_Long_All\":181,\"Change_in_Other_Rept_Short_All\":-123,\"Change_in_Other_Rept_Spread_All\":-437,\"Change_in_Tot_Rept_Long_All\":-254,\"Change_in_Tot_Rept_Short_All\":-354,\"Change_in_NonRept_Long_All\":-31,\"Change_in_NonRept_Short_All\":69,\"Pct_of_OI_Dealer_Long_All\":3.7,\"Pct_of_OI_Dealer_Short_All\":11.4,\"Pct_of_OI_Dealer_Spread_All\":3.2,\"Pct_of_OI_Asset_Mgr_Long_All\":54.3,\"Pct_of_OI_Asset_Mgr_Short_All\":1.5,\"Pct_of_OI_Asset_Mgr_Spread_All\":0.8,\"Pct_of_OI_Lev_Money_Long_All\":5.2,\"Pct_of_OI_Lev_Money_Short_All\":58.4,\"Pct_of_OI_Lev_Money_Spread_All\":15.6,\"Pct_of_OI_Other_Rept_Long_All\":8.3,\"Pct_of_OI_Other_Rept_Short_All\":1.7,\"Pct_of_OI_Other_Rept_Spread_All\":3.8,\"Pct_of_OI_Tot_Rept_Long_All\":94.9,\"Pct_of_OI_Tot_Rept_Short_All\":96.4,\"Pct_of_OI_NonRept_Long_All\":5.1,\"Pct_of_OI_NonRept_Short_All\":3.6,\"Traders_Tot_All\":121,\"Traders_Dealer_Long_All\":6,\"Traders_Dealer_Short_All\":7,\"Traders_Dealer_Spread_All\":5,\"Traders_Asset_Mgr_Long_All\":15,\"Traders_Asset_Mgr_Short_All\":0,\"Traders_Asset_Mgr_Spread_All\":5,\"Traders_Lev_Money_Long_All\":19,\"Traders_Lev_Money_Short_All\":49,\"Traders_Lev_Money_Spread_All\":29,\"Traders_Other_Rept_Long_All\":10,\"Traders_Other_Rept_Short_All\":9,\"Traders_Other_Rept_Spread_All\":9,\"Traders_Tot_Rept_Long_All\":78,\"Traders_Tot_Rept_Short_All\":91}]}",
 			call: func(c *Client) error {
 				_, err := c.Govt.CftcCot(context.Background(), CftcCotParams{})
 				return err
@@ -131,7 +131,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "TreasuryParYieldsReal",
 			path: "/data/treasury/par-yields-real/",
-			body: `{"result": []}`,
+			body: "{\"result\":[]}",
 			call: func(c *Client) error {
 				_, err := c.Govt.TreasuryParYieldsReal(context.Background(), TreasuryParYieldsRealParams{})
 				return err
@@ -140,7 +140,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "TreasuryParYields",
 			path: "/data/treasury/par-yields/",
-			body: `{"result": []}`,
+			body: "{\"result\":[]}",
 			call: func(c *Client) error {
 				_, err := c.Govt.TreasuryParYields(context.Background(), TreasuryParYieldsParams{})
 				return err
@@ -150,7 +150,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "CftcCotAvailable",
 			path: "/data/cftc/cot/available/",
-			body: `{"result": {}}`,
+			body: "{\"result\":{\"Contracts\":[\"10 YEAR DELIVERABLE IR\",\"10 YEAR ERIS SOFR SWAP\",\"10-YEAR ERIS SWAP\",\"2 YEAR ERIS SOFR SWAP\",\"2 YEAR ERIS SWAP\",\"5 YEAR DELIVERABLE IR\",\"5 YEAR ERIS SOFR SWAP\",\"5 YEAR ERIS SWAP\",\"5-Year Eris Standard- Initial\",\"ADJUSTED INT RATE S&P 500 TOTL\",\"AUSTRALIAN DOLLAR\",\"BBG COMMODITY\",\"BITCOIN\",\"BITCOIN-USD\",\"BRAZILIAN REAL\"],\"Contract_Group\":[\"1-2-YEAR INTEREST RATE SWAPS\",\"1-2-YEAR INTEREST RATE SWAPS ERIS & MAC\",\"10-YEAR INTEREST RATE SWAPS\",\"2-7-YEAR INTEREST RATE SWAPS\",\"2-7-YEAR INTEREST RATE SWAPS ERIS & MAC\",\"30 DAY RATES\",\"8-14-YEAR INTEREST RATE SWAPS ERIS & MAC\",\"AUSTRALIAN DOLLAR\",\"BITCOIN\"]}}",
 			call: func(c *Client) error {
 				_, err := c.Catalog.CftcCotAvailable(context.Background(), CftcCotAvailableParams{})
 				return err
@@ -159,7 +159,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OhlcBinanceAllAvailable",
 			path: "/data/ohlc/binance/all/available/",
-			body: `{"result": {}}`,
+			body: "{\"result\":{\"spot\":[\"1INCHBTC\",\"1INCHBUSD\",\"1INCHUSDT\",\"AAVEBNB\",\"AAVEBTC\",\"AAVEBUSD\",\"AAVEETH\",\"AAVEUSDT\",\"ACMBTC\"]}}",
 			call: func(c *Client) error {
 				_, err := c.Catalog.OhlcBinanceAllAvailable(context.Background(), OhlcBinanceAllAvailableParams{})
 				return err
@@ -168,7 +168,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OhlcDeribitFuturesAvailable",
 			path: "/data/ohlc/deribit/futures/available/",
-			body: `{"result": []}`,
+			body: "{\"result\":[\"ADA_USDC-PERPETUAL\",\"ALGO_USDC-PERPETUAL\",\"AVAX_USDC-PERPETUAL\",\"BCH_USDC-PERPETUAL\",\"BTC-10FEB23\",\"BTC-10MAR23\",\"BTC-10MAY24\",\"BTC-11NOV22\",\"BTC-12APR24\",\"BTC-12JAN24\",\"BTC-13JAN23\",\"BTC-14APR23\"]}",
 			call: func(c *Client) error {
 				_, err := c.Catalog.OhlcDeribitFuturesAvailable(context.Background(), OhlcDeribitFuturesAvailableParams{})
 				return err
@@ -177,7 +177,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OhlcDeribitFuturesFundingAvailable",
 			path: "/data/ohlc/deribit/futures/funding/available/",
-			body: `{"result": []}`,
+			body: "{\"result\":[\"ADA_USDC-PERPETUAL\",\"ALGO_USDC-PERPETUAL\",\"AVAX_USDC-PERPETUAL\",\"BCH_USDC-PERPETUAL\",\"BTC-PERPETUAL\",\"BTC_USDC-PERPETUAL\",\"DOGE_USDC-PERPETUAL\",\"DOT_USDC-PERPETUAL\",\"ETH-PERPETUAL\",\"ETH_USDC-PERPETUAL\",\"LINK_USDC-PERPETUAL\",\"LTC_USDC-PERPETUAL\",\"MATIC_USDC-PERPETUAL\",\"NEAR_USDC-PERPETUAL\",\"SOL-PERPETUAL\",\"SOL_USDC-PERPETUAL\",\"TRX_USDC-PERPETUAL\",\"UNI_USDC-PERPETUAL\",\"XRP_USDC-PERPETUAL\"]}",
 			call: func(c *Client) error {
 				_, err := c.Catalog.OhlcDeribitFuturesFundingAvailable(context.Background(), OhlcDeribitFuturesFundingAvailableParams{})
 				return err
@@ -186,7 +186,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OhlcDeribitOptionsAvailable",
 			path: "/data/ohlc/deribit/options/available/",
-			body: `{"result": []}`,
+			body: "{\"result\":[\"BTC-10APR24-61000-P\",\"BTC-10APR24-62000-P\",\"BTC-10APR24-63000-P\",\"BTC-10APR24-64000-P\",\"BTC-10APR24-65000-P\",\"BTC-10APR24-66000-P\",\"BTC-10APR24-66500-P\",\"BTC-10APR24-67000-P\",\"BTC-10APR24-67500-P\"]}",
 			call: func(c *Client) error {
 				_, err := c.Catalog.OhlcDeribitOptionsAvailable(context.Background(), OhlcDeribitOptionsAvailableParams{})
 				return err
@@ -195,7 +195,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryBinanceFuturesFundingAvailable",
 			path: "/data/summary/binance/futures/funding/available/",
-			body: `{"result": {}}`,
+			body: "{\"result\":{\"um\":[\"1000SHIBUSDT\",\"1000XECUSDT\",\"1INCHUSDT\",\"AAVEUSDT\",\"ADAUSDT\",\"ALGOUSDT\",\"ALICEUSDT\",\"BANDUSDT\",\"BATUSDT\",\"BCHUSDT\",\"BELUSDT\",\"BLZUSDT\",\"BNBUSDT\",\"BNXUSDT\",\"BTCDOMUSDT\",\"BTCSTUSDT\"],\"cm\":[\"AAVEUSD_PERP\",\"ADAUSD_PERP\",\"ALGOUSD_PERP\",\"APEUSD_PERP\",\"ATOMUSD_PERP\",\"AVAXUSD_PERP\",\"AXSUSD_PERP\",\"BCHUSD_PERP\",\"BNBUSD_PERP\",\"BTCUSD_PERP\"]}}",
 			call: func(c *Client) error {
 				_, err := c.Catalog.SummaryBinanceFuturesFundingAvailable(context.Background(), SummaryBinanceFuturesFundingAvailableParams{})
 				return err
@@ -204,7 +204,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryBinanceSpotTransactionalAvailable",
 			path: "/data/summary/binance/spot/transactional/available/",
-			body: `{"result": {}}`,
+			body: "{\"symbol\":\"BTCUSDT\",\"market_type\":\"spot\",\"available_dates\":[\"2017-08-17\",\"2017-08-18\",\"2017-08-19\",\"...\"],\"count\":3061,\"date_range\":{\"min\":\"2017-08-17\",\"max\":\"2026-01-02\"},\"last_updated\":\"2026-01-05T00:57:10.401483Z\"}",
 			call: func(c *Client) error {
 				_, err := c.Catalog.SummaryBinanceSpotTransactionalAvailable(context.Background(), SummaryBinanceSpotTransactionalAvailableParams{})
 				return err
@@ -213,7 +213,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryDeribitOptionsGreeksAvailable",
 			path: "/data/summary/deribit/options/greeks/available/",
-			body: `{"result": {}}`,
+			body: "{\"BTC\":{\"count\":30,\"first_date\":\"2025-12-01\",\"last_date\":\"2025-12-31\",\"dates\":[\"2025-12-01\",\"2025-12-02\",\"...\"]}}",
 			call: func(c *Client) error {
 				_, err := c.Catalog.SummaryDeribitOptionsGreeksAvailable(context.Background(), SummaryDeribitOptionsGreeksAvailableParams{})
 				return err
@@ -222,7 +222,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "TransactionsDeribitOptionsAvailable",
 			path: "/data/transactions/deribit/options/available/",
-			body: `{"result": {}}`,
+			body: "{\"currencies\":[\"BTC\",\"ETH\",\"SOL_USDC\"],\"data\":{\"BTC\":{\"total_dates\":850,\"date_range\":[\"2022-09-17\",\"2025-01-01\"],\"last_updated\":\"2025-01-02T00:00:00\"}}}",
 			call: func(c *Client) error {
 				_, err := c.Catalog.TransactionsDeribitOptionsAvailable(context.Background(), TransactionsDeribitOptionsAvailableParams{})
 				return err
@@ -232,7 +232,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FuturesBasisTerm",
 			path: "/data/features/futures/basis-term/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-29\",\"base\":\"BTC\",\"contract_type\":\"perp\",\"expiry\":\"perpetual\",\"days_to_expiry\":0,\"basis_pct\":-0.044,\"annualized_carry_pct\":-16.19}]}",
 			call: func(c *Client) error {
 				_, err := c.MLMarket.FuturesBasisTerm(context.Background(), FuturesBasisTermParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -249,7 +249,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "MacroYieldSpreads",
 			path: "/data/features/macro/yield-spreads/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-29\",\"spread_2s10s\":0.42,\"spread_5s30s\":0.31,\"spread_3m10y\":0.18,\"real_nominal_5y\":-0.15,\"real_nominal_10y\":-0.08}]}",
 			call: func(c *Client) error {
 				_, err := c.MLMarket.MacroYieldSpreads(context.Background(), MacroYieldSpreadsParams{Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -263,7 +263,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SpotReturns",
 			path: "/data/features/spot/returns/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"ret_log_1d\":0.0057,\"ret_simple_1d\":0.0058,\"ret_log_20d\":-0.0234,\"ret_simple_20d\":-0.0231}]}",
 			call: func(c *Client) error {
 				_, err := c.MLMarket.SpotReturns(context.Background(), SpotReturnsParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -280,7 +280,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SpotVwap",
 			path: "/data/features/spot/vwap/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"vwap_usd\":73619.58,\"total_volume_quote\":553989386.11,\"num_trades\":1124406}]}",
 			call: func(c *Client) error {
 				_, err := c.MLMarket.SpotVwap(context.Background(), SpotVwapParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -298,7 +298,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FundingRegime",
 			path: "/data/features/futures/funding-regime/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-04-25\",\"symbol\":\"BTCUSDT\",\"current_funding\":-4.34e-5,\"funding_7d_avg\":-4.93e-5,\"funding_30d_avg\":-2.04e-5,\"funding_90d_avg\":-8.18e-6,\"sustained_positive_days\":0,\"sustained_negative_days\":0,\"funding_percentile_1y\":4.52,\"regime_label\":\"extreme_negative\"}]}",
 			call: func(c *Client) error {
 				_, err := c.MLFutures.FundingRegime(context.Background(), FundingRegimeParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -315,7 +315,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OiChange",
 			path: "/data/features/futures/oi-change/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"oi_current\":103974.85,\"oi_change_pct_1d\":-0.373,\"oi_change_pct_5d\":4.15,\"price_change_pct_5d\":-4.45,\"position_shift_flag_5d\":\"short_buildup\"}]}",
 			call: func(c *Client) error {
 				_, err := c.MLFutures.OiChange(context.Background(), OiChangeParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -332,7 +332,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "PerpBasisTs",
 			path: "/data/features/futures/perp-basis-ts/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-29\",\"base_currency\":\"BTC\",\"perp_basis_pct\":-0.044,\"ewma_3d\":-0.042,\"ewma_7d\":-0.045,\"ewma_30d\":-0.049,\"annualized_carry\":-16.19}]}",
 			call: func(c *Client) error {
 				_, err := c.MLFutures.PerpBasisTs(context.Background(), PerpBasisTsParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -350,7 +350,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "CotPositioning",
 			path: "/data/features/macro/cot-positioning/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-26\",\"category\":\"btc\",\"money_manager_net\":-8730,\"open_interest_total\":22067,\"net_pct_oi\":-0.396,\"z_score_5y\":0.223,\"regime_label\":\"neutral\"}]}",
 			call: func(c *Client) error {
 				_, err := c.MLMacro.CotPositioning(context.Background(), CotPositioningParams{Category: "btc", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -367,7 +367,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "RealRateRegime",
 			path: "/data/features/macro/real-rate-regime/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-29\",\"real_yield_10y\":2.07,\"delta_5d\":-0.11,\"delta_30d\":0.14,\"delta_90d\":0.15,\"z_score_5y\":0.773,\"regime_label\":\"high\",\"lookback_days\":1259}]}",
 			call: func(c *Client) error {
 				_, err := c.MLMacro.RealRateRegime(context.Background(), RealRateRegimeParams{Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -381,7 +381,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "YieldCurvePca",
 			path: "/data/features/macro/yield-curve-pca/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-29\",\"pc1_level\":1.814,\"pc2_slope\":1.531,\"pc3_curvature\":-0.116,\"pc1_var_pct\":95.51,\"pc2_var_pct\":3.12,\"pc3_var_pct\":1.28,\"lookback_days\":1300}]}",
 			call: func(c *Client) error {
 				_, err := c.MLMacro.YieldCurvePca(context.Background(), YieldCurvePcaParams{Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -396,7 +396,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "BetaBtc",
 			path: "/data/features/ml/beta-btc/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-31\",\"symbol\":\"ETHUSDT\",\"beta_30d\":1.028,\"beta_60d\":1.238,\"beta_180d\":1.246,\"idio_return_30d\":-0.005,\"r_squared_60d\":0.865}]}",
 			call: func(c *Client) error {
 				_, err := c.MLCrossSectional.BetaBtc(context.Background(), BetaBtcParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -413,7 +413,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "Momentum",
 			path: "/data/features/ml/momentum/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"mom_12_1\":-0.36,\"mom_6_1\":-0.101,\"mom_3_1\":0.195,\"mom_12_1_z\":0.251}]}",
 			call: func(c *Client) error {
 				_, err := c.MLCrossSectional.Momentum(context.Background(), MomentumParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -430,7 +430,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "ReturnRank",
 			path: "/data/features/ml/return-rank/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"universe_size\":30,\"return_z_1d\":0.002,\"return_z_20d\":-0.26,\"rank_1d\":15,\"rank_20d\":13}]}",
 			call: func(c *Client) error {
 				_, err := c.MLCrossSectional.ReturnRank(context.Background(), ReturnRankParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -447,7 +447,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "Reversal",
 			path: "/data/features/ml/reversal/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"reversal_1d\":-0.006,\"reversal_5d\":0.045,\"hurst_60d\":0.512,\"regime_flag\":\"mixed\"}]}",
 			call: func(c *Client) error {
 				_, err := c.MLCrossSectional.Reversal(context.Background(), ReversalParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -464,7 +464,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "VolRank",
 			path: "/data/features/ml/vol-rank/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"rv_30d\":26.62,\"vol_z\":-0.776,\"vol_rank\":5,\"universe_size\":30}]}",
 			call: func(c *Client) error {
 				_, err := c.MLCrossSectional.VolRank(context.Background(), VolRankParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -482,7 +482,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "LargeTradeShare",
 			path: "/data/features/ml/large-trade-share/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"large_trade_share\":0.136,\"large_trade_share_7d_avg\":0.158,\"large_trade_share_30d_avg\":0.17,\"large_trade_share_percentile_1y\":9.18}]}",
 			call: func(c *Client) error {
 				_, err := c.MLMicrostructure.LargeTradeShare(context.Background(), LargeTradeShareParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -499,7 +499,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OrderFlowImbalance",
 			path: "/data/features/ml/order-flow-imbalance/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"buy_volume_share\":0.548,\"sell_volume_share\":0.452,\"ofi_raw\":0.096,\"ofi_z_60d\":1.74}]}",
 			call: func(c *Client) error {
 				_, err := c.MLMicrostructure.OrderFlowImbalance(context.Background(), OrderFlowImbalanceParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -516,7 +516,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "VolumeProfile",
 			path: "/data/features/ml/volume-profile/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"poc\":73619.58,\"vah\":73930.38,\"val\":73466.5,\"value_area_pct\":0.718,\"total_volume_quote\":553989386.11,\"num_trades\":1124406}]}",
 			call: func(c *Client) error {
 				_, err := c.MLMicrostructure.VolumeProfile(context.Background(), VolumeProfileParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -533,7 +533,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "XexchangeSpread",
 			path: "/data/features/ml/xexchange-spread/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"pair_id\":\"BTC_USD\",\"venue_a\":\"binance\",\"venue_b\":\"bitstamp\",\"close_a\":73884.38,\"close_b\":73762.15,\"spread_pct\":-0.165,\"spread_pct_30d_avg\":-0.113,\"abs_spread_pct\":0.165}]}",
 			call: func(c *Client) error {
 				_, err := c.MLMicrostructure.XexchangeSpread(context.Background(), XexchangeSpreadParams{Pair: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -551,7 +551,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FeaturesOnchainAddressVelocity",
 			path: "/data/features/onchain/address-velocity/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-28\",\"chain\":\"eth\",\"active_addresses\":482594,\"active_addresses_7d_avg\":456736.29,\"active_addresses_30d_avg\":null,\"address_velocity_1d\":0.0325,\"address_velocity_7d\":0.0523,\"address_velocity_30d\":null,\"address_z_90d\":null}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.FeaturesOnchainAddressVelocity(context.Background(), FeaturesOnchainAddressVelocityParams{Chain: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -568,7 +568,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FeaturesOnchainContractGrowth",
 			path: "/data/features/onchain/contract-growth/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-28\",\"daily_contract_count\":15773,\"count_7d_avg\":44320.14,\"count_30d_avg\":22418,\"count_90d_avg\":43040.44,\"count_z_1y\":-0.629,\"growth_label\":\"subdued\"}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.FeaturesOnchainContractGrowth(context.Background(), FeaturesOnchainContractGrowthParams{Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -582,7 +582,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FeaturesOnchainNetworkCongestion",
 			path: "/data/features/onchain/network-congestion/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-31\",\"btc_congestion_pct\":100,\"btc_fast_fee_z\":null,\"eth_fast_gas_z\":null,\"eth_block_utilization\":0.504,\"composite_congestion_score\":0.752,\"congestion_label\":\"extreme\"}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.FeaturesOnchainNetworkCongestion(context.Background(), FeaturesOnchainNetworkCongestionParams{Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -596,7 +596,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FeaturesOnchainNvt",
 			path: "/data/features/onchain/nvt/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"chain\":\"btc\",\"market_cap_usd\":1455522286000,\"on_chain_volume_usd\":41515715230.39,\"nvt_raw\":35.06,\"nvt_smoothed_14d\":29.55,\"nvt_z_180d\":0.647,\"supply_assumption\":\"BTC circulating supply hardcoded to 19.7M (Phase 1)\"}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.FeaturesOnchainNvt(context.Background(), FeaturesOnchainNvtParams{Chain: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -613,7 +613,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FeaturesOnchainSupplyVelocity",
 			path: "/data/features/onchain/supply-velocity/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"chain\":\"btc\",\"on_chain_volume_native\":561901.11,\"circulating_supply\":19700000,\"velocity_daily\":0.0285,\"velocity_7d_avg\":0.0386,\"velocity_30d_avg\":0.0365,\"velocity_90d_avg\":0.0369,\"velocity_z_180d\":0.024,\"velocity_regime\":\"normal\",\"supply_assumption\":\"hardcoded 19.7M\"}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.FeaturesOnchainSupplyVelocity(context.Background(), FeaturesOnchainSupplyVelocityParams{Chain: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -630,7 +630,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FeaturesOnchainWhale",
 			path: "/data/features/onchain/whale/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"chain\":\"btc\",\"large_tx_volume\":191446.11,\"total_tx_volume\":561901.11,\"large_tx_share\":0.341,\"large_tx_share_z_90d\":-0.145,\"whale_flag\":\"normal\"}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.FeaturesOnchainWhale(context.Background(), FeaturesOnchainWhaleParams{Chain: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -647,7 +647,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OnchainBtcMempool",
 			path: "/data/onchain/btc/mempool/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-31\",\"median_fee_sat_vb\":1,\"fast_confirm_fee_sat_vb\":3,\"slow_confirm_fee_sat_vb\":1,\"mempool_size_vb\":44708285,\"pending_block_count\":8,\"congestion_pct\":100,\"captured_at_utc\":\"2026-05-31T10:48:09Z\"}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.OnchainBtcMempool(context.Background(), OnchainBtcMempoolParams{Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -661,7 +661,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OnchainEthExchangeFlows",
 			path: "/data/onchain/eth/exchange-flows/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-31\",\"exchange\":\"binance\",\"prior_date\":\"2026-05-30\",\"total_eth_balance\":3014716.57,\"prior_total_eth_balance\":3036986.14,\"net_flow_eth_native\":-22269.58,\"net_flow_usd\":-44555854.73,\"eth_price_usd\":2000.75,\"addresses_observed\":9,\"prior_addresses_observed\":9,\"label_set_version\":\"1.0.0\",\"status\":\"ok\"}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.OnchainEthExchangeFlows(context.Background(), OnchainEthExchangeFlowsParams{Exchange: "binance", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -678,7 +678,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OnchainEthExchangeReserves",
 			path: "/data/onchain/eth/exchange-reserves/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-31\",\"snapshot_ts\":\"2026-06-01T01:34:51+00:00\",\"block_number\":25218797,\"exchange\":\"binance\",\"address\":\"0x28C6c06298d514Db089934071355E5743bf21d60\",\"role\":\"hot\",\"source\":\"etherscan.io/address — labeled 'Binance 14'\",\"eth_balance_native\":252662.91,\"eth_balance_usd\":505515314.75,\"eth_price_usd\":2000.75,\"label_set_version\":\"1.0.0\"}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.OnchainEthExchangeReserves(context.Background(), OnchainEthExchangeReservesParams{Exchange: "binance", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -695,7 +695,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OnchainEthGas",
 			path: "/data/onchain/eth/gas/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-31\",\"avg_gas_gwei\":0.146,\"slow_gas_gwei\":0.146,\"fast_gas_gwei\":0.16,\"base_fee_gwei\":0.146,\"priority_fee_gwei\":2.25e-5,\"source_api\":\"etherscan_v2\",\"captured_at_utc\":\"2026-05-31T10:49:12Z\"}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.OnchainEthGas(context.Background(), OnchainEthGasParams{Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -709,7 +709,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OnchainEthTransactions",
 			path: "/data/onchain/eth/transactions/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-28\",\"tx_count\":1968415,\"eth_value_sum\":2152884.03,\"gas_used_total\":217157026383,\"gas_burned_eth\":67.66,\"unique_from_addresses\":482594,\"unique_to_addresses\":277524,\"failed_tx_count\":28902}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.OnchainEthTransactions(context.Background(), OnchainEthTransactionsParams{Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -723,7 +723,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryBitcoinMarketcap",
 			path: "/data/summary/bitcoin/marketcap/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"Date\":\"2024-04-21\",\"Total Supply\":19688337.5,\"Marketcap\":1278757520625},{\"Date\":\"2024-04-20\",\"Total Supply\":19687900,\"Marketcap\":1279516621000},{\"Date\":\"2024-04-19\",\"Total Supply\":19687487.5,\"Marketcap\":1256475139738},{\"Date\":\"2024-04-18\",\"Total Supply\":19686543.75,\"Marketcap\":1250390826282}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.SummaryBitcoinMarketcap(context.Background(), SummaryBitcoinMarketcapParams{})
 				return err
@@ -732,7 +732,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryBlockchainBchain",
 			path: "/data/summary/blockchain/bchain/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2024-06-23\",\"[DIFF]\":9287954114751648,\"[ATRCT]\":12.812167,\"[HRATE]\":4.675017774684686e+20,\"[AVBLS]\":1.6591,\"[NTRBL]\":4396,\"[ETRAV]\":492352,\"[TRFEE]\":14.86313592,\"[TRFUS]\":938666.48589168,\"[TOUTV]\":353405.35483161,\"[MIREV]\":39.10323307,\"[CPTRV]\":0.000152697458,\"[CPTRA]\":0.000109609322,\"[ETRVU]\":31093998208,\"[NTRAT]\":492352,\"[TOTBC]\":19716312.5,\"[MKTCP]\":1245163999625},{\"date\":\"2024-06-22\",\"[DIFF]\":12634964606554044,\"[ATRCT]\":9.461833,\"[HRATE]\":6.330404527468051e+20,\"[AVBLS]\":1.6139,\"[NTRBL]\":4483,\"[ETRAV]\":681420,\"[TRFEE]\":20.79407849,\"[TRFUS]\":1335666.04364817,\"[TOUTV]\":359204.69224698,\"[MIREV]\":16.1413969,\"[CPTRV]\":0.000102819752,\"[CPTRA]\":5.4203686e-5,\"[ETRVU]\":43769650860,\"[NTRAT]\":681420,\"[TOTBC]\":19715962.5,\"[MKTCP]\":1266415419263}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.SummaryBlockchainBchain(context.Background(), SummaryBlockchainBchainParams{})
 				return err
@@ -741,7 +741,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryBlockchainBlocks",
 			path: "/data/summary/blockchain/blocks/",
-			body: `{"result": []}`,
+			body: "{\"result\":[]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.SummaryBlockchainBlocks(context.Background(), SummaryBlockchainBlocksParams{})
 				return err
@@ -750,7 +750,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryBlockchainEthContracts",
 			path: "/data/summary/blockchain/eth/contracts/",
-			body: `{"result": []}`,
+			body: "{\"result\":[]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.SummaryBlockchainEthContracts(context.Background(), SummaryBlockchainEthContractsParams{})
 				return err
@@ -759,7 +759,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryBlockchainTransactions",
 			path: "/data/summary/blockchain/transactions/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"Date\":\"2024-04-28\",\"Total Tx Count\":487521,\"Total Fees\":53.22139973,\"Total Input Value\":563653.94959457,\"Total Output Value\":563600.72819484,\"Total BTC Created\":52.75519407,\"Total BTC Sent\":563600.72819484,\"Largest Amt Sent\":15977.3185559,\"Avg Transaction Fee\":0.00010917,\"Efficiency Ratio\":0.99990558},{\"Date\":\"2024-04-27\",\"Total Tx Count\":452967,\"Total Fees\":63.08552488,\"Total Input Value\":556070.7032156,\"Total Output Value\":556007.61769072,\"Total BTC Created\":28.86759708,\"Total BTC Sent\":556007.61769072,\"Largest Amt Sent\":15979.12688013,\"Avg Transaction Fee\":0.00013927,\"Efficiency Ratio\":0.99988655}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.SummaryBlockchainTransactions(context.Background(), SummaryBlockchainTransactionsParams{})
 				return err
@@ -768,7 +768,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryBlockchainTransactionsCoinbase",
 			path: "/data/summary/blockchain/transactions/coinbase/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"Date\":\"2024-04-30\",\"Block Timestamp\":\"2024-04-30T23:55:22\",\"Hash\":\"cc04f11741c952f0f551399f6065a93fac8deac0f387bb48fd240d931314c9bd\",\"Block Number\":841571,\"Size (bytes)\":257,\"Virtual Size\":230,\"Lock Time\":0,\"Output Address Count\":3,\"BTC reward\":3.33360333},{\"Date\":\"2024-04-30\",\"Block Timestamp\":\"2024-04-30T23:49:54\",\"Hash\":\"2d23c3968464770087143bc17e07f5b70b029863b8df4aa3a1443437c3480428\",\"Block Number\":841570,\"Size (bytes)\":458,\"Virtual Size\":431,\"Lock Time\":1066808839,\"Output Address Count\":6,\"BTC reward\":3.34039737}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.SummaryBlockchainTransactionsCoinbase(context.Background(), SummaryBlockchainTransactionsCoinbaseParams{Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -782,7 +782,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryBlockchainTransactionsLargest",
 			path: "/data/summary/blockchain/transactions/largest/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"Date\":\"2024-04-30\",\"Block Timestamp\":\"2024-04-30T23:19:54\",\"Hash\":\"0558ff271f6a81e1a76fde8a5cc5e6419fb819b6fd43189533fe0e7f6043c634\",\"Block Number\":841566,\"Size (bytes)\":372,\"Virtual Size\":372,\"Lock Time\":0,\"Fee\":0.000204,\"Input Addresses Count\":2,\"Output Address Count\":2,\"Send Amount\":5241.48803198,\"Receive Amount\":5241.48782798},{\"Date\":\"2024-04-30\",\"Block Timestamp\":\"2024-04-30T23:05:37\",\"Hash\":\"7e0d4374162459e9dc299595d39945b0dccd01192e427faa411d13dba8048e0a\",\"Block Number\":841565,\"Size (bytes)\":225,\"Virtual Size\":225,\"Lock Time\":0,\"Fee\":0.0001122,\"Input Addresses Count\":1,\"Output Address Count\":2,\"Send Amount\":5251.55823418,\"Receive Amount\":5251.55812198}]}",
 			call: func(c *Client) error {
 				_, err := c.OnChain.SummaryBlockchainTransactionsLargest(context.Background(), SummaryBlockchainTransactionsLargestParams{Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -797,7 +797,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "ImpliedMove",
 			path: "/data/features/options/implied-move/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"base_currency\":\"BTC\",\"target_dte\":7,\"atm_iv\":32.42,\"implied_move_pct\":3.59,\"available_maturity_dte\":6,\"source_strike\":74077.32,\"spot_reference\":74077.32}]}",
 			call: func(c *Client) error {
 				_, err := c.MLOptions.ImpliedMove(context.Background(), ImpliedMoveParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -814,7 +814,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OiConcentration",
 			path: "/data/features/options/oi-concentration/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"base_currency\":\"BTC\",\"days_to_expiry\":0,\"total_oi\":5522.6,\"num_strikes\":28,\"hhi\":0.085,\"top_3_share\":0.401,\"max_strike\":74000,\"max_strike_oi\":937.1}]}",
 			call: func(c *Client) error {
 				_, err := c.MLOptions.OiConcentration(context.Background(), OiConcentrationParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -831,7 +831,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SkewSignal",
 			path: "/data/features/options/skew-signal/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"base_currency\":\"BTC\",\"days_to_expiry\":1,\"rr_25d\":-1.97,\"rr_25d_7d_avg\":-2.46,\"rr_25d_30d_avg\":-2.26,\"skew_label\":\"bearish_skew\",\"atm_iv\":17.51}]}",
 			call: func(c *Client) error {
 				_, err := c.MLOptions.SkewSignal(context.Background(), SkewSignalParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -848,7 +848,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SmileCurvature",
 			path: "/data/features/options/smile-curvature/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"base_currency\":\"BTC\",\"days_to_expiry\":1,\"atm_iv\":33.98,\"smile_width\":28.85,\"wing_diff\":-7.85,\"vol_kurtosis_proxy\":-1.46}]}",
 			call: func(c *Client) error {
 				_, err := c.MLOptions.SmileCurvature(context.Background(), SmileCurvatureParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -866,7 +866,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "AnomalyScore",
 			path: "/data/features/regime/anomaly-score/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"log_return_1d\":0.0057,\"rv_30d\":26.62,\"vol_ratio_30_90\":0.69,\"funding_z_60d\":1.048,\"oi_change_5d\":0.044,\"mahalanobis_distance\":2.337,\"anomaly_flag\":\"normal\"}]}",
 			call: func(c *Client) error {
 				_, err := c.MLRegime.AnomalyScore(context.Background(), AnomalyScoreParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -883,7 +883,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "ClusterMembership",
 			path: "/data/features/regime/cluster-membership/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"AAVEUSDT\",\"cluster_id\":0,\"cluster_size\":25,\"avg_intra_corr\":0.569,\"centroid_distance\":0.911}]}",
 			call: func(c *Client) error {
 				_, err := c.MLRegime.ClusterMembership(context.Background(), ClusterMembershipParams{Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -897,7 +897,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "RegimeState",
 			path: "/data/features/regime/regime-state/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"prob_trending_up\":1,\"prob_trending_down\":0,\"prob_mean_reverting\":3.43e-175,\"posterior_label\":\"trending_up\",\"regime_transition_flag\":1,\"model_log_likelihood\":515.64}]}",
 			call: func(c *Client) error {
 				_, err := c.MLRegime.RegimeState(context.Background(), RegimeStateParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -915,7 +915,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FundingAligned",
 			path: "/data/funding/aligned/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"ts_utc\":\"2026-05-31T00:00:00+0000\",\"date\":\"2026-05-31\",\"symbol\":\"BTCUSDT\",\"binance\":4.43e-5,\"bybit\":7.4e-5,\"okx\":-2.5e-6,\"median_rate\":4.43e-5,\"max_spread\":7.65e-5}]}",
 			call: func(c *Client) error {
 				_, err := c.Funding.FundingAligned(context.Background(), FundingAlignedParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -932,7 +932,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FundingBinance",
 			path: "/data/funding/binance/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"ts_utc\":\"2026-05-31T00:00:00+0000\",\"date\":\"2026-05-31\",\"venue\":\"binance\",\"base_currency\":\"BTC\",\"symbol\":\"BTCUSDT\",\"venue_symbol\":\"BTCUSDT\",\"funding_rate\":4.432e-5,\"funding_interval_hours\":8}]}",
 			call: func(c *Client) error {
 				_, err := c.Funding.FundingBinance(context.Background(), FundingBinanceParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -949,7 +949,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FundingBybit",
 			path: "/data/funding/bybit/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"ts_utc\":\"2026-05-31T16:00:00+0000\",\"date\":\"2026-05-31\",\"venue\":\"bybit\",\"base_currency\":\"BTC\",\"symbol\":\"BTCUSDT\",\"venue_symbol\":\"BTCUSDT\",\"funding_rate\":6.798e-5,\"funding_interval_hours\":8}]}",
 			call: func(c *Client) error {
 				_, err := c.Funding.FundingBybit(context.Background(), FundingBybitParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -966,7 +966,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FundingOkx",
 			path: "/data/funding/okx/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"ts_utc\":\"2026-05-31T16:00:00+0000\",\"date\":\"2026-05-31\",\"venue\":\"okx\",\"base_currency\":\"BTC\",\"symbol\":\"BTCUSDT\",\"venue_symbol\":\"BTC-USDT-SWAP\",\"funding_rate\":2.193e-5,\"funding_interval_hours\":8}]}",
 			call: func(c *Client) error {
 				_, err := c.Funding.FundingOkx(context.Background(), FundingOkxParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -983,7 +983,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryBinanceFuturesFunding",
 			path: "/data/summary/binance/futures/funding/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"unix\":1717171200000,\"Date\":\"2024-05-31T16:00:00\",\"symbol\":\"BTCUSDT\",\"funding_interval_hours\":8,\"last_funding_rate\":0.0001},{\"unix\":1717142400000,\"Date\":\"2024-05-31T08:00:00\",\"symbol\":\"BTCUSDT\",\"funding_interval_hours\":8,\"last_funding_rate\":0.00012268},{\"unix\":1717113600000,\"Date\":\"2024-05-31T00:00:00\",\"symbol\":\"BTCUSDT\",\"funding_interval_hours\":8,\"last_funding_rate\":0.00014599}]}",
 			call: func(c *Client) error {
 				_, err := c.Funding.SummaryBinanceFuturesFunding(context.Background(), SummaryBinanceFuturesFundingParams{})
 				return err
@@ -992,7 +992,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryFundingComparison",
 			path: "/data/summary/funding/comparison/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-04-30\",\"base_currency\":\"BTC\",\"venue\":\"binance\",\"funding_rate\":-2.987e-5,\"annualized_funding_pct\":-3.27,\"basis_to_median\":0,\"spread_vs_binance\":0,\"observations_per_day\":3}]}",
 			call: func(c *Client) error {
 				_, err := c.Funding.SummaryFundingComparison(context.Background(), SummaryFundingComparisonParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1010,7 +1010,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FuturesCm",
 			path: "/data/ohlc/binance/futures/cm/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"unix\":\"1693094400000\",\"date\":\"2023-08-27\",\"symbol\":\"BTCUSD_PERP\",\"open\":\"25994.8\",\"high\":\"26156.2\",\"low\":\"25954.1\",\"close\":\"26075.6\",\"volume\":\"2972995\",\"volume_from\":\"11406.34430394\",\"marketorder_volume\":\"1544238\",\"marketorder_volume_from\":\"5924.97513126\",\"tradecount\":\"83463\"},{\"unix\":\"1693008000000\",\"date\":\"2023-08-26\",\"symbol\":\"BTCUSD_PERP\",\"open\":\"26034.0\",\"high\":\"26105.0\",\"low\":\"25963.9\",\"close\":\"25994.9\",\"volume\":\"2431354\",\"volume_from\":\"9341.52764072\",\"marketorder_volume\":\"1218886\",\"marketorder_volume_from\":\"4682.92106714\",\"tradecount\":\"56619\"}]}",
 			call: func(c *Client) error {
 				_, err := c.BinanceOHLC.FuturesCm(context.Background(), FuturesCmParams{})
 				return err
@@ -1019,7 +1019,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FuturesUm",
 			path: "/data/ohlc/binance/futures/um/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"unix\":\"1693267200000\",\"date\":\"2023-08-29\",\"symbol\":\"BTCUSDT\",\"open\":\"26106.5\",\"high\":\"28168.0\",\"low\":\"25905.2\",\"close\":\"27700.1\",\"volume\":\"700233.946\",\"volume_from\":\"19063888802.78101\",\"marketorder_volume\":\"359112.466\",\"marketorder_volume_from\":\"9774025451.52869\",\"tradecount\":\"5095886\"},{\"unix\":\"1693180800000\",\"date\":\"2023-08-28\",\"symbol\":\"BTCUSDT\",\"open\":\"26087.6\",\"high\":\"26244.6\",\"low\":\"25850.4\",\"close\":\"26106.5\",\"volume\":\"219992.051\",\"volume_from\":\"5728245334.03454\",\"marketorder_volume\":\"109259.071\",\"marketorder_volume_from\":\"2844967503.225\",\"tradecount\":\"2034199\"}]}",
 			call: func(c *Client) error {
 				_, err := c.BinanceOHLC.FuturesUm(context.Background(), FuturesUmParams{})
 				return err
@@ -1028,7 +1028,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "Options",
 			path: "/data/ohlc/binance/options/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2023-08-29\",\"hour\":23,\"symbol\":\"BTC-240628-70000-C\",\"underlying\":\"BTCUSDT\",\"type\":\"C\",\"maturity\":240628,\"open\":710,\"high\":820,\"low\":710,\"close\":820,\"volume_contracts\":0,\"volume_usdt\":0.01,\"best_bid_price\":665,\"best_ask_price\":770,\"best_bid_qty\":2.62,\"best_ask_qty\":2.68,\"best_buy_iv\":0,\"best_sell_iv\":\"0.67739069\",\"mark_price\":716,\"mark_iv\":\"0.6664142\",\"delta\":\"0.11102904\",\"gamma\":\"1.124e-05\",\"vega\":\"47.8340577\",\"theta\":\"-5.25449903\",\"openinterest_contracts\":3,\"openinterest_usdt\":83732.41},{\"date\":\"2023-08-29\",\"hour\":23,\"symbol\":\"BTC-240628-60000-C\",\"underlying\":\"BTCUSDT\",\"type\":\"C\",\"maturity\":240628,\"open\":875,\"high\":1115,\"low\":875,\"close\":1115,\"volume_contracts\":1,\"volume_usdt\":1.03,\"best_bid_price\":920,\"best_ask_price\":1030,\"best_bid_qty\":4.85,\"best_ask_qty\":2.54,\"best_buy_iv\":0,\"best_sell_iv\":\"0.64500928\",\"mark_price\":974,\"mark_iv\":\"0.63560933\",\"delta\":\"0.14847885\",\"gamma\":\"1.442e-05\",\"vega\":\"58.51865096\",\"theta\":\"-6.1310438\",\"openinterest_contracts\":11,\"openinterest_usdt\":309144.5}]}",
 			call: func(c *Client) error {
 				_, err := c.BinanceOHLC.Options(context.Background(), OptionsParams{})
 				return err
@@ -1037,7 +1037,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "Spot",
 			path: "/data/ohlc/binance/spot/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"unix\":\"1693267200000\",\"date\":\"2023-08-29\",\"symbol\":\"BTCUSDT\",\"open\":\"26120.0\",\"high\":\"28142.85\",\"low\":\"25922.0\",\"close\":\"27716.34\",\"volume\":\"74251.99488\",\"volume_from\":\"2023326050.7584794\",\"marketorder_volume\":\"37945.55071\",\"marketorder_volume_from\":\"1034244032.3814664\",\"tradecount\":\"1137083\"},{\"unix\":\"1693180800000\",\"date\":\"2023-08-28\",\"symbol\":\"BTCUSDT\",\"open\":\"26101.78\",\"high\":\"26253.99\",\"low\":\"25864.5\",\"close\":\"26120.0\",\"volume\":\"22692.62655\",\"volume_from\":\"591008939.17657\",\"marketorder_volume\":\"10912.40549\",\"marketorder_volume_from\":\"284226173.7934395\",\"tradecount\":\"523057\"}]}",
 			call: func(c *Client) error {
 				_, err := c.BinanceOHLC.Spot(context.Background(), SpotParams{})
 				return err
@@ -1046,7 +1046,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "Tick",
 			path: "/data/ohlc/binance/tick/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"unix_open\":\"1551912525825\",\"unix_close\":\"1551915678297\",\"date_open\":\"2019-03-06 22:48:45.825000\",\"date_close\":\"2019-03-06 23:41:18.297000\",\"symbol\":\"BTCUSDT\",\"open\":\"3861.21\",\"high\":\"3868.0\",\"low\":\"3857.66\",\"close\":\"3864.24\",\"volume\":\"481.9157\",\"dollar_volume\":\"1862175.51\"},{\"unix_open\":\"1551909428911\",\"unix_close\":\"1551912524924\",\"date_open\":\"2019-03-06 21:57:08.911000\",\"date_close\":\"2019-03-06 22:48:44.924000\",\"symbol\":\"BTCUSDT\",\"open\":\"3857.71\",\"high\":\"3863.82\",\"low\":\"3854.0\",\"close\":\"3861.21\",\"volume\":\"423.62997\",\"dollar_volume\":\"1634482.45\"}]}",
 			call: func(c *Client) error {
 				_, err := c.BinanceOHLC.Tick(context.Background(), TickParams{})
 				return err
@@ -1056,7 +1056,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "Futures",
 			path: "/data/ohlc/deribit/futures/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"unix\":\"1693209600000\",\"date\":\"2023-08-28 08:00:00\",\"symbol\":\"BTC-PERPETUAL\",\"open\":\"25912.0\",\"high\":\"26231.5\",\"low\":\"25847.5\",\"close\":\"25994.5\",\"volume\":\"5492.31432737\",\"base_volume\":\"143083810.0\"},{\"unix\":\"1693123200000\",\"date\":\"2023-08-27 08:00:00\",\"symbol\":\"BTC-PERPETUAL\",\"open\":\"26039.0\",\"high\":\"26168.5\",\"low\":\"25866.0\",\"close\":\"25912.5\",\"volume\":\"3112.10717437\",\"base_volume\":\"80956760.0\"}]}",
 			call: func(c *Client) error {
 				_, err := c.DeribitOHLC.Futures(context.Background(), FuturesParams{})
 				return err
@@ -1065,7 +1065,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FuturesFunding",
 			path: "/data/ohlc/deribit/futures/funding/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2023-08-30 00:00:00\",\"unix\":\"1693353600000\",\"symbol\":\"BTC-PERPETUAL\",\"index_price\":\"27720.56\",\"prev_index_price\":\"27642.6\",\"interest_8h\":\"-1.4691613145727188e-05\",\"interest_1h\":\"-1.03824239374694e-08\"},{\"date\":\"2023-08-29 23:00:00\",\"unix\":\"1693350000000\",\"symbol\":\"BTC-PERPETUAL\",\"index_price\":\"27642.6\",\"prev_index_price\":\"27659.73\",\"interest_8h\":\"-3.0620114505467006e-05\",\"interest_1h\":\"3.701518041426182e-07\"}]}",
 			call: func(c *Client) error {
 				_, err := c.DeribitOHLC.FuturesFunding(context.Background(), FuturesFundingParams{})
 				return err
@@ -1074,7 +1074,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "Options",
 			path: "/data/ohlc/deribit/options/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"unix\":1718524800000,\"date\":\"2024-06-16\",\"symbol\":\"BTC-27DEC24-100000-C\",\"open\":\"0.018\",\"high\":\"0.021\",\"low\":\"0.017\",\"close\":\"0.017\",\"volume\":1009}]}",
 			call: func(c *Client) error {
 				_, err := c.DeribitOHLC.Options(context.Background(), DeribitOHLCServiceOptionsParams{})
 				return err
@@ -1083,7 +1083,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "Volatility",
 			path: "/data/ohlc/deribit/volatility/",
-			body: `{"result": []}`,
+			body: "{\"result\":[]}",
 			call: func(c *Client) error {
 				_, err := c.DeribitOHLC.Volatility(context.Background(), VolatilityParams{})
 				return err
@@ -1093,7 +1093,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OptionsStrikeHeatmap",
 			path: "/data/options/strike-heatmap/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"underlying\":\"BTC\",\"metric\":\"oi\",\"side\":\"both\",\"snapshot_ts\":\"2026-06-09T13:25:03Z\",\"snapshot_key\":\"bronze/exchange=binance/dtype=option_iv/symbol=BTCUSDT/date=2026-06-09/snapshot_13-25-03.parquet\",\"n_strikes\":70,\"n_expiries\":10,\"strikes\":[30000,35000,40000,\"...\"],\"expiries\":[\"2026-06-12\",\"2026-06-19\",\"...\"],\"matrix\":[[1.2,5.8,\"...\"],[0,12.4,\"...\"],[\"...\"]]}]}",
 			call: func(c *Client) error {
 				_, err := c.OptionsAnalytics.OptionsStrikeHeatmap(context.Background(), OptionsStrikeHeatmapParams{Underlying: "BTC"})
 				return err
@@ -1107,7 +1107,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryDeribitOptionsGreeksHigherOrder",
 			path: "/data/summary/deribit/options/greeks/higher-order/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"base_currency\":\"BTC\",\"instrument\":\"BTC-12JUN26-64000-P\",\"strike\":64000,\"expiry\":\"12JUN26\",\"days_to_expiry\":13,\"vanna\":-0.31541,\"charm\":0.0051,\"vomma\":7879.2,\"speed\":-4.13e-9}]}",
 			call: func(c *Client) error {
 				_, err := c.OptionsAnalytics.SummaryDeribitOptionsGreeksHigherOrder(context.Background(), SummaryDeribitOptionsGreeksHigherOrderParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1124,7 +1124,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryDeribitOptionsPinCandidate",
 			path: "/data/summary/deribit/options/pin-candidate/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"base_currency\":\"BTC\",\"strike\":73500,\"days_to_expiry\":0,\"oi\":460.6,\"volume\":33.6,\"gamma_abs\":1.5027,\"pin_score\":32.67,\"rank_within_expiry\":1,\"rank_overall\":1}]}",
 			call: func(c *Client) error {
 				_, err := c.OptionsAnalytics.SummaryDeribitOptionsPinCandidate(context.Background(), SummaryDeribitOptionsPinCandidateParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1141,7 +1141,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryDeribitOptionsTerm",
 			path: "/data/summary/deribit/options/term/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"base_currency\":\"BTC\",\"days_to_expiry\":13,\"atm_iv\":49.12,\"contango_flag\":1,\"vs_30d_atm_pct\":-0.48}]}",
 			call: func(c *Client) error {
 				_, err := c.OptionsAnalytics.SummaryDeribitOptionsTerm(context.Background(), SummaryDeribitOptionsTermParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1158,7 +1158,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryOptionsVwapPerStrike",
 			path: "/data/summary/options/vwap-per-strike/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"base_currency\":\"BTC\",\"strike\":73000,\"maturity\":\"12JUN26\",\"days_to_expiry\":13,\"putcall\":\"C\",\"vwap_base\":0.029,\"vwap_usd\":2132.36,\"volume_base\":5,\"volume_usd\":10661.78,\"num_trades\":1,\"mean_iv\":33.29}]}",
 			call: func(c *Client) error {
 				_, err := c.OptionsAnalytics.SummaryOptionsVwapPerStrike(context.Background(), SummaryOptionsVwapPerStrikeParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1175,7 +1175,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "VolatilityCone",
 			path: "/data/volatility/cone/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"window_days\":5,\"method\":\"cc\",\"current_rv\":20.67,\"p10\":18.75,\"p25\":25.52,\"p50\":36.38,\"p75\":49.79,\"p90\":63.39,\"percentile_today\":14.18,\"lookback_years\":2,\"observations\":730}]}",
 			call: func(c *Client) error {
 				_, err := c.OptionsAnalytics.VolatilityCone(context.Background(), VolatilityConeParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1192,7 +1192,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "VolatilityIvRvSpread",
 			path: "/data/volatility/iv-rv-spread/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"base_currency\":\"BTC\",\"window_days\":30,\"atm_iv_30d\":38.74,\"rv_30d_cc\":26.62,\"rv_30d_parkinson\":29.59,\"rv_30d_gk\":30.78,\"rv_30d_yz\":30.21,\"iv_rv_spread_pct\":12.12,\"variance_risk_premium_pct\":791.97,\"rolling_30d_avg\":12.78}]}",
 			call: func(c *Client) error {
 				_, err := c.OptionsAnalytics.VolatilityIvRvSpread(context.Background(), VolatilityIvRvSpreadParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1209,7 +1209,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "VolatilitySurface",
 			path: "/data/volatility/surface/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"base_currency\":\"BTC\",\"strike\":51854.12,\"days_to_expiry\":1,\"moneyness\":0.7,\"iv_smoothed\":68.89,\"iv_raw\":70.9,\"n_observations\":58}]}",
 			call: func(c *Client) error {
 				_, err := c.OptionsAnalytics.VolatilitySurface(context.Background(), VolatilitySurfaceParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1227,7 +1227,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "RiskCorrelations",
 			path: "/data/risk/correlations/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"Pair\":\"BTCUSDT\",\"CounterPair\":\"AAVEUSDT\",\"Correlation\":0.858315,\"Window\":\"1w\",\"CalcMethod\":\"pearson\"},{\"Pair\":\"BTCUSDT\",\"CounterPair\":\"ACMUSDT\",\"Correlation\":0.488047,\"Window\":\"1w\",\"CalcMethod\":\"pearson\"},{\"Pair\":\"BTCUSDT\",\"CounterPair\":\"ADAEUR\",\"Correlation\":0.865757,\"Window\":\"1w\",\"CalcMethod\":\"pearson\"},{\"Pair\":\"BTCUSDT\",\"CounterPair\":\"ADAUSDT\",\"Correlation\":0.896116,\"Window\":\"1w\",\"CalcMethod\":\"pearson\"}]}",
 			call: func(c *Client) error {
 				_, err := c.Risk.RiskCorrelations(context.Background(), RiskCorrelationsParams{})
 				return err
@@ -1236,7 +1236,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "RiskCorrelationsRolling",
 			path: "/data/risk/correlations/rolling/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol_a\":\"AAVEUSDT\",\"symbol_b\":\"ADAUSDT\",\"window_days\":30,\"correlation\":0.826,\"observations\":30}]}",
 			call: func(c *Client) error {
 				_, err := c.Risk.RiskCorrelationsRolling(context.Background(), RiskCorrelationsRollingParams{Window: 30, Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1253,7 +1253,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "RiskDrawdown",
 			path: "/data/risk/drawdown/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"max_drawdown_pct\":-0.832,\"current_drawdown_pct\":-0.407,\"peak_date\":\"2017-12-16\",\"trough_date\":\"2018-12-15\",\"duration_days\":364,\"recovery_days\":710,\"in_drawdown_flag\":true}]}",
 			call: func(c *Client) error {
 				_, err := c.Risk.RiskDrawdown(context.Background(), RiskDrawdownParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1270,7 +1270,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "RiskDrawdownUnderwater",
 			path: "/data/risk/drawdown/underwater/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2017-08-17\",\"symbol\":\"BTCUSDT\",\"drawdown_from_peak_pct\":0}]}",
 			call: func(c *Client) error {
 				_, err := c.Risk.RiskDrawdownUnderwater(context.Background(), RiskDrawdownUnderwaterParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1287,7 +1287,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "RiskRegime",
 			path: "/data/risk/regime/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"regime_score\":0.48,\"regime_label\":\"risk_on\",\"breadth_z\":0.55,\"vol_z\":1.56,\"funding_z\":null,\"cot_z\":0.25,\"iv_z\":null,\"components_available\":3}]}",
 			call: func(c *Client) error {
 				_, err := c.Risk.RiskRegime(context.Background(), RiskRegimeParams{Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1301,7 +1301,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "RiskVarByMethod",
 			path: "/data/risk/var/by-method/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"method\":\"historical\",\"confidence\":95,\"window_days\":30,\"var_pct\":-0.0222,\"cvar_pct\":-0.0256,\"observations\":30}]}",
 			call: func(c *Client) error {
 				_, err := c.Risk.RiskVarByMethod(context.Background(), RiskVarByMethodParams{Method: "historical", Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1321,7 +1321,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "RiskVarPortfolio",
 			path: "/data/risk/var/portfolio/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"portfolio_name\":\"cap_weighted_top10\",\"method\":\"parametric\",\"confidence\":95,\"window_days\":30,\"portfolio_var_pct\":0.0226,\"symbols\":\"[\\\"BTCUSDT\\\",\\\"ETHUSDT\\\",\\\"SOLUSDT\\\"]\",\"weights\":\"[0.18,0.14,0.08]\",\"observations\":30}]}",
 			call: func(c *Client) error {
 				_, err := c.Risk.RiskVarPortfolio(context.Background(), RiskVarPortfolioParams{Portfolio: "cap_weighted_top10", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1338,7 +1338,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "RiskVarStandalone",
 			path: "/data/risk/var/standalone/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"symbol\":\"BTCUSDT\",\"worstDate\":\"2024-03-19\",\"worstLoss\":-8.39,\"99% VaR\":-7.334,\"95% VaR\":-3.631,\"90% VaR\":-2.184,\"Method\":\"Historical Simulation\"}]}",
 			call: func(c *Client) error {
 				_, err := c.Risk.RiskVarStandalone(context.Background(), RiskVarStandaloneParams{})
 				return err
@@ -1347,7 +1347,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "VolatilityRealized",
 			path: "/data/volatility/realized/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2026-05-30\",\"symbol\":\"BTCUSDT\",\"rv_cc_5\":20.67,\"rv_cc_30\":26.62,\"rv_parkinson_30\":29.59,\"rv_gk_30\":30.78,\"rv_yz_30\":30.21,\"rv_cc_90\":38.56,\"rv_yz_90\":41}]}",
 			call: func(c *Client) error {
 				_, err := c.Risk.VolatilityRealized(context.Background(), VolatilityRealizedParams{Symbol: "TEST", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1365,7 +1365,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "Basis",
 			path: "/data/summary/binance/basis/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2025-05-31\",\"symbol\":\"BTCUSDT\",\"spot_open\":103985.47,\"spot_high\":104900,\"spot_low\":103068.55,\"spot_close\":104591.88,\"spot_volume\":11289.35922,\"fut_open\":105000,\"fut_high\":106500,\"fut_low\":104000,\"fut_close\":105500.12,\"fut_volume\":5000.12345,\"basis\":-908.24},{\"date\":\"2025-05-30\",\"symbol\":\"BTCUSDT\",\"spot_open\":102000.12,\"spot_high\":103500,\"spot_low\":101500,\"spot_close\":103000.55,\"spot_volume\":9800.54321,\"fut_open\":102400,\"fut_high\":103900,\"fut_low\":101800,\"fut_close\":102900.75,\"fut_volume\":4500.98765,\"basis\":99.8}]}",
 			call: func(c *Client) error {
 				_, err := c.BinanceSummary.Basis(context.Background(), BasisParams{Symbol: "TEST"})
 				return err
@@ -1379,7 +1379,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "FuturesMetrics",
 			path: "/data/summary/binance/futures/metrics/",
-			body: `{"result": []}`,
+			body: "{\"result\":[]}",
 			call: func(c *Client) error {
 				_, err := c.BinanceSummary.FuturesMetrics(context.Background(), FuturesMetricsParams{})
 				return err
@@ -1388,7 +1388,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OptionsOi",
 			path: "/data/summary/binance/options/oi/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2023-08-29\",\"underlying\":\"BTCUSDT\",\"total_calls_oi\":2736.28,\"total_puts_oi\":2372.55},{\"date\":\"2023-08-28\",\"underlying\":\"BTCUSDT\",\"total_calls_oi\":2606.35,\"total_puts_oi\":2228.56},{\"date\":\"2023-08-27\",\"underlying\":\"BTCUSDT\",\"total_calls_oi\":2527.24,\"total_puts_oi\":2213.37}]}",
 			call: func(c *Client) error {
 				_, err := c.BinanceSummary.OptionsOi(context.Background(), OptionsOiParams{})
 				return err
@@ -1397,7 +1397,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OptionsOiInstrument",
 			path: "/data/summary/binance/options/oi/instrument/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2023-08-29\",\"underlying\":\"BTCUSDT\",\"symbol\":\"BTC-240628-50000-P\",\"start_OI\":0,\"end_OI\":0,\"OI_chg\":0,\"volume\":0,\"delta\":-0.69,\"days_to_expiry\":304},{\"date\":\"2023-08-29\",\"underlying\":\"BTCUSDT\",\"symbol\":\"BTC-240628-50000-C\",\"start_OI\":4.11,\"end_OI\":4.11,\"OI_chg\":0,\"volume\":0.01,\"delta\":0.21,\"days_to_expiry\":304},{\"date\":\"2023-08-29\",\"underlying\":\"BTCUSDT\",\"symbol\":\"BTC-240628-40000-P\",\"start_OI\":0,\"end_OI\":0,\"OI_chg\":0,\"volume\":0,\"delta\":-0.8,\"days_to_expiry\":304}]}",
 			call: func(c *Client) error {
 				_, err := c.BinanceSummary.OptionsOiInstrument(context.Background(), OptionsOiInstrumentParams{})
 				return err
@@ -1406,7 +1406,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "OptionsOiMaturity",
 			path: "/data/summary/binance/options/oi/maturity/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2023-08-29\",\"underlying\":\"BTCUSDT\",\"maturity\":\"2024-06-28\",\"calls_oi\":70.57,\"puts_oi\":12.43,\"calls_oi_chg\":5.21,\"puts_oi_chg\":0.08},{\"date\":\"2023-08-29\",\"underlying\":\"BTCUSDT\",\"maturity\":\"2024-03-29\",\"calls_oi\":103.11,\"puts_oi\":27.99,\"calls_oi_chg\":0.27,\"puts_oi_chg\":0},{\"date\":\"2023-08-29\",\"underlying\":\"BTCUSDT\",\"maturity\":\"2023-12-29\",\"calls_oi\":767.33,\"puts_oi\":645.24,\"calls_oi_chg\":48.68,\"puts_oi_chg\":0.48}]}",
 			call: func(c *Client) error {
 				_, err := c.BinanceSummary.OptionsOiMaturity(context.Background(), OptionsOiMaturityParams{})
 				return err
@@ -1415,7 +1415,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SpotFlow",
 			path: "/data/summary/binance/spot/flow/",
-			body: `{"result": {}}`,
+			body: "{\"data\":[{\"date\":\"2025-12-31\",\"symbol\":\"BTCUSDT\",\"time_bucket\":\"2025-12-31 00:00:00\",\"buy_volume\":10.09392,\"sell_volume\":17.61582,\"net_flow\":-7.5219,\"buy_volume_usdt\":892567.17,\"sell_volume_usdt\":1557889,\"net_flow_usdt\":-665322,\"cumulative_delta\":-7.5219,\"cumulative_delta_usdt\":-665322,\"buy_count\":3891,\"sell_count\":4783,\"vwap\":93433.03},{\"date\":\"2025-12-31\",\"symbol\":\"BTCUSDT\",\"time_bucket\":\"2025-12-31 00:05:00\",\"buy_volume\":10.53688,\"sell_volume\":18.61315,\"net_flow\":-8.07627,\"buy_volume_usdt\":931522.28,\"sell_volume_usdt\":1645528,\"net_flow_usdt\":-714006,\"cumulative_delta\":-15.59817,\"cumulative_delta_usdt\":-1379328,\"buy_count\":2213,\"sell_count\":3485,\"vwap\":93406.45}],\"summary\":{\"total_buy_volume\":5432.03,\"total_sell_volume\":6126.59,\"net_flow_total\":-694.56,\"final_cumulative_delta\":-694.56,\"intervals\":288},\"_metadata\":{\"symbol\":\"BTCUSDT\",\"market_type\":\"spot\",\"date\":\"2025-12-31\"}}",
 			call: func(c *Client) error {
 				_, err := c.BinanceSummary.SpotFlow(context.Background(), SpotFlowParams{})
 				return err
@@ -1424,7 +1424,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SpotLargeTrades",
 			path: "/data/summary/binance/spot/large-trades/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2025-12-31\",\"symbol\":\"BTCUSDT\",\"trade_id\":5721554518,\"trade_time\":\"2025-12-31 10:20:00.636002\",\"side\":\"sell\",\"price\":93820,\"qty\":7.75184,\"quote_qty\":688518.43,\"is_buyer_maker\":true},{\"date\":\"2025-12-31\",\"symbol\":\"BTCUSDT\",\"trade_id\":5722201056,\"trade_time\":\"2025-12-31 14:56:45.337004\",\"side\":\"sell\",\"price\":93499.95,\"qty\":7.33578,\"quote_qty\":649216.16,\"is_buyer_maker\":true},{\"date\":\"2025-12-31\",\"symbol\":\"BTCUSDT\",\"trade_id\":5722146875,\"trade_time\":\"2025-12-31 14:48:32.388474\",\"side\":\"buy\",\"price\":93300,\"qty\":6.44807,\"quote_qty\":569364.58,\"is_buyer_maker\":false}],\"pagination\":{\"offset\":0,\"limit\":1000,\"returned\":893,\"total\":893,\"has_more\":false},\"_metadata\":{\"symbol\":\"BTCUSDT\",\"market_type\":\"spot\",\"min_usd\":50000,\"dates_included\":7}}",
 			call: func(c *Client) error {
 				_, err := c.BinanceSummary.SpotLargeTrades(context.Background(), SpotLargeTradesParams{})
 				return err
@@ -1433,7 +1433,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SpotTransactional",
 			path: "/data/summary/binance/spot/transactional/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2025-12-31\",\"symbol\":\"BTCUSDT\",\"average_usd_size\":351.95,\"number_buys\":1405854,\"number_sells\":1491542,\"vwap\":93223.92,\"sell_total_volume\":6126.59,\"buy_total_volume\":5432.03,\"largest_trans_buy\":6.45,\"largest_trans_sell\":7.75,\"largest_trans_buy_usd\":569364.58,\"largest_trans_sell_usd\":688518.43,\"dollar_trans_size_usd_stdev\":2953.28,\"total_trades\":2897396,\"total_volume\":11558.62,\"total_volume_usdt\":1019747000}]}",
 			call: func(c *Client) error {
 				_, err := c.BinanceSummary.SpotTransactional(context.Background(), SpotTransactionalParams{})
 				return err
@@ -1442,7 +1442,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SpotTransactionalDaily",
 			path: "/data/summary/binance/spot/transactional/daily/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2025-12-31\",\"symbol\":\"BTCUSDT\",\"avg_usdt_size\":351.95,\"num_buys\":1405854,\"num_sells\":1491542,\"vwap\":93223.92,\"total_buy_volume\":5432.03,\"total_sell_volume\":6126.59,\"largest_buy_tx\":6.45,\"largest_sell_tx\":7.75,\"largest_buy_tx_usdt\":569364.58,\"largest_sell_tx_usdt\":688518.43,\"tx_stdev_usdt\":2953.28,\"total_trades\":2897396,\"total_volume\":11558.62,\"total_volume_usdt\":1019747000}],\"pagination\":{\"offset\":0,\"limit\":365,\"returned\":1,\"total\":3061,\"has_more\":true,\"next_offset\":365},\"_metadata\":{\"symbol\":\"BTCUSDT\",\"market_type\":\"spot\"}}",
 			call: func(c *Client) error {
 				_, err := c.BinanceSummary.SpotTransactionalDaily(context.Background(), SpotTransactionalDailyParams{})
 				return err
@@ -1451,7 +1451,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SpotTransactionalHourly",
 			path: "/data/summary/binance/spot/transactional/hourly/",
-			body: `{"result": {}}`,
+			body: "{\"data\":[{\"date\":\"2025-12-31\",\"symbol\":\"BTCUSDT\",\"hour\":0,\"avg_usdt_size\":264.72,\"num_buys\":39982,\"num_sells\":41447,\"vwap\":93362.92,\"total_buy_volume\":125.88,\"total_sell_volume\":118.06,\"largest_buy_tx\":2.59,\"largest_sell_tx\":1.11,\"largest_buy_tx_usdt\":228926.29,\"largest_sell_tx_usdt\":97917.3,\"tx_stdev_usdt\":2259.45,\"total_trades\":81429,\"total_volume\":243.95,\"total_volume_usdt\":21555910},{\"date\":\"2025-12-31\",\"symbol\":\"BTCUSDT\",\"hour\":1,\"avg_usdt_size\":258.28,\"num_buys\":71492,\"num_sells\":50489,\"vwap\":93557.06,\"total_buy_volume\":234.19,\"total_sell_volume\":121.57,\"largest_buy_tx\":2.99,\"largest_sell_tx\":1.78,\"largest_buy_tx_usdt\":264754.83,\"largest_sell_tx_usdt\":156846.86,\"tx_stdev_usdt\":2534.81,\"total_trades\":121981,\"total_volume\":355.76,\"total_volume_usdt\":31504830}],\"pagination\":{\"offset\":0,\"limit\":5000,\"returned\":24,\"total\":24,\"has_more\":false},\"_metadata\":{\"symbol\":\"BTCUSDT\",\"market_type\":\"spot\",\"date\":\"2025-12-31\"}}",
 			call: func(c *Client) error {
 				_, err := c.BinanceSummary.SpotTransactionalHourly(context.Background(), SpotTransactionalHourlyParams{})
 				return err
@@ -1460,7 +1460,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SpotVolumeProfile",
 			path: "/data/summary/binance/spot/volume-profile/",
-			body: `{"result": {}}`,
+			body: "{\"data\":[{\"date\":\"2025-12-31\",\"symbol\":\"BTCUSDT\",\"price_level\":93200,\"buy_volume\":0,\"sell_volume\":2.53091,\"net_volume\":-2.53091,\"total_volume\":2.53091,\"total_volume_usdt\":220821.9,\"trade_count\":230},{\"date\":\"2025-12-31\",\"symbol\":\"BTCUSDT\",\"price_level\":93300,\"buy_volume\":26.95989,\"sell_volume\":77.04766,\"net_volume\":-50.08777,\"total_volume\":104.00755,\"total_volume_usdt\":9080374,\"trade_count\":16899},{\"date\":\"2025-12-31\",\"symbol\":\"BTCUSDT\",\"price_level\":93400,\"buy_volume\":111.25866,\"sell_volume\":135.146,\"net_volume\":-23.88734,\"total_volume\":246.40466,\"total_volume_usdt\":21537580,\"trade_count\":53786}],\"summary\":{\"total_volume\":11558.62,\"total_buy_volume\":5432.03,\"total_sell_volume\":6126.59,\"net_volume\":-694.56,\"price_levels\":21},\"_metadata\":{\"symbol\":\"BTCUSDT\",\"market_type\":\"spot\",\"date\":\"2025-12-31\"}}",
 			call: func(c *Client) error {
 				_, err := c.BinanceSummary.SpotVolumeProfile(context.Background(), SpotVolumeProfileParams{})
 				return err
@@ -1470,7 +1470,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryDeribitOptionsFlow",
 			path: "/data/summary/deribit/options/flow/",
-			body: `{"result": {}}`,
+			body: "{\"underlying\":\"BTC\",\"start_date\":\"2025-12-03\",\"end_date\":\"2026-01-01\",\"category\":\"ALL\",\"summary\":{\"total_call_premium_usd\":45600000,\"total_put_premium_usd\":30400000,\"total_net_premium_usd\":15200000,\"net_direction\":\"BULLISH\",\"bullish_days\":18,\"bearish_days\":12,\"neutral_days\":0},\"unique_dates\":30,\"count\":30,\"data\":[{\"date\":\"2026-01-01\",\"underlying\":\"BTC\",\"category\":\"ALL\",\"call_premium_usd\":7200000,\"put_premium_usd\":4800000,\"net_premium_usd\":2400000,\"cumulative_net_premium_usd\":15200000,\"direction\":\"BULLISH\",\"call_volume\":1850.2,\"put_volume\":1200.5,\"pc_premium_ratio\":0.67}]}",
 			call: func(c *Client) error {
 				_, err := c.DeribitSummary.SummaryDeribitOptionsFlow(context.Background(), SummaryDeribitOptionsFlowParams{Underlying: "TEST"})
 				return err
@@ -1484,7 +1484,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryDeribitOptionsGreeks",
 			path: "/data/summary/deribit/options/greeks/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2025-12-31\",\"symbol\":\"BTC-27DEC24-100000-C\",\"underlying\":\"BTC\",\"maturity\":\"27DEC24\",\"strike\":100000,\"putcall\":\"C\",\"total_volume\":49.7,\"total_premium_usd\":17869.69,\"avg_delta\":0.101,\"net_delta\":-0.497,\"net_notional_delta\":-43381.57,\"avg_iv\":42.98,\"trade_count\":11}],\"pagination\":{\"offset\":0,\"limit\":5000,\"returned\":380,\"total\":380,\"has_more\":false}}",
 			call: func(c *Client) error {
 				_, err := c.DeribitSummary.SummaryDeribitOptionsGreeks(context.Background(), SummaryDeribitOptionsGreeksParams{})
 				return err
@@ -1493,7 +1493,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryDeribitOptionsGreeksMaturities",
 			path: "/data/summary/deribit/options/greeks/maturities/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"date\":\"2025-12-31\",\"underlying\":\"BTC\",\"maturity\":\"27DEC24\",\"putcall\":\"C\",\"total_volume\":916.9,\"total_premium_usd\":1123620.07,\"net_delta\":-23.14,\"net_notional_delta\":-2039666,\"avg_iv\":40.69,\"trade_count\":225}],\"pagination\":{\"offset\":0,\"limit\":5000,\"total\":26,\"has_more\":false}}",
 			call: func(c *Client) error {
 				_, err := c.DeribitSummary.SummaryDeribitOptionsGreeksMaturities(context.Background(), SummaryDeribitOptionsGreeksMaturitiesParams{})
 				return err
@@ -1502,7 +1502,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryDeribitOptionsLargeTrades",
 			path: "/data/summary/deribit/options/large-trades/",
-			body: `{"result": {}}`,
+			body: "{\"underlying\":\"BTC\",\"start_date\":\"2025-12-03\",\"end_date\":\"2026-01-01\",\"threshold_usd\":100000,\"available_thresholds\":[10000,25000,50000,100000,250000,500000,1000000],\"summary\":{\"total_large_trades\":1420,\"total_premium_usd\":285000000,\"avg_daily_count\":47.3,\"max_single_day_count\":85,\"max_single_trade_usd\":2500000,\"total_call_count\":850,\"total_put_count\":570},\"unique_dates\":30,\"count\":30,\"data\":[{\"date\":\"2026-01-01\",\"underlying\":\"BTC\",\"threshold_usd\":100000,\"large_trade_count\":47,\"total_premium_usd\":12450000,\"avg_premium_usd\":264893,\"max_premium_usd\":1250000,\"call_count\":28,\"put_count\":19,\"itm_count\":8,\"atm_count\":22,\"otm_count\":17}]}",
 			call: func(c *Client) error {
 				_, err := c.DeribitSummary.SummaryDeribitOptionsLargeTrades(context.Background(), SummaryDeribitOptionsLargeTradesParams{Underlying: "TEST"})
 				return err
@@ -1516,7 +1516,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryDeribitOptionsRatios",
 			path: "/data/summary/deribit/options/ratios/",
-			body: `{"result": {}}`,
+			body: "{\"underlying\":\"BTC\",\"start_date\":\"2024-12-01\",\"end_date\":\"2025-01-01\",\"group_by\":\"all\",\"overall\":{\"call_volume\":789.12,\"put_volume\":445.38,\"pc_volume_ratio\":0.5644,\"call_premium_usd\":3456789.12,\"put_premium_usd\":2222111.45,\"pc_premium_ratio\":0.6428,\"call_trades\":4200,\"put_trades\":2520,\"total_trades\":6720},\"unique_dates\":32,\"count\":32,\"data\":[{\"date\":\"2024-12-01\",\"underlying\":\"BTC\",\"pc_volume_ratio\":0.55,\"pc_premium_ratio\":0.61}]}",
 			call: func(c *Client) error {
 				_, err := c.DeribitSummary.SummaryDeribitOptionsRatios(context.Background(), SummaryDeribitOptionsRatiosParams{Underlying: "TEST"})
 				return err
@@ -1530,7 +1530,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryDeribitOptionsTransactionsLargest",
 			path: "/data/summary/deribit/options/transactions/largest/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{\"Date\":\"2024-06-06T00:00:00\",\"ExecutionTime\":\"2024-06-06T14:07:45\",\"Symbol\":\"ETH-27DEC24-4200-P\",\"BuySell\":\"buy\",\"Index Price\":3834.58,\"IV\":72.08,\"Option Price\":0.2243,\"Option Contacts\":1000,\"USD Value\":860096,\"Option Delta\":-0.47,\"Traded Delta\":-468.37},{\"Date\":\"2024-06-06T00:00:00\",\"ExecutionTime\":\"2024-06-06T14:07:45\",\"Symbol\":\"ETH-27DEC24-4200-C\",\"BuySell\":\"buy\",\"Index Price\":3834.58,\"IV\":71.91,\"Option Price\":0.2042,\"Option Contacts\":1000,\"USD Value\":783021,\"Option Delta\":0.53,\"Traded Delta\":531.42}]}",
 			call: func(c *Client) error {
 				_, err := c.DeribitSummary.SummaryDeribitOptionsTransactionsLargest(context.Background(), SummaryDeribitOptionsTransactionsLargestParams{})
 				return err
@@ -1539,7 +1539,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "SummaryDeribitOptionsVolume",
 			path: "/data/summary/deribit/options/volume/",
-			body: `{"result": {}}`,
+			body: "{\"underlying\":\"BTC\",\"start_date\":\"2024-12-01\",\"end_date\":\"2025-01-01\",\"group_by\":\"maturity\",\"summary\":{\"total_volume\":1234.5,\"total_premium_usd\":5678901.23,\"total_trades\":6720,\"unique_dates\":32},\"count\":150,\"data\":[{\"date\":\"2025-01-01\",\"underlying\":\"BTC\",\"maturity\":\"27DEC24\",\"putcall\":\"C\",\"total_volume\":123.45,\"total_premium_usd\":567890.12,\"trade_count\":450,\"avg_index_price\":95000}]}",
 			call: func(c *Client) error {
 				_, err := c.DeribitSummary.SummaryDeribitOptionsVolume(context.Background(), SummaryDeribitOptionsVolumeParams{Underlying: "TEST"})
 				return err
@@ -1553,7 +1553,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "TransactionsDeribitOptions",
 			path: "/data/transactions/deribit/options/",
-			body: `{"result": {}}`,
+			body: "{\"underlying\":\"BTC\",\"date\":\"2025-01-01\",\"total_count\":6720,\"offset\":0,\"limit\":1000,\"has_more\":true,\"count\":1000,\"data\":[{\"trans_id\":\"123456789\",\"unix\":1735689600000,\"date\":\"2025-01-01\",\"symbol\":\"BTC-27DEC24-100000-C\",\"underlying\":\"BTC\",\"maturity\":\"27DEC24\",\"strike\":100000,\"putcall\":\"C\",\"price\":0.025,\"amount\":1,\"type\":\"trade\",\"mark_price\":0.024,\"index_price\":95000,\"iv\":65.5,\"usd_value\":2375}]}",
 			call: func(c *Client) error {
 				_, err := c.DeribitSummary.TransactionsDeribitOptions(context.Background(), TransactionsDeribitOptionsParams{Underlying: "BTC", Date: time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)})
 				return err
@@ -1571,7 +1571,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "TechnicalsTA",
 			path: "/data/technicals/TA/",
-			body: `{"result": []}`,
+			body: "{\"result\":[]}",
 			call: func(c *Client) error {
 				_, err := c.Technicals.TechnicalsTA(context.Background(), TechnicalsTAParams{})
 				return err
@@ -1581,7 +1581,7 @@ func TestGeneratedContractCoverage(t *testing.T) {
 		{
 			name: "PricingGreeks",
 			path: "/risk/options/pricing/greeks/",
-			body: `{"result": []}`,
+			body: "{\"result\":[{}]}",
 			call: func(c *Client) error {
 				_, err := c.OptionsPricing.PricingGreeks(context.Background(), PricingGreeksParams{PutCall: "TEST", Strike: "TEST", Spot: "TEST", RFR: "TEST", DaysToMaturity: 1, BuySell: "TEST"})
 				return err

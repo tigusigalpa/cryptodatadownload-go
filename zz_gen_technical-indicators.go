@@ -28,19 +28,40 @@ type TechnicalsTAParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1technicals~1TA~1/get
 func (s *TechnicalsService) TechnicalsTA(ctx context.Context, p TechnicalsTAParams) ([]map[string]interface{}, error) {
+	result, _, err := s.TechnicalsTAWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// TechnicalsTAWithResponse returns TechnicalsTA's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1technicals~1TA~1/get
+func (s *TechnicalsService) TechnicalsTAWithResponse(ctx context.Context, p TechnicalsTAParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
 	}
 	resp, err := s.client.do(ctx, "technicals.technicalsTA", "/data/technicals/TA/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("technicals.technicalsTA", resp, err)
 	}
 	v, err := decodeResult("technicals.technicalsTA", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("technicals.technicalsTA", resp, err)
 	}
-	return asRows("technicals.technicalsTA", v)
+	result, err := asRows("technicals.technicalsTA", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("technicals.technicalsTA", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // TechnicalsTARaw — Technical Analysis Indicators, raw download.
@@ -52,6 +73,9 @@ func (s *TechnicalsService) TechnicalsTA(ctx context.Context, p TechnicalsTAPara
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1technicals~1TA~1/get
 func (s *TechnicalsService) TechnicalsTARaw(ctx context.Context, p TechnicalsTAParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -62,4 +86,21 @@ func (s *TechnicalsService) TechnicalsTARaw(ctx context.Context, p TechnicalsTAP
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// TechnicalsTAStream opens a streaming TechnicalsTA download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1technicals~1TA~1/get
+func (s *TechnicalsService) TechnicalsTAStream(ctx context.Context, p TechnicalsTAParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	return s.client.doStream(ctx, "technicals.technicalsTAStream", "/data/technicals/TA/", q)
 }

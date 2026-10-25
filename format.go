@@ -17,3 +17,7 @@ const (
 	// FormatXLSX returns an XLSX workbook.
 	FormatXLSX ReturnFormat = "XLSX"
 )
+
+func validateReturnFormat(f ReturnFormat) error {
+	return checkEnum("return", string(f), "JSON", "CSV", "XLSX", "json", "csv", "xlsx")
+}

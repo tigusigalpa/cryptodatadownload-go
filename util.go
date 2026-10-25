@@ -1,15 +1,11 @@
 package cryptodatadownload
 
 import (
-	"io"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
 )
-
-// ioDiscard returns a writer that discards all output.
-func ioDiscard() io.Writer { return io.Discard }
 
 // parseRetryAfter parses an HTTP Retry-After header value, which may be
 // either a delta-seconds integer or an HTTP-date. It returns the wait
@@ -23,18 +19,34 @@ func parseRetryAfterAt(value string, now time.Time) (seconds int, ok bool) {
 	if value == "" {
 		return 0, false
 	}
-	if n, err := strconv.Atoi(value); err == nil {
-		if n < 0 {
-			return 0, false
+	maxSeconds := int(^uint(0) >> 1)
+	digits := true
+	for _, ch := range value {
+		if ch < '0' || ch > '9' {
+			digits = false
+			break
 		}
-		return n, true
+	}
+	if digits {
+		n, err := strconv.ParseUint(value, 10, 64)
+		if err != nil || n > uint64(maxSeconds) {
+			return maxSeconds, true
+		}
+		return int(n), true
 	}
 	if t, err := http.ParseTime(value); err == nil {
 		d := t.Sub(now)
 		if d < 0 {
 			return 0, true
 		}
-		return int(d.Round(time.Second) / time.Second), true
+		seconds := d / time.Second
+		if d%time.Second != 0 {
+			seconds++
+		}
+		if int64(seconds) > int64(maxSeconds) {
+			return maxSeconds, true
+		}
+		return int(seconds), true
 	}
 	return 0, false
 }

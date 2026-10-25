@@ -31,24 +31,45 @@ type CotPositioningParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1macro~1cot-positioning~1/get
 func (s *MLMacroService) CotPositioning(ctx context.Context, p CotPositioningParams) ([]map[string]interface{}, error) {
+	result, _, err := s.CotPositioningWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// CotPositioningWithResponse returns CotPositioning's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1macro~1cot-positioning~1/get
+func (s *MLMacroService) CotPositioningWithResponse(ctx context.Context, p CotPositioningParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("category", p.Category, "btc", "eth", "btc_micro", "eth_micro", "gold", "usd", "spx"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("category", p.Category)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLMacro.cotPositioning", "/data/features/macro/cot-positioning/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMacro.cotPositioning", resp, err)
 	}
 	v, err := decodeResult("mLMacro.cotPositioning", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLMacro.cotPositioning", resp, err)
 	}
-	return asRows("mLMacro.cotPositioning", v)
+	result, err := asRows("mLMacro.cotPositioning", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMacro.cotPositioning", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // RealRateRegimeParams are the parameters for MLMacroService.RealRateRegime.
@@ -64,20 +85,41 @@ type RealRateRegimeParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1macro~1real-rate-regime~1/get
 func (s *MLMacroService) RealRateRegime(ctx context.Context, p RealRateRegimeParams) ([]map[string]interface{}, error) {
+	result, _, err := s.RealRateRegimeWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// RealRateRegimeWithResponse returns RealRateRegime's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1macro~1real-rate-regime~1/get
+func (s *MLMacroService) RealRateRegimeWithResponse(ctx context.Context, p RealRateRegimeParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLMacro.realRateRegime", "/data/features/macro/real-rate-regime/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMacro.realRateRegime", resp, err)
 	}
 	v, err := decodeResult("mLMacro.realRateRegime", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLMacro.realRateRegime", resp, err)
 	}
-	return asRows("mLMacro.realRateRegime", v)
+	result, err := asRows("mLMacro.realRateRegime", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMacro.realRateRegime", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // YieldCurvePcaParams are the parameters for MLMacroService.YieldCurvePca.
@@ -93,18 +135,39 @@ type YieldCurvePcaParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1macro~1yield-curve-pca~1/get
 func (s *MLMacroService) YieldCurvePca(ctx context.Context, p YieldCurvePcaParams) ([]map[string]interface{}, error) {
+	result, _, err := s.YieldCurvePcaWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// YieldCurvePcaWithResponse returns YieldCurvePca's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1macro~1yield-curve-pca~1/get
+func (s *MLMacroService) YieldCurvePcaWithResponse(ctx context.Context, p YieldCurvePcaParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLMacro.yieldCurvePca", "/data/features/macro/yield-curve-pca/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMacro.yieldCurvePca", resp, err)
 	}
 	v, err := decodeResult("mLMacro.yieldCurvePca", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLMacro.yieldCurvePca", resp, err)
 	}
-	return asRows("mLMacro.yieldCurvePca", v)
+	result, err := asRows("mLMacro.yieldCurvePca", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMacro.yieldCurvePca", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }

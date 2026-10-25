@@ -34,6 +34,17 @@ type FuturesParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1futures~1/get
 func (s *DeribitOHLCService) Futures(ctx context.Context, p FuturesParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FuturesWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FuturesWithResponse returns Futures's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1futures~1/get
+func (s *DeribitOHLCService) FuturesWithResponse(ctx context.Context, p FuturesParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -42,17 +53,30 @@ func (s *DeribitOHLCService) Futures(ctx context.Context, p FuturesParams) ([]ma
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "deribitOHLC.futures", "/data/ohlc/deribit/futures/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitOHLC.futures", resp, err)
 	}
 	v, err := decodeResult("deribitOHLC.futures", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("deribitOHLC.futures", resp, err)
 	}
-	return asRows("deribitOHLC.futures", v)
+	result, err := asRows("deribitOHLC.futures", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitOHLC.futures", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FuturesRaw — DeriBit Futures Daily Data, raw download.
@@ -64,6 +88,9 @@ func (s *DeribitOHLCService) Futures(ctx context.Context, p FuturesParams) ([]ma
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1futures~1/get
 func (s *DeribitOHLCService) FuturesRaw(ctx context.Context, p FuturesParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -73,6 +100,9 @@ func (s *DeribitOHLCService) FuturesRaw(ctx context.Context, p FuturesParams, f 
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "deribitOHLC.futuresRaw", "/data/ohlc/deribit/futures/", q)
@@ -80,6 +110,32 @@ func (s *DeribitOHLCService) FuturesRaw(ctx context.Context, p FuturesParams, f 
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// FuturesStream opens a streaming Futures download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1futures~1/get
+func (s *DeribitOHLCService) FuturesStream(ctx context.Context, p FuturesParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "deribitOHLC.futuresStream", "/data/ohlc/deribit/futures/", q)
 }
 
 // FuturesFundingParams are the parameters for DeribitOHLCService.FuturesFunding.
@@ -99,6 +155,17 @@ type FuturesFundingParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1futures~1funding~1/get
 func (s *DeribitOHLCService) FuturesFunding(ctx context.Context, p FuturesFundingParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FuturesFundingWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FuturesFundingWithResponse returns FuturesFunding's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1futures~1funding~1/get
+func (s *DeribitOHLCService) FuturesFundingWithResponse(ctx context.Context, p FuturesFundingParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -107,17 +174,30 @@ func (s *DeribitOHLCService) FuturesFunding(ctx context.Context, p FuturesFundin
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "deribitOHLC.futuresFunding", "/data/ohlc/deribit/futures/funding/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitOHLC.futuresFunding", resp, err)
 	}
 	v, err := decodeResult("deribitOHLC.futuresFunding", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("deribitOHLC.futuresFunding", resp, err)
 	}
-	return asRows("deribitOHLC.futuresFunding", v)
+	result, err := asRows("deribitOHLC.futuresFunding", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitOHLC.futuresFunding", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FuturesFundingRaw — DeriBit Funding Data, raw download.
@@ -129,6 +209,9 @@ func (s *DeribitOHLCService) FuturesFunding(ctx context.Context, p FuturesFundin
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1futures~1funding~1/get
 func (s *DeribitOHLCService) FuturesFundingRaw(ctx context.Context, p FuturesFundingParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -138,6 +221,9 @@ func (s *DeribitOHLCService) FuturesFundingRaw(ctx context.Context, p FuturesFun
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "deribitOHLC.futuresFundingRaw", "/data/ohlc/deribit/futures/funding/", q)
@@ -145,6 +231,32 @@ func (s *DeribitOHLCService) FuturesFundingRaw(ctx context.Context, p FuturesFun
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// FuturesFundingStream opens a streaming FuturesFunding download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1futures~1funding~1/get
+func (s *DeribitOHLCService) FuturesFundingStream(ctx context.Context, p FuturesFundingParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "deribitOHLC.futuresFundingStream", "/data/ohlc/deribit/futures/funding/", q)
 }
 
 // DeribitOHLCServiceOptionsParams are the parameters for DeribitOHLCService.Options.
@@ -172,6 +284,17 @@ type DeribitOHLCServiceOptionsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1options~1/get
 func (s *DeribitOHLCService) Options(ctx context.Context, p DeribitOHLCServiceOptionsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OptionsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OptionsWithResponse returns Options's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1options~1/get
+func (s *DeribitOHLCService) OptionsWithResponse(ctx context.Context, p DeribitOHLCServiceOptionsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Currency != nil {
 		q.Set("currency", *p.Currency)
@@ -183,26 +306,45 @@ func (s *DeribitOHLCService) Options(ctx context.Context, p DeribitOHLCServiceOp
 		q.Set("expiry", *p.Expiry)
 	}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	if p.EndDate != nil {
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, nil, err
+		}
 		q.Set("offset", strconv.Itoa(*p.Offset))
 	}
 	resp, err := s.client.do(ctx, "deribitOHLC.options", "/data/ohlc/deribit/options/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitOHLC.options", resp, err)
 	}
 	v, err := decodeResult("deribitOHLC.options", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("deribitOHLC.options", resp, err)
 	}
-	return asRows("deribitOHLC.options", v)
+	result, err := asRows("deribitOHLC.options", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitOHLC.options", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OptionsRaw — Deribit Options Timeseries, raw download.
@@ -214,6 +356,9 @@ func (s *DeribitOHLCService) Options(ctx context.Context, p DeribitOHLCServiceOp
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1options~1/get
 func (s *DeribitOHLCService) OptionsRaw(ctx context.Context, p DeribitOHLCServiceOptionsParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Currency != nil {
@@ -226,15 +371,24 @@ func (s *DeribitOHLCService) OptionsRaw(ctx context.Context, p DeribitOHLCServic
 		q.Set("expiry", *p.Expiry)
 	}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	if p.EndDate != nil {
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, err
+		}
 		q.Set("offset", strconv.Itoa(*p.Offset))
 	}
 	resp, err := s.client.do(ctx, "deribitOHLC.optionsRaw", "/data/ohlc/deribit/options/", q)
@@ -242,6 +396,50 @@ func (s *DeribitOHLCService) OptionsRaw(ctx context.Context, p DeribitOHLCServic
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// OptionsStream opens a streaming Options download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1options~1/get
+func (s *DeribitOHLCService) OptionsStream(ctx context.Context, p DeribitOHLCServiceOptionsParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Currency != nil {
+		q.Set("currency", *p.Currency)
+	}
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.Expiry != nil {
+		q.Set("expiry", *p.Expiry)
+	}
+	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, err
+		}
+		q.Set("date", dateString(*p.Date))
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, err
+		}
+		q.Set("offset", strconv.Itoa(*p.Offset))
+	}
+	return s.client.doStream(ctx, "deribitOHLC.optionsStream", "/data/ohlc/deribit/options/", q)
 }
 
 // VolatilityParams are the parameters for DeribitOHLCService.Volatility.
@@ -261,6 +459,17 @@ type VolatilityParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1volatility~1/get
 func (s *DeribitOHLCService) Volatility(ctx context.Context, p VolatilityParams) ([]map[string]interface{}, error) {
+	result, _, err := s.VolatilityWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// VolatilityWithResponse returns Volatility's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1volatility~1/get
+func (s *DeribitOHLCService) VolatilityWithResponse(ctx context.Context, p VolatilityParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -269,17 +478,30 @@ func (s *DeribitOHLCService) Volatility(ctx context.Context, p VolatilityParams)
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "deribitOHLC.volatility", "/data/ohlc/deribit/volatility/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitOHLC.volatility", resp, err)
 	}
 	v, err := decodeResult("deribitOHLC.volatility", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("deribitOHLC.volatility", resp, err)
 	}
-	return asRows("deribitOHLC.volatility", v)
+	result, err := asRows("deribitOHLC.volatility", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitOHLC.volatility", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // VolatilityRaw — DeriBit Volatility Data, raw download.
@@ -291,6 +513,9 @@ func (s *DeribitOHLCService) Volatility(ctx context.Context, p VolatilityParams)
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1volatility~1/get
 func (s *DeribitOHLCService) VolatilityRaw(ctx context.Context, p VolatilityParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -300,6 +525,9 @@ func (s *DeribitOHLCService) VolatilityRaw(ctx context.Context, p VolatilityPara
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "deribitOHLC.volatilityRaw", "/data/ohlc/deribit/volatility/", q)
@@ -307,4 +535,30 @@ func (s *DeribitOHLCService) VolatilityRaw(ctx context.Context, p VolatilityPara
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// VolatilityStream opens a streaming Volatility download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1volatility~1/get
+func (s *DeribitOHLCService) VolatilityStream(ctx context.Context, p VolatilityParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "deribitOHLC.volatilityStream", "/data/ohlc/deribit/volatility/", q)
 }

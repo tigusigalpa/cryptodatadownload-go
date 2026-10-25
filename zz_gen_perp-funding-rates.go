@@ -32,24 +32,45 @@ type FundingAlignedParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1funding~1aligned~1/get
 func (s *FundingService) FundingAligned(ctx context.Context, p FundingAlignedParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FundingAlignedWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FundingAlignedWithResponse returns FundingAligned's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1funding~1aligned~1/get
+func (s *FundingService) FundingAlignedWithResponse(ctx context.Context, p FundingAlignedParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "funding.fundingAligned", "/data/funding/aligned/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("funding.fundingAligned", resp, err)
 	}
 	v, err := decodeResult("funding.fundingAligned", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("funding.fundingAligned", resp, err)
 	}
-	return asRows("funding.fundingAligned", v)
+	result, err := asRows("funding.fundingAligned", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("funding.fundingAligned", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FundingBinanceParams are the parameters for FundingService.FundingBinance.
@@ -67,24 +88,45 @@ type FundingBinanceParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1funding~1binance~1/get
 func (s *FundingService) FundingBinance(ctx context.Context, p FundingBinanceParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FundingBinanceWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FundingBinanceWithResponse returns FundingBinance's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1funding~1binance~1/get
+func (s *FundingService) FundingBinanceWithResponse(ctx context.Context, p FundingBinanceParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "funding.fundingBinance", "/data/funding/binance/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("funding.fundingBinance", resp, err)
 	}
 	v, err := decodeResult("funding.fundingBinance", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("funding.fundingBinance", resp, err)
 	}
-	return asRows("funding.fundingBinance", v)
+	result, err := asRows("funding.fundingBinance", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("funding.fundingBinance", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FundingBybitParams are the parameters for FundingService.FundingBybit.
@@ -102,24 +144,45 @@ type FundingBybitParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1funding~1bybit~1/get
 func (s *FundingService) FundingBybit(ctx context.Context, p FundingBybitParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FundingBybitWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FundingBybitWithResponse returns FundingBybit's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1funding~1bybit~1/get
+func (s *FundingService) FundingBybitWithResponse(ctx context.Context, p FundingBybitParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "funding.fundingBybit", "/data/funding/bybit/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("funding.fundingBybit", resp, err)
 	}
 	v, err := decodeResult("funding.fundingBybit", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("funding.fundingBybit", resp, err)
 	}
-	return asRows("funding.fundingBybit", v)
+	result, err := asRows("funding.fundingBybit", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("funding.fundingBybit", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FundingOkxParams are the parameters for FundingService.FundingOkx.
@@ -137,24 +200,45 @@ type FundingOkxParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1funding~1okx~1/get
 func (s *FundingService) FundingOkx(ctx context.Context, p FundingOkxParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FundingOkxWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FundingOkxWithResponse returns FundingOkx's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1funding~1okx~1/get
+func (s *FundingService) FundingOkxWithResponse(ctx context.Context, p FundingOkxParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "funding.fundingOkx", "/data/funding/okx/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("funding.fundingOkx", resp, err)
 	}
 	v, err := decodeResult("funding.fundingOkx", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("funding.fundingOkx", resp, err)
 	}
-	return asRows("funding.fundingOkx", v)
+	result, err := asRows("funding.fundingOkx", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("funding.fundingOkx", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryBinanceFuturesFundingParams are the parameters for FundingService.SummaryBinanceFuturesFunding.
@@ -174,6 +258,17 @@ type SummaryBinanceFuturesFundingParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1futures~1funding~1/get
 func (s *FundingService) SummaryBinanceFuturesFunding(ctx context.Context, p SummaryBinanceFuturesFundingParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryBinanceFuturesFundingWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryBinanceFuturesFundingWithResponse returns SummaryBinanceFuturesFunding's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1futures~1funding~1/get
+func (s *FundingService) SummaryBinanceFuturesFundingWithResponse(ctx context.Context, p SummaryBinanceFuturesFundingParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -182,17 +277,30 @@ func (s *FundingService) SummaryBinanceFuturesFunding(ctx context.Context, p Sum
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "funding.summaryBinanceFuturesFunding", "/data/summary/binance/futures/funding/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("funding.summaryBinanceFuturesFunding", resp, err)
 	}
 	v, err := decodeResult("funding.summaryBinanceFuturesFunding", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("funding.summaryBinanceFuturesFunding", resp, err)
 	}
-	return asRows("funding.summaryBinanceFuturesFunding", v)
+	result, err := asRows("funding.summaryBinanceFuturesFunding", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("funding.summaryBinanceFuturesFunding", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryBinanceFuturesFundingRaw — Binance Futures Funding Rates, raw download.
@@ -204,6 +312,9 @@ func (s *FundingService) SummaryBinanceFuturesFunding(ctx context.Context, p Sum
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1futures~1funding~1/get
 func (s *FundingService) SummaryBinanceFuturesFundingRaw(ctx context.Context, p SummaryBinanceFuturesFundingParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -213,6 +324,9 @@ func (s *FundingService) SummaryBinanceFuturesFundingRaw(ctx context.Context, p 
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "funding.summaryBinanceFuturesFundingRaw", "/data/summary/binance/futures/funding/", q)
@@ -220,6 +334,32 @@ func (s *FundingService) SummaryBinanceFuturesFundingRaw(ctx context.Context, p 
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryBinanceFuturesFundingStream opens a streaming SummaryBinanceFuturesFunding download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1futures~1funding~1/get
+func (s *FundingService) SummaryBinanceFuturesFundingStream(ctx context.Context, p SummaryBinanceFuturesFundingParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "funding.summaryBinanceFuturesFundingStream", "/data/summary/binance/futures/funding/", q)
 }
 
 // SummaryFundingComparisonParams are the parameters for FundingService.SummaryFundingComparison.
@@ -237,22 +377,43 @@ type SummaryFundingComparisonParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1funding~1comparison~1/get
 func (s *FundingService) SummaryFundingComparison(ctx context.Context, p SummaryFundingComparisonParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryFundingComparisonWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryFundingComparisonWithResponse returns SummaryFundingComparison's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1funding~1comparison~1/get
+func (s *FundingService) SummaryFundingComparisonWithResponse(ctx context.Context, p SummaryFundingComparisonParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "funding.summaryFundingComparison", "/data/summary/funding/comparison/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("funding.summaryFundingComparison", resp, err)
 	}
 	v, err := decodeResult("funding.summaryFundingComparison", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("funding.summaryFundingComparison", resp, err)
 	}
-	return asRows("funding.summaryFundingComparison", v)
+	result, err := asRows("funding.summaryFundingComparison", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("funding.summaryFundingComparison", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }

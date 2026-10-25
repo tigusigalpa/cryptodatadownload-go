@@ -31,24 +31,45 @@ type FuturesBasisTermParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1futures~1basis-term~1/get
 func (s *MLMarketService) FuturesBasisTerm(ctx context.Context, p FuturesBasisTermParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FuturesBasisTermWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FuturesBasisTermWithResponse returns FuturesBasisTerm's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1futures~1basis-term~1/get
+func (s *MLMarketService) FuturesBasisTermWithResponse(ctx context.Context, p FuturesBasisTermParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLMarket.futuresBasisTerm", "/data/features/futures/basis-term/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMarket.futuresBasisTerm", resp, err)
 	}
 	v, err := decodeResult("mLMarket.futuresBasisTerm", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLMarket.futuresBasisTerm", resp, err)
 	}
-	return asRows("mLMarket.futuresBasisTerm", v)
+	result, err := asRows("mLMarket.futuresBasisTerm", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMarket.futuresBasisTerm", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // MacroYieldSpreadsParams are the parameters for MLMarketService.MacroYieldSpreads.
@@ -64,20 +85,41 @@ type MacroYieldSpreadsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1macro~1yield-spreads~1/get
 func (s *MLMarketService) MacroYieldSpreads(ctx context.Context, p MacroYieldSpreadsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.MacroYieldSpreadsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// MacroYieldSpreadsWithResponse returns MacroYieldSpreads's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1macro~1yield-spreads~1/get
+func (s *MLMarketService) MacroYieldSpreadsWithResponse(ctx context.Context, p MacroYieldSpreadsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLMarket.macroYieldSpreads", "/data/features/macro/yield-spreads/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMarket.macroYieldSpreads", resp, err)
 	}
 	v, err := decodeResult("mLMarket.macroYieldSpreads", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLMarket.macroYieldSpreads", resp, err)
 	}
-	return asRows("mLMarket.macroYieldSpreads", v)
+	result, err := asRows("mLMarket.macroYieldSpreads", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMarket.macroYieldSpreads", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SpotReturnsParams are the parameters for MLMarketService.SpotReturns.
@@ -95,24 +137,45 @@ type SpotReturnsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1spot~1returns~1/get
 func (s *MLMarketService) SpotReturns(ctx context.Context, p SpotReturnsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SpotReturnsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SpotReturnsWithResponse returns SpotReturns's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1spot~1returns~1/get
+func (s *MLMarketService) SpotReturnsWithResponse(ctx context.Context, p SpotReturnsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLMarket.spotReturns", "/data/features/spot/returns/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMarket.spotReturns", resp, err)
 	}
 	v, err := decodeResult("mLMarket.spotReturns", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLMarket.spotReturns", resp, err)
 	}
-	return asRows("mLMarket.spotReturns", v)
+	result, err := asRows("mLMarket.spotReturns", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMarket.spotReturns", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SpotVwapParams are the parameters for MLMarketService.SpotVwap.
@@ -130,22 +193,43 @@ type SpotVwapParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1spot~1vwap~1/get
 func (s *MLMarketService) SpotVwap(ctx context.Context, p SpotVwapParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SpotVwapWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SpotVwapWithResponse returns SpotVwap's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1spot~1vwap~1/get
+func (s *MLMarketService) SpotVwapWithResponse(ctx context.Context, p SpotVwapParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLMarket.spotVwap", "/data/features/spot/vwap/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMarket.spotVwap", resp, err)
 	}
 	v, err := decodeResult("mLMarket.spotVwap", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLMarket.spotVwap", resp, err)
 	}
-	return asRows("mLMarket.spotVwap", v)
+	result, err := asRows("mLMarket.spotVwap", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLMarket.spotVwap", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }

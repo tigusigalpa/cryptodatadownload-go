@@ -32,24 +32,45 @@ type FeaturesOnchainAddressVelocityParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1onchain~1address-velocity~1/get
 func (s *OnChainService) FeaturesOnchainAddressVelocity(ctx context.Context, p FeaturesOnchainAddressVelocityParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FeaturesOnchainAddressVelocityWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FeaturesOnchainAddressVelocityWithResponse returns FeaturesOnchainAddressVelocity's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1onchain~1address-velocity~1/get
+func (s *OnChainService) FeaturesOnchainAddressVelocityWithResponse(ctx context.Context, p FeaturesOnchainAddressVelocityParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("chain", p.Chain, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("chain", p.Chain)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.featuresOnchainAddressVelocity", "/data/features/onchain/address-velocity/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainAddressVelocity", resp, err)
 	}
 	v, err := decodeResult("onChain.featuresOnchainAddressVelocity", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainAddressVelocity", resp, err)
 	}
-	return asRows("onChain.featuresOnchainAddressVelocity", v)
+	result, err := asRows("onChain.featuresOnchainAddressVelocity", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainAddressVelocity", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FeaturesOnchainContractGrowthParams are the parameters for OnChainService.FeaturesOnchainContractGrowth.
@@ -65,20 +86,41 @@ type FeaturesOnchainContractGrowthParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1onchain~1contract-growth~1/get
 func (s *OnChainService) FeaturesOnchainContractGrowth(ctx context.Context, p FeaturesOnchainContractGrowthParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FeaturesOnchainContractGrowthWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FeaturesOnchainContractGrowthWithResponse returns FeaturesOnchainContractGrowth's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1onchain~1contract-growth~1/get
+func (s *OnChainService) FeaturesOnchainContractGrowthWithResponse(ctx context.Context, p FeaturesOnchainContractGrowthParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.featuresOnchainContractGrowth", "/data/features/onchain/contract-growth/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainContractGrowth", resp, err)
 	}
 	v, err := decodeResult("onChain.featuresOnchainContractGrowth", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainContractGrowth", resp, err)
 	}
-	return asRows("onChain.featuresOnchainContractGrowth", v)
+	result, err := asRows("onChain.featuresOnchainContractGrowth", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainContractGrowth", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FeaturesOnchainNetworkCongestionParams are the parameters for OnChainService.FeaturesOnchainNetworkCongestion.
@@ -94,20 +136,41 @@ type FeaturesOnchainNetworkCongestionParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1onchain~1network-congestion~1/get
 func (s *OnChainService) FeaturesOnchainNetworkCongestion(ctx context.Context, p FeaturesOnchainNetworkCongestionParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FeaturesOnchainNetworkCongestionWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FeaturesOnchainNetworkCongestionWithResponse returns FeaturesOnchainNetworkCongestion's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1onchain~1network-congestion~1/get
+func (s *OnChainService) FeaturesOnchainNetworkCongestionWithResponse(ctx context.Context, p FeaturesOnchainNetworkCongestionParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.featuresOnchainNetworkCongestion", "/data/features/onchain/network-congestion/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainNetworkCongestion", resp, err)
 	}
 	v, err := decodeResult("onChain.featuresOnchainNetworkCongestion", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainNetworkCongestion", resp, err)
 	}
-	return asRows("onChain.featuresOnchainNetworkCongestion", v)
+	result, err := asRows("onChain.featuresOnchainNetworkCongestion", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainNetworkCongestion", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FeaturesOnchainNvtParams are the parameters for OnChainService.FeaturesOnchainNvt.
@@ -125,24 +188,45 @@ type FeaturesOnchainNvtParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1onchain~1nvt~1/get
 func (s *OnChainService) FeaturesOnchainNvt(ctx context.Context, p FeaturesOnchainNvtParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FeaturesOnchainNvtWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FeaturesOnchainNvtWithResponse returns FeaturesOnchainNvt's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1onchain~1nvt~1/get
+func (s *OnChainService) FeaturesOnchainNvtWithResponse(ctx context.Context, p FeaturesOnchainNvtParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("chain", p.Chain, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("chain", p.Chain)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.featuresOnchainNvt", "/data/features/onchain/nvt/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainNvt", resp, err)
 	}
 	v, err := decodeResult("onChain.featuresOnchainNvt", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainNvt", resp, err)
 	}
-	return asRows("onChain.featuresOnchainNvt", v)
+	result, err := asRows("onChain.featuresOnchainNvt", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainNvt", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FeaturesOnchainSupplyVelocityParams are the parameters for OnChainService.FeaturesOnchainSupplyVelocity.
@@ -160,24 +244,45 @@ type FeaturesOnchainSupplyVelocityParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1onchain~1supply-velocity~1/get
 func (s *OnChainService) FeaturesOnchainSupplyVelocity(ctx context.Context, p FeaturesOnchainSupplyVelocityParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FeaturesOnchainSupplyVelocityWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FeaturesOnchainSupplyVelocityWithResponse returns FeaturesOnchainSupplyVelocity's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1onchain~1supply-velocity~1/get
+func (s *OnChainService) FeaturesOnchainSupplyVelocityWithResponse(ctx context.Context, p FeaturesOnchainSupplyVelocityParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("chain", p.Chain, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("chain", p.Chain)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.featuresOnchainSupplyVelocity", "/data/features/onchain/supply-velocity/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainSupplyVelocity", resp, err)
 	}
 	v, err := decodeResult("onChain.featuresOnchainSupplyVelocity", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainSupplyVelocity", resp, err)
 	}
-	return asRows("onChain.featuresOnchainSupplyVelocity", v)
+	result, err := asRows("onChain.featuresOnchainSupplyVelocity", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainSupplyVelocity", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FeaturesOnchainWhaleParams are the parameters for OnChainService.FeaturesOnchainWhale.
@@ -195,24 +300,45 @@ type FeaturesOnchainWhaleParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1onchain~1whale~1/get
 func (s *OnChainService) FeaturesOnchainWhale(ctx context.Context, p FeaturesOnchainWhaleParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FeaturesOnchainWhaleWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FeaturesOnchainWhaleWithResponse returns FeaturesOnchainWhale's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1onchain~1whale~1/get
+func (s *OnChainService) FeaturesOnchainWhaleWithResponse(ctx context.Context, p FeaturesOnchainWhaleParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("chain", p.Chain, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("chain", p.Chain)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.featuresOnchainWhale", "/data/features/onchain/whale/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainWhale", resp, err)
 	}
 	v, err := decodeResult("onChain.featuresOnchainWhale", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainWhale", resp, err)
 	}
-	return asRows("onChain.featuresOnchainWhale", v)
+	result, err := asRows("onChain.featuresOnchainWhale", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.featuresOnchainWhale", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OnchainBtcMempoolParams are the parameters for OnChainService.OnchainBtcMempool.
@@ -228,20 +354,41 @@ type OnchainBtcMempoolParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1onchain~1btc~1mempool~1/get
 func (s *OnChainService) OnchainBtcMempool(ctx context.Context, p OnchainBtcMempoolParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OnchainBtcMempoolWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OnchainBtcMempoolWithResponse returns OnchainBtcMempool's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1onchain~1btc~1mempool~1/get
+func (s *OnChainService) OnchainBtcMempoolWithResponse(ctx context.Context, p OnchainBtcMempoolParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.onchainBtcMempool", "/data/onchain/btc/mempool/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainBtcMempool", resp, err)
 	}
 	v, err := decodeResult("onChain.onchainBtcMempool", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainBtcMempool", resp, err)
 	}
-	return asRows("onChain.onchainBtcMempool", v)
+	result, err := asRows("onChain.onchainBtcMempool", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainBtcMempool", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OnchainEthExchangeFlowsParams are the parameters for OnChainService.OnchainEthExchangeFlows.
@@ -259,24 +406,45 @@ type OnchainEthExchangeFlowsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1onchain~1eth~1exchange-flows~1/get
 func (s *OnChainService) OnchainEthExchangeFlows(ctx context.Context, p OnchainEthExchangeFlowsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OnchainEthExchangeFlowsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OnchainEthExchangeFlowsWithResponse returns OnchainEthExchangeFlows's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1onchain~1eth~1exchange-flows~1/get
+func (s *OnChainService) OnchainEthExchangeFlowsWithResponse(ctx context.Context, p OnchainEthExchangeFlowsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("exchange", p.Exchange, "binance", "coinbase", "kraken", "bybit", "okx"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("exchange", p.Exchange)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.onchainEthExchangeFlows", "/data/onchain/eth/exchange-flows/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainEthExchangeFlows", resp, err)
 	}
 	v, err := decodeResult("onChain.onchainEthExchangeFlows", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainEthExchangeFlows", resp, err)
 	}
-	return asRows("onChain.onchainEthExchangeFlows", v)
+	result, err := asRows("onChain.onchainEthExchangeFlows", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainEthExchangeFlows", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OnchainEthExchangeReservesParams are the parameters for OnChainService.OnchainEthExchangeReserves.
@@ -294,24 +462,45 @@ type OnchainEthExchangeReservesParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1onchain~1eth~1exchange-reserves~1/get
 func (s *OnChainService) OnchainEthExchangeReserves(ctx context.Context, p OnchainEthExchangeReservesParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OnchainEthExchangeReservesWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OnchainEthExchangeReservesWithResponse returns OnchainEthExchangeReserves's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1onchain~1eth~1exchange-reserves~1/get
+func (s *OnChainService) OnchainEthExchangeReservesWithResponse(ctx context.Context, p OnchainEthExchangeReservesParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("exchange", p.Exchange, "binance", "coinbase", "kraken", "bybit", "okx"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("exchange", p.Exchange)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.onchainEthExchangeReserves", "/data/onchain/eth/exchange-reserves/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainEthExchangeReserves", resp, err)
 	}
 	v, err := decodeResult("onChain.onchainEthExchangeReserves", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainEthExchangeReserves", resp, err)
 	}
-	return asRows("onChain.onchainEthExchangeReserves", v)
+	result, err := asRows("onChain.onchainEthExchangeReserves", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainEthExchangeReserves", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OnchainEthGasParams are the parameters for OnChainService.OnchainEthGas.
@@ -327,20 +516,41 @@ type OnchainEthGasParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1onchain~1eth~1gas~1/get
 func (s *OnChainService) OnchainEthGas(ctx context.Context, p OnchainEthGasParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OnchainEthGasWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OnchainEthGasWithResponse returns OnchainEthGas's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1onchain~1eth~1gas~1/get
+func (s *OnChainService) OnchainEthGasWithResponse(ctx context.Context, p OnchainEthGasParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.onchainEthGas", "/data/onchain/eth/gas/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainEthGas", resp, err)
 	}
 	v, err := decodeResult("onChain.onchainEthGas", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainEthGas", resp, err)
 	}
-	return asRows("onChain.onchainEthGas", v)
+	result, err := asRows("onChain.onchainEthGas", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainEthGas", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OnchainEthTransactionsParams are the parameters for OnChainService.OnchainEthTransactions.
@@ -356,20 +566,41 @@ type OnchainEthTransactionsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1onchain~1eth~1transactions~1/get
 func (s *OnChainService) OnchainEthTransactions(ctx context.Context, p OnchainEthTransactionsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OnchainEthTransactionsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OnchainEthTransactionsWithResponse returns OnchainEthTransactions's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1onchain~1eth~1transactions~1/get
+func (s *OnChainService) OnchainEthTransactionsWithResponse(ctx context.Context, p OnchainEthTransactionsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.onchainEthTransactions", "/data/onchain/eth/transactions/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainEthTransactions", resp, err)
 	}
 	v, err := decodeResult("onChain.onchainEthTransactions", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainEthTransactions", resp, err)
 	}
-	return asRows("onChain.onchainEthTransactions", v)
+	result, err := asRows("onChain.onchainEthTransactions", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.onchainEthTransactions", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryBitcoinMarketcapParams are the parameters for OnChainService.SummaryBitcoinMarketcap.
@@ -387,22 +618,46 @@ type SummaryBitcoinMarketcapParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1bitcoin~1marketcap~1/get
 func (s *OnChainService) SummaryBitcoinMarketcap(ctx context.Context, p SummaryBitcoinMarketcapParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryBitcoinMarketcapWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryBitcoinMarketcapWithResponse returns SummaryBitcoinMarketcap's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1bitcoin~1marketcap~1/get
+func (s *OnChainService) SummaryBitcoinMarketcapWithResponse(ctx context.Context, p SummaryBitcoinMarketcapParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.EndDate != nil {
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "onChain.summaryBitcoinMarketcap", "/data/summary/bitcoin/marketcap/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBitcoinMarketcap", resp, err)
 	}
 	v, err := decodeResult("onChain.summaryBitcoinMarketcap", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBitcoinMarketcap", resp, err)
 	}
-	return asRows("onChain.summaryBitcoinMarketcap", v)
+	result, err := asRows("onChain.summaryBitcoinMarketcap", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBitcoinMarketcap", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryBitcoinMarketcapRaw — BTC Market Capitalization, raw download.
@@ -414,12 +669,18 @@ func (s *OnChainService) SummaryBitcoinMarketcap(ctx context.Context, p SummaryB
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1bitcoin~1marketcap~1/get
 func (s *OnChainService) SummaryBitcoinMarketcapRaw(ctx context.Context, p SummaryBitcoinMarketcapParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.EndDate != nil {
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "onChain.summaryBitcoinMarketcapRaw", "/data/summary/bitcoin/marketcap/", q)
@@ -427,6 +688,29 @@ func (s *OnChainService) SummaryBitcoinMarketcapRaw(ctx context.Context, p Summa
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryBitcoinMarketcapStream opens a streaming SummaryBitcoinMarketcap download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1bitcoin~1marketcap~1/get
+func (s *OnChainService) SummaryBitcoinMarketcapStream(ctx context.Context, p SummaryBitcoinMarketcapParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "onChain.summaryBitcoinMarketcapStream", "/data/summary/bitcoin/marketcap/", q)
 }
 
 // SummaryBlockchainBchainParams are the parameters for OnChainService.SummaryBlockchainBchain.
@@ -442,19 +726,40 @@ type SummaryBlockchainBchainParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1bchain~1/get
 func (s *OnChainService) SummaryBlockchainBchain(ctx context.Context, p SummaryBlockchainBchainParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryBlockchainBchainWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryBlockchainBchainWithResponse returns SummaryBlockchainBchain's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1bchain~1/get
+func (s *OnChainService) SummaryBlockchainBchainWithResponse(ctx context.Context, p SummaryBlockchainBchainParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.EndDate != nil {
 		q.Set("enddate", *p.EndDate)
 	}
 	resp, err := s.client.do(ctx, "onChain.summaryBlockchainBchain", "/data/summary/blockchain/bchain/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainBchain", resp, err)
 	}
 	v, err := decodeResult("onChain.summaryBlockchainBchain", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainBchain", resp, err)
 	}
-	return asRows("onChain.summaryBlockchainBchain", v)
+	result, err := asRows("onChain.summaryBlockchainBchain", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainBchain", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryBlockchainBchainRaw — BCHAIN Aggregated Data, raw download.
@@ -466,6 +771,9 @@ func (s *OnChainService) SummaryBlockchainBchain(ctx context.Context, p SummaryB
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1bchain~1/get
 func (s *OnChainService) SummaryBlockchainBchainRaw(ctx context.Context, p SummaryBlockchainBchainParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.EndDate != nil {
@@ -476,6 +784,23 @@ func (s *OnChainService) SummaryBlockchainBchainRaw(ctx context.Context, p Summa
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryBlockchainBchainStream opens a streaming SummaryBlockchainBchain download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1bchain~1/get
+func (s *OnChainService) SummaryBlockchainBchainStream(ctx context.Context, p SummaryBlockchainBchainParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	return s.client.doStream(ctx, "onChain.summaryBlockchainBchainStream", "/data/summary/blockchain/bchain/", q)
 }
 
 // SummaryBlockchainBlocksParams are the parameters for OnChainService.SummaryBlockchainBlocks.
@@ -495,6 +820,17 @@ type SummaryBlockchainBlocksParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1blocks~1/get
 func (s *OnChainService) SummaryBlockchainBlocks(ctx context.Context, p SummaryBlockchainBlocksParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryBlockchainBlocksWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryBlockchainBlocksWithResponse returns SummaryBlockchainBlocks's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1blocks~1/get
+func (s *OnChainService) SummaryBlockchainBlocksWithResponse(ctx context.Context, p SummaryBlockchainBlocksParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -503,17 +839,30 @@ func (s *OnChainService) SummaryBlockchainBlocks(ctx context.Context, p SummaryB
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "onChain.summaryBlockchainBlocks", "/data/summary/blockchain/blocks/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainBlocks", resp, err)
 	}
 	v, err := decodeResult("onChain.summaryBlockchainBlocks", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainBlocks", resp, err)
 	}
-	return asRows("onChain.summaryBlockchainBlocks", v)
+	result, err := asRows("onChain.summaryBlockchainBlocks", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainBlocks", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryBlockchainBlocksRaw — Blockchain Summary Metrics, raw download.
@@ -525,6 +874,9 @@ func (s *OnChainService) SummaryBlockchainBlocks(ctx context.Context, p SummaryB
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1blocks~1/get
 func (s *OnChainService) SummaryBlockchainBlocksRaw(ctx context.Context, p SummaryBlockchainBlocksParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -534,6 +886,9 @@ func (s *OnChainService) SummaryBlockchainBlocksRaw(ctx context.Context, p Summa
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "onChain.summaryBlockchainBlocksRaw", "/data/summary/blockchain/blocks/", q)
@@ -541,6 +896,32 @@ func (s *OnChainService) SummaryBlockchainBlocksRaw(ctx context.Context, p Summa
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryBlockchainBlocksStream opens a streaming SummaryBlockchainBlocks download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1blocks~1/get
+func (s *OnChainService) SummaryBlockchainBlocksStream(ctx context.Context, p SummaryBlockchainBlocksParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "onChain.summaryBlockchainBlocksStream", "/data/summary/blockchain/blocks/", q)
 }
 
 // SummaryBlockchainEthContractsParams are the parameters for OnChainService.SummaryBlockchainEthContracts.
@@ -558,22 +939,46 @@ type SummaryBlockchainEthContractsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1eth~1contracts~1/get
 func (s *OnChainService) SummaryBlockchainEthContracts(ctx context.Context, p SummaryBlockchainEthContractsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryBlockchainEthContractsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryBlockchainEthContractsWithResponse returns SummaryBlockchainEthContracts's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1eth~1contracts~1/get
+func (s *OnChainService) SummaryBlockchainEthContractsWithResponse(ctx context.Context, p SummaryBlockchainEthContractsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.EndDate != nil {
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "onChain.summaryBlockchainEthContracts", "/data/summary/blockchain/eth/contracts/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainEthContracts", resp, err)
 	}
 	v, err := decodeResult("onChain.summaryBlockchainEthContracts", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainEthContracts", resp, err)
 	}
-	return asRows("onChain.summaryBlockchainEthContracts", v)
+	result, err := asRows("onChain.summaryBlockchainEthContracts", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainEthContracts", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryBlockchainEthContractsRaw — On-Chain Ethereum (ETH) Summary Contract Creation Metrics, raw download.
@@ -585,12 +990,18 @@ func (s *OnChainService) SummaryBlockchainEthContracts(ctx context.Context, p Su
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1eth~1contracts~1/get
 func (s *OnChainService) SummaryBlockchainEthContractsRaw(ctx context.Context, p SummaryBlockchainEthContractsParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.EndDate != nil {
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "onChain.summaryBlockchainEthContractsRaw", "/data/summary/blockchain/eth/contracts/", q)
@@ -598,6 +1009,29 @@ func (s *OnChainService) SummaryBlockchainEthContractsRaw(ctx context.Context, p
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryBlockchainEthContractsStream opens a streaming SummaryBlockchainEthContracts download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1eth~1contracts~1/get
+func (s *OnChainService) SummaryBlockchainEthContractsStream(ctx context.Context, p SummaryBlockchainEthContractsParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "onChain.summaryBlockchainEthContractsStream", "/data/summary/blockchain/eth/contracts/", q)
 }
 
 // SummaryBlockchainTransactionsParams are the parameters for OnChainService.SummaryBlockchainTransactions.
@@ -615,22 +1049,46 @@ type SummaryBlockchainTransactionsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1transactions~1/get
 func (s *OnChainService) SummaryBlockchainTransactions(ctx context.Context, p SummaryBlockchainTransactionsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryBlockchainTransactionsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryBlockchainTransactionsWithResponse returns SummaryBlockchainTransactions's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1transactions~1/get
+func (s *OnChainService) SummaryBlockchainTransactionsWithResponse(ctx context.Context, p SummaryBlockchainTransactionsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.EndDate != nil {
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "onChain.summaryBlockchainTransactions", "/data/summary/blockchain/transactions/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainTransactions", resp, err)
 	}
 	v, err := decodeResult("onChain.summaryBlockchainTransactions", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainTransactions", resp, err)
 	}
-	return asRows("onChain.summaryBlockchainTransactions", v)
+	result, err := asRows("onChain.summaryBlockchainTransactions", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainTransactions", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryBlockchainTransactionsRaw — Blockchain Transaction Metrics, raw download.
@@ -642,12 +1100,18 @@ func (s *OnChainService) SummaryBlockchainTransactions(ctx context.Context, p Su
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1transactions~1/get
 func (s *OnChainService) SummaryBlockchainTransactionsRaw(ctx context.Context, p SummaryBlockchainTransactionsParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.EndDate != nil {
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "onChain.summaryBlockchainTransactionsRaw", "/data/summary/blockchain/transactions/", q)
@@ -655,6 +1119,29 @@ func (s *OnChainService) SummaryBlockchainTransactionsRaw(ctx context.Context, p
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryBlockchainTransactionsStream opens a streaming SummaryBlockchainTransactions download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1transactions~1/get
+func (s *OnChainService) SummaryBlockchainTransactionsStream(ctx context.Context, p SummaryBlockchainTransactionsParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "onChain.summaryBlockchainTransactionsStream", "/data/summary/blockchain/transactions/", q)
 }
 
 // SummaryBlockchainTransactionsCoinbaseParams are the parameters for OnChainService.SummaryBlockchainTransactionsCoinbase.
@@ -670,20 +1157,41 @@ type SummaryBlockchainTransactionsCoinbaseParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1transactions~1coinbase~1/get
 func (s *OnChainService) SummaryBlockchainTransactionsCoinbase(ctx context.Context, p SummaryBlockchainTransactionsCoinbaseParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryBlockchainTransactionsCoinbaseWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryBlockchainTransactionsCoinbaseWithResponse returns SummaryBlockchainTransactionsCoinbase's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1transactions~1coinbase~1/get
+func (s *OnChainService) SummaryBlockchainTransactionsCoinbaseWithResponse(ctx context.Context, p SummaryBlockchainTransactionsCoinbaseParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.summaryBlockchainTransactionsCoinbase", "/data/summary/blockchain/transactions/coinbase/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainTransactionsCoinbase", resp, err)
 	}
 	v, err := decodeResult("onChain.summaryBlockchainTransactionsCoinbase", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainTransactionsCoinbase", resp, err)
 	}
-	return asRows("onChain.summaryBlockchainTransactionsCoinbase", v)
+	result, err := asRows("onChain.summaryBlockchainTransactionsCoinbase", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainTransactionsCoinbase", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryBlockchainTransactionsCoinbaseRaw — BTC Coin Creation(s), raw download.
@@ -695,6 +1203,9 @@ func (s *OnChainService) SummaryBlockchainTransactionsCoinbase(ctx context.Conte
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1transactions~1coinbase~1/get
 func (s *OnChainService) SummaryBlockchainTransactionsCoinbaseRaw(ctx context.Context, p SummaryBlockchainTransactionsCoinbaseParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if err := requireDate("date", p.Date); err != nil {
@@ -706,6 +1217,24 @@ func (s *OnChainService) SummaryBlockchainTransactionsCoinbaseRaw(ctx context.Co
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryBlockchainTransactionsCoinbaseStream opens a streaming SummaryBlockchainTransactionsCoinbase download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1transactions~1coinbase~1/get
+func (s *OnChainService) SummaryBlockchainTransactionsCoinbaseStream(ctx context.Context, p SummaryBlockchainTransactionsCoinbaseParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if err := requireDate("date", p.Date); err != nil {
+		return nil, err
+	}
+	q.Set("date", dateString(p.Date))
+	return s.client.doStream(ctx, "onChain.summaryBlockchainTransactionsCoinbaseStream", "/data/summary/blockchain/transactions/coinbase/", q)
 }
 
 // SummaryBlockchainTransactionsLargestParams are the parameters for OnChainService.SummaryBlockchainTransactionsLargest.
@@ -721,20 +1250,41 @@ type SummaryBlockchainTransactionsLargestParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1transactions~1largest~1/get
 func (s *OnChainService) SummaryBlockchainTransactionsLargest(ctx context.Context, p SummaryBlockchainTransactionsLargestParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryBlockchainTransactionsLargestWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryBlockchainTransactionsLargestWithResponse returns SummaryBlockchainTransactionsLargest's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1transactions~1largest~1/get
+func (s *OnChainService) SummaryBlockchainTransactionsLargestWithResponse(ctx context.Context, p SummaryBlockchainTransactionsLargestParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "onChain.summaryBlockchainTransactionsLargest", "/data/summary/blockchain/transactions/largest/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainTransactionsLargest", resp, err)
 	}
 	v, err := decodeResult("onChain.summaryBlockchainTransactionsLargest", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainTransactionsLargest", resp, err)
 	}
-	return asRows("onChain.summaryBlockchainTransactionsLargest", v)
+	result, err := asRows("onChain.summaryBlockchainTransactionsLargest", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("onChain.summaryBlockchainTransactionsLargest", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryBlockchainTransactionsLargestRaw — Top 50 BTC Transactions per Day, raw download.
@@ -746,6 +1296,9 @@ func (s *OnChainService) SummaryBlockchainTransactionsLargest(ctx context.Contex
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1transactions~1largest~1/get
 func (s *OnChainService) SummaryBlockchainTransactionsLargestRaw(ctx context.Context, p SummaryBlockchainTransactionsLargestParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if err := requireDate("date", p.Date); err != nil {
@@ -757,4 +1310,22 @@ func (s *OnChainService) SummaryBlockchainTransactionsLargestRaw(ctx context.Con
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryBlockchainTransactionsLargestStream opens a streaming SummaryBlockchainTransactionsLargest download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1blockchain~1transactions~1largest~1/get
+func (s *OnChainService) SummaryBlockchainTransactionsLargestStream(ctx context.Context, p SummaryBlockchainTransactionsLargestParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if err := requireDate("date", p.Date); err != nil {
+		return nil, err
+	}
+	q.Set("date", dateString(p.Date))
+	return s.client.doStream(ctx, "onChain.summaryBlockchainTransactionsLargestStream", "/data/summary/blockchain/transactions/largest/", q)
 }

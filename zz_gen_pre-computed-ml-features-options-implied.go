@@ -31,24 +31,45 @@ type ImpliedMoveParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1options~1implied-move~1/get
 func (s *MLOptionsService) ImpliedMove(ctx context.Context, p ImpliedMoveParams) ([]map[string]interface{}, error) {
+	result, _, err := s.ImpliedMoveWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// ImpliedMoveWithResponse returns ImpliedMove's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1options~1implied-move~1/get
+func (s *MLOptionsService) ImpliedMoveWithResponse(ctx context.Context, p ImpliedMoveParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLOptions.impliedMove", "/data/features/options/implied-move/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLOptions.impliedMove", resp, err)
 	}
 	v, err := decodeResult("mLOptions.impliedMove", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLOptions.impliedMove", resp, err)
 	}
-	return asRows("mLOptions.impliedMove", v)
+	result, err := asRows("mLOptions.impliedMove", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLOptions.impliedMove", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OiConcentrationParams are the parameters for MLOptionsService.OiConcentration.
@@ -66,24 +87,45 @@ type OiConcentrationParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1options~1oi-concentration~1/get
 func (s *MLOptionsService) OiConcentration(ctx context.Context, p OiConcentrationParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OiConcentrationWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OiConcentrationWithResponse returns OiConcentration's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1options~1oi-concentration~1/get
+func (s *MLOptionsService) OiConcentrationWithResponse(ctx context.Context, p OiConcentrationParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLOptions.oiConcentration", "/data/features/options/oi-concentration/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLOptions.oiConcentration", resp, err)
 	}
 	v, err := decodeResult("mLOptions.oiConcentration", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLOptions.oiConcentration", resp, err)
 	}
-	return asRows("mLOptions.oiConcentration", v)
+	result, err := asRows("mLOptions.oiConcentration", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLOptions.oiConcentration", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SkewSignalParams are the parameters for MLOptionsService.SkewSignal.
@@ -101,24 +143,45 @@ type SkewSignalParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1options~1skew-signal~1/get
 func (s *MLOptionsService) SkewSignal(ctx context.Context, p SkewSignalParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SkewSignalWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SkewSignalWithResponse returns SkewSignal's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1options~1skew-signal~1/get
+func (s *MLOptionsService) SkewSignalWithResponse(ctx context.Context, p SkewSignalParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLOptions.skewSignal", "/data/features/options/skew-signal/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLOptions.skewSignal", resp, err)
 	}
 	v, err := decodeResult("mLOptions.skewSignal", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLOptions.skewSignal", resp, err)
 	}
-	return asRows("mLOptions.skewSignal", v)
+	result, err := asRows("mLOptions.skewSignal", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLOptions.skewSignal", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SmileCurvatureParams are the parameters for MLOptionsService.SmileCurvature.
@@ -136,22 +199,43 @@ type SmileCurvatureParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1options~1smile-curvature~1/get
 func (s *MLOptionsService) SmileCurvature(ctx context.Context, p SmileCurvatureParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SmileCurvatureWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SmileCurvatureWithResponse returns SmileCurvature's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1options~1smile-curvature~1/get
+func (s *MLOptionsService) SmileCurvatureWithResponse(ctx context.Context, p SmileCurvatureParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLOptions.smileCurvature", "/data/features/options/smile-curvature/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLOptions.smileCurvature", resp, err)
 	}
 	v, err := decodeResult("mLOptions.smileCurvature", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLOptions.smileCurvature", resp, err)
 	}
-	return asRows("mLOptions.smileCurvature", v)
+	result, err := asRows("mLOptions.smileCurvature", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLOptions.smileCurvature", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }

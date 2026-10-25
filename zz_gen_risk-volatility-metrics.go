@@ -30,19 +30,40 @@ type RiskCorrelationsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1correlations~1/get
 func (s *RiskService) RiskCorrelations(ctx context.Context, p RiskCorrelationsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.RiskCorrelationsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// RiskCorrelationsWithResponse returns RiskCorrelations's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1correlations~1/get
+func (s *RiskService) RiskCorrelationsWithResponse(ctx context.Context, p RiskCorrelationsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
 	}
 	resp, err := s.client.do(ctx, "risk.riskCorrelations", "/data/risk/correlations/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskCorrelations", resp, err)
 	}
 	v, err := decodeResult("risk.riskCorrelations", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("risk.riskCorrelations", resp, err)
 	}
-	return asRows("risk.riskCorrelations", v)
+	result, err := asRows("risk.riskCorrelations", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskCorrelations", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // RiskCorrelationsRaw — Trading Correlations, raw download.
@@ -54,6 +75,9 @@ func (s *RiskService) RiskCorrelations(ctx context.Context, p RiskCorrelationsPa
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1correlations~1/get
 func (s *RiskService) RiskCorrelationsRaw(ctx context.Context, p RiskCorrelationsParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -64,6 +88,23 @@ func (s *RiskService) RiskCorrelationsRaw(ctx context.Context, p RiskCorrelation
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// RiskCorrelationsStream opens a streaming RiskCorrelations download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1correlations~1/get
+func (s *RiskService) RiskCorrelationsStream(ctx context.Context, p RiskCorrelationsParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	return s.client.doStream(ctx, "risk.riskCorrelationsStream", "/data/risk/correlations/", q)
 }
 
 // RiskCorrelationsRollingParams are the parameters for RiskService.RiskCorrelationsRolling.
@@ -81,21 +122,45 @@ type RiskCorrelationsRollingParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1correlations~1rolling~1/get
 func (s *RiskService) RiskCorrelationsRolling(ctx context.Context, p RiskCorrelationsRollingParams) ([]map[string]interface{}, error) {
+	result, _, err := s.RiskCorrelationsRollingWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// RiskCorrelationsRollingWithResponse returns RiskCorrelationsRolling's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1correlations~1rolling~1/get
+func (s *RiskService) RiskCorrelationsRollingWithResponse(ctx context.Context, p RiskCorrelationsRollingParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
+	if err := checkEnum("window", strconv.Itoa(p.Window), "30", "60", "90", "180"); err != nil {
+		return nil, nil, err
+	}
 	q.Set("window", strconv.Itoa(p.Window))
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "risk.riskCorrelationsRolling", "/data/risk/correlations/rolling/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskCorrelationsRolling", resp, err)
 	}
 	v, err := decodeResult("risk.riskCorrelationsRolling", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("risk.riskCorrelationsRolling", resp, err)
 	}
-	return asRows("risk.riskCorrelationsRolling", v)
+	result, err := asRows("risk.riskCorrelationsRolling", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskCorrelationsRolling", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // RiskDrawdownParams are the parameters for RiskService.RiskDrawdown.
@@ -113,24 +178,45 @@ type RiskDrawdownParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1drawdown~1/get
 func (s *RiskService) RiskDrawdown(ctx context.Context, p RiskDrawdownParams) ([]map[string]interface{}, error) {
+	result, _, err := s.RiskDrawdownWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// RiskDrawdownWithResponse returns RiskDrawdown's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1drawdown~1/get
+func (s *RiskService) RiskDrawdownWithResponse(ctx context.Context, p RiskDrawdownParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "risk.riskDrawdown", "/data/risk/drawdown/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskDrawdown", resp, err)
 	}
 	v, err := decodeResult("risk.riskDrawdown", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("risk.riskDrawdown", resp, err)
 	}
-	return asRows("risk.riskDrawdown", v)
+	result, err := asRows("risk.riskDrawdown", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskDrawdown", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // RiskDrawdownUnderwaterParams are the parameters for RiskService.RiskDrawdownUnderwater.
@@ -148,24 +234,45 @@ type RiskDrawdownUnderwaterParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1drawdown~1underwater~1/get
 func (s *RiskService) RiskDrawdownUnderwater(ctx context.Context, p RiskDrawdownUnderwaterParams) ([]map[string]interface{}, error) {
+	result, _, err := s.RiskDrawdownUnderwaterWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// RiskDrawdownUnderwaterWithResponse returns RiskDrawdownUnderwater's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1drawdown~1underwater~1/get
+func (s *RiskService) RiskDrawdownUnderwaterWithResponse(ctx context.Context, p RiskDrawdownUnderwaterParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "risk.riskDrawdownUnderwater", "/data/risk/drawdown/underwater/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskDrawdownUnderwater", resp, err)
 	}
 	v, err := decodeResult("risk.riskDrawdownUnderwater", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("risk.riskDrawdownUnderwater", resp, err)
 	}
-	return asRows("risk.riskDrawdownUnderwater", v)
+	result, err := asRows("risk.riskDrawdownUnderwater", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskDrawdownUnderwater", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // RiskRegimeParams are the parameters for RiskService.RiskRegime.
@@ -181,20 +288,41 @@ type RiskRegimeParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1regime~1/get
 func (s *RiskService) RiskRegime(ctx context.Context, p RiskRegimeParams) ([]map[string]interface{}, error) {
+	result, _, err := s.RiskRegimeWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// RiskRegimeWithResponse returns RiskRegime's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1regime~1/get
+func (s *RiskService) RiskRegimeWithResponse(ctx context.Context, p RiskRegimeParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "risk.riskRegime", "/data/risk/regime/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskRegime", resp, err)
 	}
 	v, err := decodeResult("risk.riskRegime", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("risk.riskRegime", resp, err)
 	}
-	return asRows("risk.riskRegime", v)
+	result, err := asRows("risk.riskRegime", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskRegime", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // RiskVarByMethodParams are the parameters for RiskService.RiskVarByMethod.
@@ -214,28 +342,49 @@ type RiskVarByMethodParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1var~1by-method~1/get
 func (s *RiskService) RiskVarByMethod(ctx context.Context, p RiskVarByMethodParams) ([]map[string]interface{}, error) {
+	result, _, err := s.RiskVarByMethodWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// RiskVarByMethodWithResponse returns RiskVarByMethod's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1var~1by-method~1/get
+func (s *RiskService) RiskVarByMethodWithResponse(ctx context.Context, p RiskVarByMethodParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("method", p.Method, "historical", "parametric"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("method", p.Method)
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "risk.riskVarByMethod", "/data/risk/var/by-method/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskVarByMethod", resp, err)
 	}
 	v, err := decodeResult("risk.riskVarByMethod", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("risk.riskVarByMethod", resp, err)
 	}
-	return asRows("risk.riskVarByMethod", v)
+	result, err := asRows("risk.riskVarByMethod", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskVarByMethod", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // RiskVarPortfolioParams are the parameters for RiskService.RiskVarPortfolio.
@@ -253,24 +402,45 @@ type RiskVarPortfolioParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1var~1portfolio~1/get
 func (s *RiskService) RiskVarPortfolio(ctx context.Context, p RiskVarPortfolioParams) ([]map[string]interface{}, error) {
+	result, _, err := s.RiskVarPortfolioWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// RiskVarPortfolioWithResponse returns RiskVarPortfolio's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1var~1portfolio~1/get
+func (s *RiskService) RiskVarPortfolioWithResponse(ctx context.Context, p RiskVarPortfolioParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("portfolio", p.Portfolio, "cap_weighted_top10", "eq_weighted_btc_eth_sol"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("portfolio", p.Portfolio)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "risk.riskVarPortfolio", "/data/risk/var/portfolio/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskVarPortfolio", resp, err)
 	}
 	v, err := decodeResult("risk.riskVarPortfolio", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("risk.riskVarPortfolio", resp, err)
 	}
-	return asRows("risk.riskVarPortfolio", v)
+	result, err := asRows("risk.riskVarPortfolio", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskVarPortfolio", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // RiskVarStandaloneParams are the parameters for RiskService.RiskVarStandalone.
@@ -286,19 +456,40 @@ type RiskVarStandaloneParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1var~1standalone~1/get
 func (s *RiskService) RiskVarStandalone(ctx context.Context, p RiskVarStandaloneParams) ([]map[string]interface{}, error) {
+	result, _, err := s.RiskVarStandaloneWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// RiskVarStandaloneWithResponse returns RiskVarStandalone's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1var~1standalone~1/get
+func (s *RiskService) RiskVarStandaloneWithResponse(ctx context.Context, p RiskVarStandaloneParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
 	}
 	resp, err := s.client.do(ctx, "risk.riskVarStandalone", "/data/risk/var/standalone/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskVarStandalone", resp, err)
 	}
 	v, err := decodeResult("risk.riskVarStandalone", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("risk.riskVarStandalone", resp, err)
 	}
-	return asRows("risk.riskVarStandalone", v)
+	result, err := asRows("risk.riskVarStandalone", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.riskVarStandalone", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // RiskVarStandaloneRaw — Value at Risk by Symbol, raw download.
@@ -310,6 +501,9 @@ func (s *RiskService) RiskVarStandalone(ctx context.Context, p RiskVarStandalone
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1var~1standalone~1/get
 func (s *RiskService) RiskVarStandaloneRaw(ctx context.Context, p RiskVarStandaloneParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -320,6 +514,23 @@ func (s *RiskService) RiskVarStandaloneRaw(ctx context.Context, p RiskVarStandal
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// RiskVarStandaloneStream opens a streaming RiskVarStandalone download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1risk~1var~1standalone~1/get
+func (s *RiskService) RiskVarStandaloneStream(ctx context.Context, p RiskVarStandaloneParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	return s.client.doStream(ctx, "risk.riskVarStandaloneStream", "/data/risk/var/standalone/", q)
 }
 
 // VolatilityRealizedParams are the parameters for RiskService.VolatilityRealized.
@@ -337,22 +548,43 @@ type VolatilityRealizedParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1volatility~1realized~1/get
 func (s *RiskService) VolatilityRealized(ctx context.Context, p VolatilityRealizedParams) ([]map[string]interface{}, error) {
+	result, _, err := s.VolatilityRealizedWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// VolatilityRealizedWithResponse returns VolatilityRealized's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1volatility~1realized~1/get
+func (s *RiskService) VolatilityRealizedWithResponse(ctx context.Context, p VolatilityRealizedParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "risk.volatilityRealized", "/data/volatility/realized/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.volatilityRealized", resp, err)
 	}
 	v, err := decodeResult("risk.volatilityRealized", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("risk.volatilityRealized", resp, err)
 	}
-	return asRows("risk.volatilityRealized", v)
+	result, err := asRows("risk.volatilityRealized", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("risk.volatilityRealized", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }

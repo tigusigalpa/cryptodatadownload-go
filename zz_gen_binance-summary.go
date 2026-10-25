@@ -36,32 +36,59 @@ type BasisParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1basis~1/get
 func (s *BinanceSummaryService) Basis(ctx context.Context, p BasisParams) ([]map[string]interface{}, error) {
+	result, _, err := s.BasisWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// BasisWithResponse returns Basis's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1basis~1/get
+func (s *BinanceSummaryService) BasisWithResponse(ctx context.Context, p BasisParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if p.Timeframe != nil {
 		if err := checkEnum("timeframe", *p.Timeframe, "daily", "hourly"); err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		q.Set("timeframe", *p.Timeframe)
 	}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 3000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.basis", "/data/summary/binance/basis/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.basis", resp, err)
 	}
 	v, err := decodeResult("binanceSummary.basis", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.basis", resp, err)
 	}
-	return asRows("binanceSummary.basis", v)
+	result, err := asRows("binanceSummary.basis", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.basis", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // BasisRaw — Spot and Futures Prices & Corresponding Basis, raw download.
@@ -73,6 +100,9 @@ func (s *BinanceSummaryService) Basis(ctx context.Context, p BasisParams) ([]map
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1basis~1/get
 func (s *BinanceSummaryService) BasisRaw(ctx context.Context, p BasisParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if err := requireString("symbol", p.Symbol); err != nil {
@@ -86,9 +116,15 @@ func (s *BinanceSummaryService) BasisRaw(ctx context.Context, p BasisParams, f R
 		q.Set("timeframe", *p.Timeframe)
 	}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 3000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.basisRaw", "/data/summary/binance/basis/", q)
@@ -96,6 +132,42 @@ func (s *BinanceSummaryService) BasisRaw(ctx context.Context, p BasisParams, f R
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// BasisStream opens a streaming Basis download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1basis~1/get
+func (s *BinanceSummaryService) BasisStream(ctx context.Context, p BasisParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if err := requireString("symbol", p.Symbol); err != nil {
+		return nil, err
+	}
+	q.Set("symbol", p.Symbol)
+	if p.Timeframe != nil {
+		if err := checkEnum("timeframe", *p.Timeframe, "daily", "hourly"); err != nil {
+			return nil, err
+		}
+		q.Set("timeframe", *p.Timeframe)
+	}
+	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, err
+		}
+		q.Set("date", dateString(*p.Date))
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 3000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "binanceSummary.basisStream", "/data/summary/binance/basis/", q)
 }
 
 // FuturesMetricsParams are the parameters for BinanceSummaryService.FuturesMetrics.
@@ -115,6 +187,17 @@ type FuturesMetricsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1futures~1metrics~1/get
 func (s *BinanceSummaryService) FuturesMetrics(ctx context.Context, p FuturesMetricsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FuturesMetricsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FuturesMetricsWithResponse returns FuturesMetrics's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1futures~1metrics~1/get
+func (s *BinanceSummaryService) FuturesMetricsWithResponse(ctx context.Context, p FuturesMetricsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -123,17 +206,30 @@ func (s *BinanceSummaryService) FuturesMetrics(ctx context.Context, p FuturesMet
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.futuresMetrics", "/data/summary/binance/futures/metrics/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.futuresMetrics", resp, err)
 	}
 	v, err := decodeResult("binanceSummary.futuresMetrics", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.futuresMetrics", resp, err)
 	}
-	return asRows("binanceSummary.futuresMetrics", v)
+	result, err := asRows("binanceSummary.futuresMetrics", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.futuresMetrics", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // FuturesMetricsRaw — Binance Futures UM Summary Metrics, raw download.
@@ -145,6 +241,9 @@ func (s *BinanceSummaryService) FuturesMetrics(ctx context.Context, p FuturesMet
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1futures~1metrics~1/get
 func (s *BinanceSummaryService) FuturesMetricsRaw(ctx context.Context, p FuturesMetricsParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -154,6 +253,9 @@ func (s *BinanceSummaryService) FuturesMetricsRaw(ctx context.Context, p Futures
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.futuresMetricsRaw", "/data/summary/binance/futures/metrics/", q)
@@ -161,6 +263,32 @@ func (s *BinanceSummaryService) FuturesMetricsRaw(ctx context.Context, p Futures
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// FuturesMetricsStream opens a streaming FuturesMetrics download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1futures~1metrics~1/get
+func (s *BinanceSummaryService) FuturesMetricsStream(ctx context.Context, p FuturesMetricsParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "binanceSummary.futuresMetricsStream", "/data/summary/binance/futures/metrics/", q)
 }
 
 // OptionsOiParams are the parameters for BinanceSummaryService.OptionsOi.
@@ -178,22 +306,46 @@ type OptionsOiParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1options~1oi~1/get
 func (s *BinanceSummaryService) OptionsOi(ctx context.Context, p OptionsOiParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OptionsOiWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OptionsOiWithResponse returns OptionsOi's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1options~1oi~1/get
+func (s *BinanceSummaryService) OptionsOiWithResponse(ctx context.Context, p OptionsOiParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Underlying != nil {
 		q.Set("underlying", *p.Underlying)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.optionsOi", "/data/summary/binance/options/oi/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.optionsOi", resp, err)
 	}
 	v, err := decodeResult("binanceSummary.optionsOi", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.optionsOi", resp, err)
 	}
-	return asRows("binanceSummary.optionsOi", v)
+	result, err := asRows("binanceSummary.optionsOi", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.optionsOi", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OptionsOiRaw — Binance Options OI Totals, raw download.
@@ -205,12 +357,18 @@ func (s *BinanceSummaryService) OptionsOi(ctx context.Context, p OptionsOiParams
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1options~1oi~1/get
 func (s *BinanceSummaryService) OptionsOiRaw(ctx context.Context, p OptionsOiParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Underlying != nil {
 		q.Set("underlying", *p.Underlying)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.optionsOiRaw", "/data/summary/binance/options/oi/", q)
@@ -218,6 +376,29 @@ func (s *BinanceSummaryService) OptionsOiRaw(ctx context.Context, p OptionsOiPar
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// OptionsOiStream opens a streaming OptionsOi download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1options~1oi~1/get
+func (s *BinanceSummaryService) OptionsOiStream(ctx context.Context, p OptionsOiParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Underlying != nil {
+		q.Set("underlying", *p.Underlying)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "binanceSummary.optionsOiStream", "/data/summary/binance/options/oi/", q)
 }
 
 // OptionsOiInstrumentParams are the parameters for BinanceSummaryService.OptionsOiInstrument.
@@ -237,6 +418,17 @@ type OptionsOiInstrumentParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1options~1oi~1instrument~1/get
 func (s *BinanceSummaryService) OptionsOiInstrument(ctx context.Context, p OptionsOiInstrumentParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OptionsOiInstrumentWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OptionsOiInstrumentWithResponse returns OptionsOiInstrument's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1options~1oi~1instrument~1/get
+func (s *BinanceSummaryService) OptionsOiInstrumentWithResponse(ctx context.Context, p OptionsOiInstrumentParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Underlying != nil {
 		q.Set("underlying", *p.Underlying)
@@ -245,17 +437,30 @@ func (s *BinanceSummaryService) OptionsOiInstrument(ctx context.Context, p Optio
 		q.Set("symbol", *p.Symbol)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.optionsOiInstrument", "/data/summary/binance/options/oi/instrument/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.optionsOiInstrument", resp, err)
 	}
 	v, err := decodeResult("binanceSummary.optionsOiInstrument", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.optionsOiInstrument", resp, err)
 	}
-	return asRows("binanceSummary.optionsOiInstrument", v)
+	result, err := asRows("binanceSummary.optionsOiInstrument", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.optionsOiInstrument", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OptionsOiInstrumentRaw — Binance Options OI Totals by Instrument, raw download.
@@ -267,6 +472,9 @@ func (s *BinanceSummaryService) OptionsOiInstrument(ctx context.Context, p Optio
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1options~1oi~1instrument~1/get
 func (s *BinanceSummaryService) OptionsOiInstrumentRaw(ctx context.Context, p OptionsOiInstrumentParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Underlying != nil {
@@ -276,6 +484,9 @@ func (s *BinanceSummaryService) OptionsOiInstrumentRaw(ctx context.Context, p Op
 		q.Set("symbol", *p.Symbol)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.optionsOiInstrumentRaw", "/data/summary/binance/options/oi/instrument/", q)
@@ -283,6 +494,32 @@ func (s *BinanceSummaryService) OptionsOiInstrumentRaw(ctx context.Context, p Op
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// OptionsOiInstrumentStream opens a streaming OptionsOiInstrument download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1options~1oi~1instrument~1/get
+func (s *BinanceSummaryService) OptionsOiInstrumentStream(ctx context.Context, p OptionsOiInstrumentParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Underlying != nil {
+		q.Set("underlying", *p.Underlying)
+	}
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "binanceSummary.optionsOiInstrumentStream", "/data/summary/binance/options/oi/instrument/", q)
 }
 
 // OptionsOiMaturityParams are the parameters for BinanceSummaryService.OptionsOiMaturity.
@@ -300,22 +537,46 @@ type OptionsOiMaturityParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1options~1oi~1maturity~1/get
 func (s *BinanceSummaryService) OptionsOiMaturity(ctx context.Context, p OptionsOiMaturityParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OptionsOiMaturityWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OptionsOiMaturityWithResponse returns OptionsOiMaturity's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1options~1oi~1maturity~1/get
+func (s *BinanceSummaryService) OptionsOiMaturityWithResponse(ctx context.Context, p OptionsOiMaturityParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Underlying != nil {
 		q.Set("underlying", *p.Underlying)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.optionsOiMaturity", "/data/summary/binance/options/oi/maturity/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.optionsOiMaturity", resp, err)
 	}
 	v, err := decodeResult("binanceSummary.optionsOiMaturity", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.optionsOiMaturity", resp, err)
 	}
-	return asRows("binanceSummary.optionsOiMaturity", v)
+	result, err := asRows("binanceSummary.optionsOiMaturity", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.optionsOiMaturity", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OptionsOiMaturityRaw — Binance Options OI Totals by Maturity, raw download.
@@ -327,12 +588,18 @@ func (s *BinanceSummaryService) OptionsOiMaturity(ctx context.Context, p Options
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1options~1oi~1maturity~1/get
 func (s *BinanceSummaryService) OptionsOiMaturityRaw(ctx context.Context, p OptionsOiMaturityParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Underlying != nil {
 		q.Set("underlying", *p.Underlying)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.optionsOiMaturityRaw", "/data/summary/binance/options/oi/maturity/", q)
@@ -340,6 +607,29 @@ func (s *BinanceSummaryService) OptionsOiMaturityRaw(ctx context.Context, p Opti
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// OptionsOiMaturityStream opens a streaming OptionsOiMaturity download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1options~1oi~1maturity~1/get
+func (s *BinanceSummaryService) OptionsOiMaturityStream(ctx context.Context, p OptionsOiMaturityParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Underlying != nil {
+		q.Set("underlying", *p.Underlying)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "binanceSummary.optionsOiMaturityStream", "/data/summary/binance/options/oi/maturity/", q)
 }
 
 // SpotFlowParams are the parameters for BinanceSummaryService.SpotFlow.
@@ -359,6 +649,17 @@ type SpotFlowParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1flow~1/get
 func (s *BinanceSummaryService) SpotFlow(ctx context.Context, p SpotFlowParams) (map[string]interface{}, error) {
+	result, _, err := s.SpotFlowWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SpotFlowWithResponse returns SpotFlow's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1flow~1/get
+func (s *BinanceSummaryService) SpotFlowWithResponse(ctx context.Context, p SpotFlowParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -367,17 +668,30 @@ func (s *BinanceSummaryService) SpotFlow(ctx context.Context, p SpotFlowParams) 
 		q.Set("market_type", *p.MarketType)
 	}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.spotFlow", "/data/summary/binance/spot/flow/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotFlow", resp, err)
 	}
 	v, err := decodeResult("binanceSummary.spotFlow", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotFlow", resp, err)
 	}
-	return asObject("binanceSummary.spotFlow", v)
+	result, err := asObject("binanceSummary.spotFlow", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotFlow", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SpotFlowRaw — Binance Flow Imbalance (Order Flow Delta), raw download.
@@ -389,6 +703,9 @@ func (s *BinanceSummaryService) SpotFlow(ctx context.Context, p SpotFlowParams) 
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1flow~1/get
 func (s *BinanceSummaryService) SpotFlowRaw(ctx context.Context, p SpotFlowParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -398,6 +715,9 @@ func (s *BinanceSummaryService) SpotFlowRaw(ctx context.Context, p SpotFlowParam
 		q.Set("market_type", *p.MarketType)
 	}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.spotFlowRaw", "/data/summary/binance/spot/flow/", q)
@@ -405,6 +725,32 @@ func (s *BinanceSummaryService) SpotFlowRaw(ctx context.Context, p SpotFlowParam
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SpotFlowStream opens a streaming SpotFlow download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1flow~1/get
+func (s *BinanceSummaryService) SpotFlowStream(ctx context.Context, p SpotFlowParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.MarketType != nil {
+		q.Set("market_type", *p.MarketType)
+	}
+	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, err
+		}
+		q.Set("date", dateString(*p.Date))
+	}
+	return s.client.doStream(ctx, "binanceSummary.spotFlowStream", "/data/summary/binance/spot/flow/", q)
 }
 
 // SpotLargeTradesParams are the parameters for BinanceSummaryService.SpotLargeTrades.
@@ -432,6 +778,17 @@ type SpotLargeTradesParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1large-trades~1/get
 func (s *BinanceSummaryService) SpotLargeTrades(ctx context.Context, p SpotLargeTradesParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SpotLargeTradesWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SpotLargeTradesWithResponse returns SpotLargeTrades's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1large-trades~1/get
+func (s *BinanceSummaryService) SpotLargeTradesWithResponse(ctx context.Context, p SpotLargeTradesParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -446,23 +803,42 @@ func (s *BinanceSummaryService) SpotLargeTrades(ctx context.Context, p SpotLarge
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.MinUSD != nil {
+		if err := requireFinite("min_usd", *p.MinUSD); err != nil {
+			return nil, nil, err
+		}
 		q.Set("min_usd", strconv.FormatFloat(*p.MinUSD, 'f', -1, 64))
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, nil, err
+		}
 		q.Set("offset", strconv.Itoa(*p.Offset))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.spotLargeTrades", "/data/summary/binance/spot/large-trades/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotLargeTrades", resp, err)
 	}
 	v, err := decodeResult("binanceSummary.spotLargeTrades", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotLargeTrades", resp, err)
 	}
-	return asRows("binanceSummary.spotLargeTrades", v)
+	result, err := asRows("binanceSummary.spotLargeTrades", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotLargeTrades", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SpotLargeTradesRaw — Binance Large Trades (Whale Activity), raw download.
@@ -474,6 +850,9 @@ func (s *BinanceSummaryService) SpotLargeTrades(ctx context.Context, p SpotLarge
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1large-trades~1/get
 func (s *BinanceSummaryService) SpotLargeTradesRaw(ctx context.Context, p SpotLargeTradesParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -489,12 +868,21 @@ func (s *BinanceSummaryService) SpotLargeTradesRaw(ctx context.Context, p SpotLa
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.MinUSD != nil {
+		if err := requireFinite("min_usd", *p.MinUSD); err != nil {
+			return nil, err
+		}
 		q.Set("min_usd", strconv.FormatFloat(*p.MinUSD, 'f', -1, 64))
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, err
+		}
 		q.Set("offset", strconv.Itoa(*p.Offset))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.spotLargeTradesRaw", "/data/summary/binance/spot/large-trades/", q)
@@ -502,6 +890,50 @@ func (s *BinanceSummaryService) SpotLargeTradesRaw(ctx context.Context, p SpotLa
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SpotLargeTradesStream opens a streaming SpotLargeTrades download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1large-trades~1/get
+func (s *BinanceSummaryService) SpotLargeTradesStream(ctx context.Context, p SpotLargeTradesParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.MarketType != nil {
+		q.Set("market_type", *p.MarketType)
+	}
+	if p.StartDate != nil {
+		q.Set("startdate", *p.StartDate)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.MinUSD != nil {
+		if err := requireFinite("min_usd", *p.MinUSD); err != nil {
+			return nil, err
+		}
+		q.Set("min_usd", strconv.FormatFloat(*p.MinUSD, 'f', -1, 64))
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, err
+		}
+		q.Set("offset", strconv.Itoa(*p.Offset))
+	}
+	return s.client.doStream(ctx, "binanceSummary.spotLargeTradesStream", "/data/summary/binance/spot/large-trades/", q)
 }
 
 // SpotTransactionalParams are the parameters for BinanceSummaryService.SpotTransactional.
@@ -523,6 +955,17 @@ type SpotTransactionalParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1/get
 func (s *BinanceSummaryService) SpotTransactional(ctx context.Context, p SpotTransactionalParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SpotTransactionalWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SpotTransactionalWithResponse returns SpotTransactional's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1/get
+func (s *BinanceSummaryService) SpotTransactionalWithResponse(ctx context.Context, p SpotTransactionalParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -531,6 +974,9 @@ func (s *BinanceSummaryService) SpotTransactional(ctx context.Context, p SpotTra
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Interval != nil {
@@ -538,13 +984,23 @@ func (s *BinanceSummaryService) SpotTransactional(ctx context.Context, p SpotTra
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.spotTransactional", "/data/summary/binance/spot/transactional/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotTransactional", resp, err)
 	}
 	v, err := decodeResult("binanceSummary.spotTransactional", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotTransactional", resp, err)
 	}
-	return asRows("binanceSummary.spotTransactional", v)
+	result, err := asRows("binanceSummary.spotTransactional", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotTransactional", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SpotTransactionalRaw — Binance Spot Volume Summary, raw download.
@@ -556,6 +1012,9 @@ func (s *BinanceSummaryService) SpotTransactional(ctx context.Context, p SpotTra
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1/get
 func (s *BinanceSummaryService) SpotTransactionalRaw(ctx context.Context, p SpotTransactionalParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -565,6 +1024,9 @@ func (s *BinanceSummaryService) SpotTransactionalRaw(ctx context.Context, p Spot
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Interval != nil {
@@ -575,6 +1037,35 @@ func (s *BinanceSummaryService) SpotTransactionalRaw(ctx context.Context, p Spot
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SpotTransactionalStream opens a streaming SpotTransactional download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1/get
+func (s *BinanceSummaryService) SpotTransactionalStream(ctx context.Context, p SpotTransactionalParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	if p.Interval != nil {
+		q.Set("interval", *p.Interval)
+	}
+	return s.client.doStream(ctx, "binanceSummary.spotTransactionalStream", "/data/summary/binance/spot/transactional/", q)
 }
 
 // SpotTransactionalDailyParams are the parameters for BinanceSummaryService.SpotTransactionalDaily.
@@ -600,6 +1091,17 @@ type SpotTransactionalDailyParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1daily~1/get
 func (s *BinanceSummaryService) SpotTransactionalDaily(ctx context.Context, p SpotTransactionalDailyParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SpotTransactionalDailyWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SpotTransactionalDailyWithResponse returns SpotTransactionalDaily's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1daily~1/get
+func (s *BinanceSummaryService) SpotTransactionalDailyWithResponse(ctx context.Context, p SpotTransactionalDailyParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -614,20 +1116,36 @@ func (s *BinanceSummaryService) SpotTransactionalDaily(ctx context.Context, p Sp
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, nil, err
+		}
 		q.Set("offset", strconv.Itoa(*p.Offset))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.spotTransactionalDaily", "/data/summary/binance/spot/transactional/daily/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotTransactionalDaily", resp, err)
 	}
 	v, err := decodeResult("binanceSummary.spotTransactionalDaily", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotTransactionalDaily", resp, err)
 	}
-	return asRows("binanceSummary.spotTransactionalDaily", v)
+	result, err := asRows("binanceSummary.spotTransactionalDaily", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotTransactionalDaily", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SpotTransactionalDailyRaw — Binance Daily Trade Summary, raw download.
@@ -639,6 +1157,9 @@ func (s *BinanceSummaryService) SpotTransactionalDaily(ctx context.Context, p Sp
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1daily~1/get
 func (s *BinanceSummaryService) SpotTransactionalDailyRaw(ctx context.Context, p SpotTransactionalDailyParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -654,9 +1175,15 @@ func (s *BinanceSummaryService) SpotTransactionalDailyRaw(ctx context.Context, p
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, err
+		}
 		q.Set("offset", strconv.Itoa(*p.Offset))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.spotTransactionalDailyRaw", "/data/summary/binance/spot/transactional/daily/", q)
@@ -664,6 +1191,44 @@ func (s *BinanceSummaryService) SpotTransactionalDailyRaw(ctx context.Context, p
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SpotTransactionalDailyStream opens a streaming SpotTransactionalDaily download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1daily~1/get
+func (s *BinanceSummaryService) SpotTransactionalDailyStream(ctx context.Context, p SpotTransactionalDailyParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.MarketType != nil {
+		q.Set("market_type", *p.MarketType)
+	}
+	if p.StartDate != nil {
+		q.Set("startdate", *p.StartDate)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, err
+		}
+		q.Set("offset", strconv.Itoa(*p.Offset))
+	}
+	return s.client.doStream(ctx, "binanceSummary.spotTransactionalDailyStream", "/data/summary/binance/spot/transactional/daily/", q)
 }
 
 // SpotTransactionalHourlyParams are the parameters for BinanceSummaryService.SpotTransactionalHourly.
@@ -683,6 +1248,17 @@ type SpotTransactionalHourlyParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1hourly~1/get
 func (s *BinanceSummaryService) SpotTransactionalHourly(ctx context.Context, p SpotTransactionalHourlyParams) (map[string]interface{}, error) {
+	result, _, err := s.SpotTransactionalHourlyWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SpotTransactionalHourlyWithResponse returns SpotTransactionalHourly's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1hourly~1/get
+func (s *BinanceSummaryService) SpotTransactionalHourlyWithResponse(ctx context.Context, p SpotTransactionalHourlyParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -691,17 +1267,30 @@ func (s *BinanceSummaryService) SpotTransactionalHourly(ctx context.Context, p S
 		q.Set("market_type", *p.MarketType)
 	}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.spotTransactionalHourly", "/data/summary/binance/spot/transactional/hourly/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotTransactionalHourly", resp, err)
 	}
 	v, err := decodeResult("binanceSummary.spotTransactionalHourly", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotTransactionalHourly", resp, err)
 	}
-	return asObject("binanceSummary.spotTransactionalHourly", v)
+	result, err := asObject("binanceSummary.spotTransactionalHourly", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotTransactionalHourly", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SpotTransactionalHourlyRaw — Binance Hourly Trade Summary, raw download.
@@ -713,6 +1302,9 @@ func (s *BinanceSummaryService) SpotTransactionalHourly(ctx context.Context, p S
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1hourly~1/get
 func (s *BinanceSummaryService) SpotTransactionalHourlyRaw(ctx context.Context, p SpotTransactionalHourlyParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -722,6 +1314,9 @@ func (s *BinanceSummaryService) SpotTransactionalHourlyRaw(ctx context.Context, 
 		q.Set("market_type", *p.MarketType)
 	}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.spotTransactionalHourlyRaw", "/data/summary/binance/spot/transactional/hourly/", q)
@@ -729,6 +1324,32 @@ func (s *BinanceSummaryService) SpotTransactionalHourlyRaw(ctx context.Context, 
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SpotTransactionalHourlyStream opens a streaming SpotTransactionalHourly download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1hourly~1/get
+func (s *BinanceSummaryService) SpotTransactionalHourlyStream(ctx context.Context, p SpotTransactionalHourlyParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.MarketType != nil {
+		q.Set("market_type", *p.MarketType)
+	}
+	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, err
+		}
+		q.Set("date", dateString(*p.Date))
+	}
+	return s.client.doStream(ctx, "binanceSummary.spotTransactionalHourlyStream", "/data/summary/binance/spot/transactional/hourly/", q)
 }
 
 // SpotVolumeProfileParams are the parameters for BinanceSummaryService.SpotVolumeProfile.
@@ -748,6 +1369,17 @@ type SpotVolumeProfileParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1volume-profile~1/get
 func (s *BinanceSummaryService) SpotVolumeProfile(ctx context.Context, p SpotVolumeProfileParams) (map[string]interface{}, error) {
+	result, _, err := s.SpotVolumeProfileWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SpotVolumeProfileWithResponse returns SpotVolumeProfile's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1volume-profile~1/get
+func (s *BinanceSummaryService) SpotVolumeProfileWithResponse(ctx context.Context, p SpotVolumeProfileParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -756,17 +1388,30 @@ func (s *BinanceSummaryService) SpotVolumeProfile(ctx context.Context, p SpotVol
 		q.Set("market_type", *p.MarketType)
 	}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.spotVolumeProfile", "/data/summary/binance/spot/volume-profile/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotVolumeProfile", resp, err)
 	}
 	v, err := decodeResult("binanceSummary.spotVolumeProfile", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotVolumeProfile", resp, err)
 	}
-	return asObject("binanceSummary.spotVolumeProfile", v)
+	result, err := asObject("binanceSummary.spotVolumeProfile", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("binanceSummary.spotVolumeProfile", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SpotVolumeProfileRaw — Binance Volume Profile (Price Distribution), raw download.
@@ -778,6 +1423,9 @@ func (s *BinanceSummaryService) SpotVolumeProfile(ctx context.Context, p SpotVol
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1volume-profile~1/get
 func (s *BinanceSummaryService) SpotVolumeProfileRaw(ctx context.Context, p SpotVolumeProfileParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Symbol != nil {
@@ -787,6 +1435,9 @@ func (s *BinanceSummaryService) SpotVolumeProfileRaw(ctx context.Context, p Spot
 		q.Set("market_type", *p.MarketType)
 	}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	resp, err := s.client.do(ctx, "binanceSummary.spotVolumeProfileRaw", "/data/summary/binance/spot/volume-profile/", q)
@@ -794,4 +1445,30 @@ func (s *BinanceSummaryService) SpotVolumeProfileRaw(ctx context.Context, p Spot
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SpotVolumeProfileStream opens a streaming SpotVolumeProfile download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1volume-profile~1/get
+func (s *BinanceSummaryService) SpotVolumeProfileStream(ctx context.Context, p SpotVolumeProfileParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.MarketType != nil {
+		q.Set("market_type", *p.MarketType)
+	}
+	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, err
+		}
+		q.Set("date", dateString(*p.Date))
+	}
+	return s.client.doStream(ctx, "binanceSummary.spotVolumeProfileStream", "/data/summary/binance/spot/volume-profile/", q)
 }

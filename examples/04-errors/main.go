@@ -23,7 +23,7 @@ func main() {
 
 	_, err = client.Catalog.OhlcBinanceAllAvailable(context.Background(), cdd.OhlcBinanceAllAvailableParams{})
 
-	var apiErr *cdd.ApiError
+	var apiErr *cdd.APIError
 	var tErr *cdd.TransportError
 	var argErr *cdd.ArgumentError
 	switch {

@@ -33,6 +33,17 @@ type CftcCotParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1cftc~1cot~1/get
 func (s *GovtService) CftcCot(ctx context.Context, p CftcCotParams) ([]map[string]interface{}, error) {
+	result, _, err := s.CftcCotWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// CftcCotWithResponse returns CftcCot's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1cftc~1cot~1/get
+func (s *GovtService) CftcCotWithResponse(ctx context.Context, p CftcCotParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.ContractName != nil {
 		q.Set("contract_name", *p.ContractName)
@@ -45,13 +56,23 @@ func (s *GovtService) CftcCot(ctx context.Context, p CftcCotParams) ([]map[strin
 	}
 	resp, err := s.client.do(ctx, "govt.cftcCot", "/data/cftc/cot/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("govt.cftcCot", resp, err)
 	}
 	v, err := decodeResult("govt.cftcCot", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("govt.cftcCot", resp, err)
 	}
-	return asRows("govt.cftcCot", v)
+	result, err := asRows("govt.cftcCot", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("govt.cftcCot", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // CftcCotRaw — Committment of Traders (COT) Timeseries, raw download.
@@ -63,6 +84,9 @@ func (s *GovtService) CftcCot(ctx context.Context, p CftcCotParams) ([]map[strin
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1cftc~1cot~1/get
 func (s *GovtService) CftcCotRaw(ctx context.Context, p CftcCotParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.ContractName != nil {
@@ -81,6 +105,29 @@ func (s *GovtService) CftcCotRaw(ctx context.Context, p CftcCotParams, f ReturnF
 	return resp.body, nil
 }
 
+// CftcCotStream opens a streaming CftcCot download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1cftc~1cot~1/get
+func (s *GovtService) CftcCotStream(ctx context.Context, p CftcCotParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.ContractName != nil {
+		q.Set("contract_name", *p.ContractName)
+	}
+	if p.GroupName != nil {
+		q.Set("group_name", *p.GroupName)
+	}
+	if p.Year != nil {
+		q.Set("year", *p.Year)
+	}
+	return s.client.doStream(ctx, "govt.cftcCotStream", "/data/cftc/cot/", q)
+}
+
 // TreasuryParYieldsRealParams are the parameters for GovtService.TreasuryParYieldsReal.
 //
 // See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1treasury~1par-yields-real~1/get
@@ -94,19 +141,40 @@ type TreasuryParYieldsRealParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1treasury~1par-yields-real~1/get
 func (s *GovtService) TreasuryParYieldsReal(ctx context.Context, p TreasuryParYieldsRealParams) ([]map[string]interface{}, error) {
+	result, _, err := s.TreasuryParYieldsRealWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// TreasuryParYieldsRealWithResponse returns TreasuryParYieldsReal's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1treasury~1par-yields-real~1/get
+func (s *GovtService) TreasuryParYieldsRealWithResponse(ctx context.Context, p TreasuryParYieldsRealParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Year != nil {
 		q.Set("year", strconv.Itoa(*p.Year))
 	}
 	resp, err := s.client.do(ctx, "govt.treasuryParYieldsReal", "/data/treasury/par-yields-real/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("govt.treasuryParYieldsReal", resp, err)
 	}
 	v, err := decodeResult("govt.treasuryParYieldsReal", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("govt.treasuryParYieldsReal", resp, err)
 	}
-	return asRows("govt.treasuryParYieldsReal", v)
+	result, err := asRows("govt.treasuryParYieldsReal", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("govt.treasuryParYieldsReal", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // TreasuryParYieldsRealRaw — Treasury Par Yield Curve Real Rates, raw download.
@@ -118,6 +186,9 @@ func (s *GovtService) TreasuryParYieldsReal(ctx context.Context, p TreasuryParYi
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1treasury~1par-yields-real~1/get
 func (s *GovtService) TreasuryParYieldsRealRaw(ctx context.Context, p TreasuryParYieldsRealParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Year != nil {
@@ -128,6 +199,23 @@ func (s *GovtService) TreasuryParYieldsRealRaw(ctx context.Context, p TreasuryPa
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// TreasuryParYieldsRealStream opens a streaming TreasuryParYieldsReal download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1treasury~1par-yields-real~1/get
+func (s *GovtService) TreasuryParYieldsRealStream(ctx context.Context, p TreasuryParYieldsRealParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Year != nil {
+		q.Set("year", strconv.Itoa(*p.Year))
+	}
+	return s.client.doStream(ctx, "govt.treasuryParYieldsRealStream", "/data/treasury/par-yields-real/", q)
 }
 
 // TreasuryParYieldsParams are the parameters for GovtService.TreasuryParYields.
@@ -143,19 +231,40 @@ type TreasuryParYieldsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1treasury~1par-yields~1/get
 func (s *GovtService) TreasuryParYields(ctx context.Context, p TreasuryParYieldsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.TreasuryParYieldsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// TreasuryParYieldsWithResponse returns TreasuryParYields's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1treasury~1par-yields~1/get
+func (s *GovtService) TreasuryParYieldsWithResponse(ctx context.Context, p TreasuryParYieldsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Year != nil {
 		q.Set("year", strconv.Itoa(*p.Year))
 	}
 	resp, err := s.client.do(ctx, "govt.treasuryParYields", "/data/treasury/par-yields/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("govt.treasuryParYields", resp, err)
 	}
 	v, err := decodeResult("govt.treasuryParYields", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("govt.treasuryParYields", resp, err)
 	}
-	return asRows("govt.treasuryParYields", v)
+	result, err := asRows("govt.treasuryParYields", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("govt.treasuryParYields", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // TreasuryParYieldsRaw — Treasury Par Yield Curve Rates, raw download.
@@ -167,6 +276,9 @@ func (s *GovtService) TreasuryParYields(ctx context.Context, p TreasuryParYields
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1treasury~1par-yields~1/get
 func (s *GovtService) TreasuryParYieldsRaw(ctx context.Context, p TreasuryParYieldsParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Year != nil {
@@ -177,4 +289,21 @@ func (s *GovtService) TreasuryParYieldsRaw(ctx context.Context, p TreasuryParYie
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// TreasuryParYieldsStream opens a streaming TreasuryParYields download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1treasury~1par-yields~1/get
+func (s *GovtService) TreasuryParYieldsStream(ctx context.Context, p TreasuryParYieldsParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Year != nil {
+		q.Set("year", strconv.Itoa(*p.Year))
+	}
+	return s.client.doStream(ctx, "govt.treasuryParYieldsStream", "/data/treasury/par-yields/", q)
 }

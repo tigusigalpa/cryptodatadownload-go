@@ -34,13 +34,24 @@ type FeaturesMlAllParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1aggregates~1features~1ml~1all~1/get
 func (s *AggregatesService) FeaturesMlAll(ctx context.Context, p FeaturesMlAllParams) ([]map[string]interface{}, error) {
+	result, _, err := s.FeaturesMlAllWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// FeaturesMlAllWithResponse returns FeaturesMlAll's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1aggregates~1features~1ml~1all~1/get
+func (s *AggregatesService) FeaturesMlAllWithResponse(ctx context.Context, p FeaturesMlAllParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	if len(p.Fields) > 0 {
@@ -48,13 +59,23 @@ func (s *AggregatesService) FeaturesMlAll(ctx context.Context, p FeaturesMlAllPa
 	}
 	resp, err := s.client.do(ctx, "aggregates.featuresMlAll", "/data/aggregates/features/ml/all/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("aggregates.featuresMlAll", resp, err)
 	}
 	v, err := decodeResult("aggregates.featuresMlAll", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("aggregates.featuresMlAll", resp, err)
 	}
-	return asRows("aggregates.featuresMlAll", v)
+	result, err := asRows("aggregates.featuresMlAll", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("aggregates.featuresMlAll", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OnchainDashboardParams are the parameters for AggregatesService.OnchainDashboard.
@@ -74,13 +95,24 @@ type OnchainDashboardParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1aggregates~1onchain~1dashboard~1/get
 func (s *AggregatesService) OnchainDashboard(ctx context.Context, p OnchainDashboardParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OnchainDashboardWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OnchainDashboardWithResponse returns OnchainDashboard's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1aggregates~1onchain~1dashboard~1/get
+func (s *AggregatesService) OnchainDashboardWithResponse(ctx context.Context, p OnchainDashboardParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("chain", p.Chain, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("chain", p.Chain)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	if len(p.Fields) > 0 {
@@ -88,13 +120,23 @@ func (s *AggregatesService) OnchainDashboard(ctx context.Context, p OnchainDashb
 	}
 	resp, err := s.client.do(ctx, "aggregates.onchainDashboard", "/data/aggregates/onchain/dashboard/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("aggregates.onchainDashboard", resp, err)
 	}
 	v, err := decodeResult("aggregates.onchainDashboard", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("aggregates.onchainDashboard", resp, err)
 	}
-	return asRows("aggregates.onchainDashboard", v)
+	result, err := asRows("aggregates.onchainDashboard", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("aggregates.onchainDashboard", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OptionsDashboardParams are the parameters for AggregatesService.OptionsDashboard.
@@ -114,13 +156,24 @@ type OptionsDashboardParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1aggregates~1options~1dashboard~1/get
 func (s *AggregatesService) OptionsDashboard(ctx context.Context, p OptionsDashboardParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OptionsDashboardWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OptionsDashboardWithResponse returns OptionsDashboard's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1aggregates~1options~1dashboard~1/get
+func (s *AggregatesService) OptionsDashboardWithResponse(ctx context.Context, p OptionsDashboardParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	if len(p.Fields) > 0 {
@@ -128,13 +181,23 @@ func (s *AggregatesService) OptionsDashboard(ctx context.Context, p OptionsDashb
 	}
 	resp, err := s.client.do(ctx, "aggregates.optionsDashboard", "/data/aggregates/options/dashboard/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("aggregates.optionsDashboard", resp, err)
 	}
 	v, err := decodeResult("aggregates.optionsDashboard", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("aggregates.optionsDashboard", resp, err)
 	}
-	return asRows("aggregates.optionsDashboard", v)
+	result, err := asRows("aggregates.optionsDashboard", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("aggregates.optionsDashboard", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // RiskPanelParams are the parameters for AggregatesService.RiskPanel.
@@ -154,13 +217,24 @@ type RiskPanelParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1aggregates~1risk~1panel~1/get
 func (s *AggregatesService) RiskPanel(ctx context.Context, p RiskPanelParams) ([]map[string]interface{}, error) {
+	result, _, err := s.RiskPanelWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// RiskPanelWithResponse returns RiskPanel's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1aggregates~1risk~1panel~1/get
+func (s *AggregatesService) RiskPanelWithResponse(ctx context.Context, p RiskPanelParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	if len(p.Fields) > 0 {
@@ -168,11 +242,21 @@ func (s *AggregatesService) RiskPanel(ctx context.Context, p RiskPanelParams) ([
 	}
 	resp, err := s.client.do(ctx, "aggregates.riskPanel", "/data/aggregates/risk/panel/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("aggregates.riskPanel", resp, err)
 	}
 	v, err := decodeResult("aggregates.riskPanel", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("aggregates.riskPanel", resp, err)
 	}
-	return asRows("aggregates.riskPanel", v)
+	result, err := asRows("aggregates.riskPanel", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("aggregates.riskPanel", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }

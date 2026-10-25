@@ -1,7 +1,6 @@
 package cryptodatadownload
 
 import (
-	"encoding/json"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -85,11 +84,6 @@ func (ts *testServer) setResponse(status int, body []byte) {
 	ts.status = status
 	ts.respBody = body
 	ts.responder = nil
-}
-
-func (ts *testServer) setJSON(status int, v interface{}) {
-	b, _ := json.Marshal(v)
-	ts.setResponse(status, b)
 }
 
 func (ts *testServer) lastRequest() recordedRequest {

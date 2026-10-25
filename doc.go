@@ -9,9 +9,9 @@
 // https://api.cryptodatadownload.com/?format=openapi.
 //
 // Authentication uses a single header — "Authorization: Token <key>" — on
-// every request. The key is never placed in the query string (the optional
-// auth_token parameter the API technically accepts is deliberately
-// unsupported) and never appears in errors or logs.
+// every request by default. WithQueryTokenAuth explicitly opts into query
+// authentication for integrations that require it; response metadata and
+// printable errors redact credentials.
 //
 // Create one Client with NewClient and reuse it for the lifetime of your
 // application; all services are safe for concurrent use.

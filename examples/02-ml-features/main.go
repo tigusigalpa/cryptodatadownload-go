@@ -29,7 +29,7 @@ func main() {
 		Date:   yesterday,
 		Fields: []string{"symbol", "date", "vol_rank_z", "momentum_12_1"},
 	})
-	var apiErr *cdd.ApiError
+	var apiErr *cdd.APIError
 	switch {
 	case err == nil:
 		for _, r := range rows {

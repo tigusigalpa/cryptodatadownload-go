@@ -26,16 +26,37 @@ type CftcCotAvailableParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1cftc~1cot~1available~1/get
 func (s *CatalogService) CftcCotAvailable(ctx context.Context, p CftcCotAvailableParams) (map[string]interface{}, error) {
+	result, _, err := s.CftcCotAvailableWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// CftcCotAvailableWithResponse returns CftcCotAvailable's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1cftc~1cot~1available~1/get
+func (s *CatalogService) CftcCotAvailableWithResponse(ctx context.Context, p CftcCotAvailableParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	resp, err := s.client.do(ctx, "catalog.cftcCotAvailable", "/data/cftc/cot/available/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.cftcCotAvailable", resp, err)
 	}
 	v, err := decodeResult("catalog.cftcCotAvailable", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("catalog.cftcCotAvailable", resp, err)
 	}
-	return asObject("catalog.cftcCotAvailable", v)
+	result, err := asObject("catalog.cftcCotAvailable", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.cftcCotAvailable", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OhlcBinanceAllAvailableParams are the parameters for CatalogService.OhlcBinanceAllAvailable.
@@ -49,16 +70,37 @@ type OhlcBinanceAllAvailableParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1all~1available~1/get
 func (s *CatalogService) OhlcBinanceAllAvailable(ctx context.Context, p OhlcBinanceAllAvailableParams) (map[string]interface{}, error) {
+	result, _, err := s.OhlcBinanceAllAvailableWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OhlcBinanceAllAvailableWithResponse returns OhlcBinanceAllAvailable's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1binance~1all~1available~1/get
+func (s *CatalogService) OhlcBinanceAllAvailableWithResponse(ctx context.Context, p OhlcBinanceAllAvailableParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	resp, err := s.client.do(ctx, "catalog.ohlcBinanceAllAvailable", "/data/ohlc/binance/all/available/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.ohlcBinanceAllAvailable", resp, err)
 	}
 	v, err := decodeResult("catalog.ohlcBinanceAllAvailable", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("catalog.ohlcBinanceAllAvailable", resp, err)
 	}
-	return asObject("catalog.ohlcBinanceAllAvailable", v)
+	result, err := asObject("catalog.ohlcBinanceAllAvailable", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.ohlcBinanceAllAvailable", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // OhlcDeribitFuturesAvailableParams are the parameters for CatalogService.OhlcDeribitFuturesAvailable.
@@ -71,17 +113,38 @@ type OhlcDeribitFuturesAvailableParams struct {
 //
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1futures~1available~1/get
-func (s *CatalogService) OhlcDeribitFuturesAvailable(ctx context.Context, p OhlcDeribitFuturesAvailableParams) ([]map[string]interface{}, error) {
+func (s *CatalogService) OhlcDeribitFuturesAvailable(ctx context.Context, p OhlcDeribitFuturesAvailableParams) ([]string, error) {
+	result, _, err := s.OhlcDeribitFuturesAvailableWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OhlcDeribitFuturesAvailableWithResponse returns OhlcDeribitFuturesAvailable's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1futures~1available~1/get
+func (s *CatalogService) OhlcDeribitFuturesAvailableWithResponse(ctx context.Context, p OhlcDeribitFuturesAvailableParams) (*Result[[]string], *Response, error) {
 	q := url.Values{}
 	resp, err := s.client.do(ctx, "catalog.ohlcDeribitFuturesAvailable", "/data/ohlc/deribit/futures/available/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.ohlcDeribitFuturesAvailable", resp, err)
 	}
 	v, err := decodeResult("catalog.ohlcDeribitFuturesAvailable", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("catalog.ohlcDeribitFuturesAvailable", resp, err)
 	}
-	return asRows("catalog.ohlcDeribitFuturesAvailable", v)
+	result, err := asStrings("catalog.ohlcDeribitFuturesAvailable", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.ohlcDeribitFuturesAvailable", resp, err)
+	}
+	return &Result[[]string]{Result: result}, resp.metadata, nil
 }
 
 // OhlcDeribitFuturesFundingAvailableParams are the parameters for CatalogService.OhlcDeribitFuturesFundingAvailable.
@@ -94,17 +157,38 @@ type OhlcDeribitFuturesFundingAvailableParams struct {
 //
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1futures~1funding~1available~1/get
-func (s *CatalogService) OhlcDeribitFuturesFundingAvailable(ctx context.Context, p OhlcDeribitFuturesFundingAvailableParams) ([]map[string]interface{}, error) {
+func (s *CatalogService) OhlcDeribitFuturesFundingAvailable(ctx context.Context, p OhlcDeribitFuturesFundingAvailableParams) ([]string, error) {
+	result, _, err := s.OhlcDeribitFuturesFundingAvailableWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OhlcDeribitFuturesFundingAvailableWithResponse returns OhlcDeribitFuturesFundingAvailable's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1futures~1funding~1available~1/get
+func (s *CatalogService) OhlcDeribitFuturesFundingAvailableWithResponse(ctx context.Context, p OhlcDeribitFuturesFundingAvailableParams) (*Result[[]string], *Response, error) {
 	q := url.Values{}
 	resp, err := s.client.do(ctx, "catalog.ohlcDeribitFuturesFundingAvailable", "/data/ohlc/deribit/futures/funding/available/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.ohlcDeribitFuturesFundingAvailable", resp, err)
 	}
 	v, err := decodeResult("catalog.ohlcDeribitFuturesFundingAvailable", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("catalog.ohlcDeribitFuturesFundingAvailable", resp, err)
 	}
-	return asRows("catalog.ohlcDeribitFuturesFundingAvailable", v)
+	result, err := asStrings("catalog.ohlcDeribitFuturesFundingAvailable", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.ohlcDeribitFuturesFundingAvailable", resp, err)
+	}
+	return &Result[[]string]{Result: result}, resp.metadata, nil
 }
 
 // OhlcDeribitOptionsAvailableParams are the parameters for CatalogService.OhlcDeribitOptionsAvailable.
@@ -119,20 +203,41 @@ type OhlcDeribitOptionsAvailableParams struct {
 //
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1options~1available~1/get
-func (s *CatalogService) OhlcDeribitOptionsAvailable(ctx context.Context, p OhlcDeribitOptionsAvailableParams) ([]map[string]interface{}, error) {
+func (s *CatalogService) OhlcDeribitOptionsAvailable(ctx context.Context, p OhlcDeribitOptionsAvailableParams) ([]string, error) {
+	result, _, err := s.OhlcDeribitOptionsAvailableWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OhlcDeribitOptionsAvailableWithResponse returns OhlcDeribitOptionsAvailable's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1ohlc~1deribit~1options~1available~1/get
+func (s *CatalogService) OhlcDeribitOptionsAvailableWithResponse(ctx context.Context, p OhlcDeribitOptionsAvailableParams) (*Result[[]string], *Response, error) {
 	q := url.Values{}
 	if p.Year != nil {
 		q.Set("year", *p.Year)
 	}
 	resp, err := s.client.do(ctx, "catalog.ohlcDeribitOptionsAvailable", "/data/ohlc/deribit/options/available/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.ohlcDeribitOptionsAvailable", resp, err)
 	}
 	v, err := decodeResult("catalog.ohlcDeribitOptionsAvailable", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("catalog.ohlcDeribitOptionsAvailable", resp, err)
 	}
-	return asRows("catalog.ohlcDeribitOptionsAvailable", v)
+	result, err := asStrings("catalog.ohlcDeribitOptionsAvailable", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.ohlcDeribitOptionsAvailable", resp, err)
+	}
+	return &Result[[]string]{Result: result}, resp.metadata, nil
 }
 
 // SummaryBinanceFuturesFundingAvailableParams are the parameters for CatalogService.SummaryBinanceFuturesFundingAvailable.
@@ -146,16 +251,37 @@ type SummaryBinanceFuturesFundingAvailableParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1futures~1funding~1available~1/get
 func (s *CatalogService) SummaryBinanceFuturesFundingAvailable(ctx context.Context, p SummaryBinanceFuturesFundingAvailableParams) (map[string]interface{}, error) {
+	result, _, err := s.SummaryBinanceFuturesFundingAvailableWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryBinanceFuturesFundingAvailableWithResponse returns SummaryBinanceFuturesFundingAvailable's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1futures~1funding~1available~1/get
+func (s *CatalogService) SummaryBinanceFuturesFundingAvailableWithResponse(ctx context.Context, p SummaryBinanceFuturesFundingAvailableParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	resp, err := s.client.do(ctx, "catalog.summaryBinanceFuturesFundingAvailable", "/data/summary/binance/futures/funding/available/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.summaryBinanceFuturesFundingAvailable", resp, err)
 	}
 	v, err := decodeResult("catalog.summaryBinanceFuturesFundingAvailable", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("catalog.summaryBinanceFuturesFundingAvailable", resp, err)
 	}
-	return asObject("catalog.summaryBinanceFuturesFundingAvailable", v)
+	result, err := asObject("catalog.summaryBinanceFuturesFundingAvailable", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.summaryBinanceFuturesFundingAvailable", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryBinanceSpotTransactionalAvailableParams are the parameters for CatalogService.SummaryBinanceSpotTransactionalAvailable.
@@ -173,6 +299,17 @@ type SummaryBinanceSpotTransactionalAvailableParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1available~1/get
 func (s *CatalogService) SummaryBinanceSpotTransactionalAvailable(ctx context.Context, p SummaryBinanceSpotTransactionalAvailableParams) (map[string]interface{}, error) {
+	result, _, err := s.SummaryBinanceSpotTransactionalAvailableWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryBinanceSpotTransactionalAvailableWithResponse returns SummaryBinanceSpotTransactionalAvailable's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1binance~1spot~1transactional~1available~1/get
+func (s *CatalogService) SummaryBinanceSpotTransactionalAvailableWithResponse(ctx context.Context, p SummaryBinanceSpotTransactionalAvailableParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Symbol != nil {
 		q.Set("symbol", *p.Symbol)
@@ -182,13 +319,23 @@ func (s *CatalogService) SummaryBinanceSpotTransactionalAvailable(ctx context.Co
 	}
 	resp, err := s.client.do(ctx, "catalog.summaryBinanceSpotTransactionalAvailable", "/data/summary/binance/spot/transactional/available/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.summaryBinanceSpotTransactionalAvailable", resp, err)
 	}
 	v, err := decodeResult("catalog.summaryBinanceSpotTransactionalAvailable", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("catalog.summaryBinanceSpotTransactionalAvailable", resp, err)
 	}
-	return asObject("catalog.summaryBinanceSpotTransactionalAvailable", v)
+	result, err := asObject("catalog.summaryBinanceSpotTransactionalAvailable", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.summaryBinanceSpotTransactionalAvailable", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryDeribitOptionsGreeksAvailableParams are the parameters for CatalogService.SummaryDeribitOptionsGreeksAvailable.
@@ -204,19 +351,40 @@ type SummaryDeribitOptionsGreeksAvailableParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1greeks~1available~1/get
 func (s *CatalogService) SummaryDeribitOptionsGreeksAvailable(ctx context.Context, p SummaryDeribitOptionsGreeksAvailableParams) (map[string]interface{}, error) {
+	result, _, err := s.SummaryDeribitOptionsGreeksAvailableWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryDeribitOptionsGreeksAvailableWithResponse returns SummaryDeribitOptionsGreeksAvailable's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1greeks~1available~1/get
+func (s *CatalogService) SummaryDeribitOptionsGreeksAvailableWithResponse(ctx context.Context, p SummaryDeribitOptionsGreeksAvailableParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Underlying != nil {
 		q.Set("underlying", *p.Underlying)
 	}
 	resp, err := s.client.do(ctx, "catalog.summaryDeribitOptionsGreeksAvailable", "/data/summary/deribit/options/greeks/available/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.summaryDeribitOptionsGreeksAvailable", resp, err)
 	}
 	v, err := decodeResult("catalog.summaryDeribitOptionsGreeksAvailable", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("catalog.summaryDeribitOptionsGreeksAvailable", resp, err)
 	}
-	return asObject("catalog.summaryDeribitOptionsGreeksAvailable", v)
+	result, err := asObject("catalog.summaryDeribitOptionsGreeksAvailable", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.summaryDeribitOptionsGreeksAvailable", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // TransactionsDeribitOptionsAvailableParams are the parameters for CatalogService.TransactionsDeribitOptionsAvailable.
@@ -232,17 +400,38 @@ type TransactionsDeribitOptionsAvailableParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1transactions~1deribit~1options~1available~1/get
 func (s *CatalogService) TransactionsDeribitOptionsAvailable(ctx context.Context, p TransactionsDeribitOptionsAvailableParams) (map[string]interface{}, error) {
+	result, _, err := s.TransactionsDeribitOptionsAvailableWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// TransactionsDeribitOptionsAvailableWithResponse returns TransactionsDeribitOptionsAvailable's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1transactions~1deribit~1options~1available~1/get
+func (s *CatalogService) TransactionsDeribitOptionsAvailableWithResponse(ctx context.Context, p TransactionsDeribitOptionsAvailableParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Underlying != nil {
 		q.Set("underlying", *p.Underlying)
 	}
 	resp, err := s.client.do(ctx, "catalog.transactionsDeribitOptionsAvailable", "/data/transactions/deribit/options/available/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.transactionsDeribitOptionsAvailable", resp, err)
 	}
 	v, err := decodeResult("catalog.transactionsDeribitOptionsAvailable", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("catalog.transactionsDeribitOptionsAvailable", resp, err)
 	}
-	return asObject("catalog.transactionsDeribitOptionsAvailable", v)
+	result, err := asObject("catalog.transactionsDeribitOptionsAvailable", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("catalog.transactionsDeribitOptionsAvailable", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }

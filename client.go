@@ -20,8 +20,9 @@ var ErrAPIKeyRequired = errors.New("cryptodatadownload: API key is required (see
 // https://api.cryptodatadownload.com/v1.
 //
 // Create one client and reuse it for the lifetime of your application. The
-// API key is sent as "Authorization: Token <key>" and never appears in URLs,
-// error messages or logs. All services are safe for concurrent use.
+// API key is sent as "Authorization: Token <key>" by default. Query-based
+// authentication requires WithQueryTokenAuth. Diagnostics redact the key.
+// All services are safe for concurrent use.
 type Client struct {
 	apiKey string
 	cfg    config
@@ -72,17 +73,24 @@ type Client struct {
 }
 
 // NewClient creates a CryptoDataDownload client with the supplied API key
-// and options. It performs no network calls. The key is sent as a Token
-// header; it is never logged or placed in a query string.
+// and options. It performs no network calls. Authentication uses a Token
+// header unless WithQueryTokenAuth is explicitly enabled. Diagnostics redact
+// the key in either mode.
 func NewClient(apiKey string, options ...Option) (*Client, error) {
-	apiKey = strings.TrimSpace(apiKey)
-
 	cfg := defaultConfig()
+	cfg.token = apiKey
 	for _, opt := range options {
 		if opt == nil {
 			return nil, errors.New("cryptodatadownload: nil client option")
 		}
 		opt(&cfg)
+	}
+	apiKey = strings.TrimSpace(cfg.token)
+	cfg.token = ""
+	for i := 0; i < len(apiKey); i++ {
+		if apiKey[i] < 0x20 || apiKey[i] == 0x7f {
+			return nil, errors.New("cryptodatadownload: API key contains an invalid header character")
+		}
 	}
 	if err := validateBaseURL(cfg.baseURL); err != nil {
 		return nil, err
@@ -92,6 +100,19 @@ func NewClient(apiKey string, options ...Option) (*Client, error) {
 	} else {
 		clone := *cfg.httpClient
 		cfg.httpClient = &clone
+	}
+	checkRedirect := cfg.httpClient.CheckRedirect
+	cfg.httpClient.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		if len(via) > 0 && (!strings.EqualFold(req.URL.Scheme, via[0].URL.Scheme) || !strings.EqualFold(req.URL.Host, via[0].URL.Host)) {
+			return http.ErrUseLastResponse
+		}
+		if checkRedirect != nil {
+			return checkRedirect(req, via)
+		}
+		if len(via) >= 10 {
+			return errors.New("stopped after 10 redirects")
+		}
+		return nil
 	}
 	if cfg.httpTimeout != nil {
 		if *cfg.httpTimeout < 0 {
@@ -116,11 +137,14 @@ func NewClient(apiKey string, options ...Option) (*Client, error) {
 	if cfg.retry.MaxAttempts < 1 {
 		cfg.retry.MaxAttempts = 1
 	}
-	if cfg.requestsPerSecond < 0 {
-		return nil, fmt.Errorf("cryptodatadownload: requests per second must not be negative: %v", cfg.requestsPerSecond)
+	if err := validateRequestsPerSecond(cfg.requestsPerSecond); err != nil {
+		return nil, err
 	}
 	if cfg.maxResponseBodyBytes <= 0 {
 		return nil, fmt.Errorf("cryptodatadownload: max response body bytes must be positive, got %d", cfg.maxResponseBodyBytes)
+	}
+	if cfg.maxErrorBodyBytes <= 0 {
+		return nil, errors.New("cryptodatadownload: max error body bytes must be positive")
 	}
 
 	c := &Client{
@@ -154,6 +178,12 @@ func NewClient(apiKey string, options ...Option) (*Client, error) {
 	return c, nil
 }
 
+// NewClientWithOptions creates a client using only options, including
+// WithToken. NewClient retains its positional-token signature for compatibility.
+func NewClientWithOptions(options ...Option) (*Client, error) {
+	return NewClient("", options...)
+}
+
 // BaseURL returns the REST base URL in use.
 func (c *Client) BaseURL() string { return c.cfg.baseURL }
 
@@ -163,12 +193,15 @@ func (c *Client) UserAgent() string { return c.cfg.userAgent }
 func validateBaseURL(raw string) error {
 	u, err := url.Parse(raw)
 	if err != nil || u.Scheme == "" || u.Host == "" {
-		return fmt.Errorf("cryptodatadownload: invalid base URL %q", raw)
+		return errors.New("cryptodatadownload: invalid base URL; expected an absolute HTTP(S) URL")
 	}
 	if u.Scheme != "http" && u.Scheme != "https" {
 		return fmt.Errorf("cryptodatadownload: invalid base URL scheme %q", u.Scheme)
 	}
-	if u.RawQuery != "" || u.Fragment != "" {
+	if u.User != nil {
+		return errors.New("cryptodatadownload: base URL must not contain user credentials")
+	}
+	if u.RawQuery != "" || u.ForceQuery || strings.Contains(raw, "#") {
 		return fmt.Errorf("cryptodatadownload: base URL must not contain a query or fragment")
 	}
 	return nil

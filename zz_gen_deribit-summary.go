@@ -36,9 +36,20 @@ type SummaryDeribitOptionsFlowParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1flow~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsFlow(ctx context.Context, p SummaryDeribitOptionsFlowParams) (map[string]interface{}, error) {
+	result, _, err := s.SummaryDeribitOptionsFlowWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryDeribitOptionsFlowWithResponse returns SummaryDeribitOptionsFlow's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1flow~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsFlowWithResponse(ctx context.Context, p SummaryDeribitOptionsFlowParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("underlying", p.Underlying); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if p.StartDate != nil {
@@ -52,13 +63,23 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsFlow(ctx context.Context, p
 	}
 	resp, err := s.client.do(ctx, "deribitSummary.summaryDeribitOptionsFlow", "/data/summary/deribit/options/flow/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsFlow", resp, err)
 	}
 	v, err := decodeResult("deribitSummary.summaryDeribitOptionsFlow", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsFlow", resp, err)
 	}
-	return asObject("deribitSummary.summaryDeribitOptionsFlow", v)
+	result, err := asObject("deribitSummary.summaryDeribitOptionsFlow", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsFlow", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryDeribitOptionsFlowRaw — Deribit Options Flow Analysis, raw download.
@@ -70,6 +91,9 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsFlow(ctx context.Context, p
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1flow~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsFlowRaw(ctx context.Context, p SummaryDeribitOptionsFlowParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if err := requireString("underlying", p.Underlying); err != nil {
@@ -90,6 +114,33 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsFlowRaw(ctx context.Context
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryDeribitOptionsFlowStream opens a streaming SummaryDeribitOptionsFlow download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1flow~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsFlowStream(ctx context.Context, p SummaryDeribitOptionsFlowParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if err := requireString("underlying", p.Underlying); err != nil {
+		return nil, err
+	}
+	q.Set("underlying", p.Underlying)
+	if p.StartDate != nil {
+		q.Set("start_date", *p.StartDate)
+	}
+	if p.EndDate != nil {
+		q.Set("end_date", *p.EndDate)
+	}
+	if p.Category != nil {
+		q.Set("category", *p.Category)
+	}
+	return s.client.doStream(ctx, "deribitSummary.summaryDeribitOptionsFlowStream", "/data/summary/deribit/options/flow/", q)
 }
 
 // SummaryDeribitOptionsGreeksParams are the parameters for DeribitSummaryService.SummaryDeribitOptionsGreeks.
@@ -115,6 +166,17 @@ type SummaryDeribitOptionsGreeksParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1greeks~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsGreeks(ctx context.Context, p SummaryDeribitOptionsGreeksParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryDeribitOptionsGreeksWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryDeribitOptionsGreeksWithResponse returns SummaryDeribitOptionsGreeks's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1greeks~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksWithResponse(ctx context.Context, p SummaryDeribitOptionsGreeksParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Underlying != nil {
 		q.Set("underlying", *p.Underlying)
@@ -129,20 +191,36 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsGreeks(ctx context.Context,
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, nil, err
+		}
 		q.Set("offset", strconv.Itoa(*p.Offset))
 	}
 	resp, err := s.client.do(ctx, "deribitSummary.summaryDeribitOptionsGreeks", "/data/summary/deribit/options/greeks/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsGreeks", resp, err)
 	}
 	v, err := decodeResult("deribitSummary.summaryDeribitOptionsGreeks", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsGreeks", resp, err)
 	}
-	return asRows("deribitSummary.summaryDeribitOptionsGreeks", v)
+	result, err := asRows("deribitSummary.summaryDeribitOptionsGreeks", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsGreeks", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryDeribitOptionsGreeksRaw — DeriBit Greeks Summary by Instrument, raw download.
@@ -154,6 +232,9 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsGreeks(ctx context.Context,
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1greeks~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksRaw(ctx context.Context, p SummaryDeribitOptionsGreeksParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Underlying != nil {
@@ -169,9 +250,15 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksRaw(ctx context.Conte
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, err
+		}
 		q.Set("offset", strconv.Itoa(*p.Offset))
 	}
 	resp, err := s.client.do(ctx, "deribitSummary.summaryDeribitOptionsGreeksRaw", "/data/summary/deribit/options/greeks/", q)
@@ -179,6 +266,44 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksRaw(ctx context.Conte
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryDeribitOptionsGreeksStream opens a streaming SummaryDeribitOptionsGreeks download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1greeks~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksStream(ctx context.Context, p SummaryDeribitOptionsGreeksParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Underlying != nil {
+		q.Set("underlying", *p.Underlying)
+	}
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.StartDate != nil {
+		q.Set("startdate", *p.StartDate)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, err
+		}
+		q.Set("offset", strconv.Itoa(*p.Offset))
+	}
+	return s.client.doStream(ctx, "deribitSummary.summaryDeribitOptionsGreeksStream", "/data/summary/deribit/options/greeks/", q)
 }
 
 // SummaryDeribitOptionsGreeksMaturitiesParams are the parameters for DeribitSummaryService.SummaryDeribitOptionsGreeksMaturities.
@@ -204,6 +329,17 @@ type SummaryDeribitOptionsGreeksMaturitiesParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1greeks~1maturities~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksMaturities(ctx context.Context, p SummaryDeribitOptionsGreeksMaturitiesParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryDeribitOptionsGreeksMaturitiesWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryDeribitOptionsGreeksMaturitiesWithResponse returns SummaryDeribitOptionsGreeksMaturities's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1greeks~1maturities~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksMaturitiesWithResponse(ctx context.Context, p SummaryDeribitOptionsGreeksMaturitiesParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Underlying != nil {
 		q.Set("underlying", *p.Underlying)
@@ -218,20 +354,36 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksMaturities(ctx contex
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, nil, err
+		}
 		q.Set("offset", strconv.Itoa(*p.Offset))
 	}
 	resp, err := s.client.do(ctx, "deribitSummary.summaryDeribitOptionsGreeksMaturities", "/data/summary/deribit/options/greeks/maturities/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsGreeksMaturities", resp, err)
 	}
 	v, err := decodeResult("deribitSummary.summaryDeribitOptionsGreeksMaturities", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsGreeksMaturities", resp, err)
 	}
-	return asRows("deribitSummary.summaryDeribitOptionsGreeksMaturities", v)
+	result, err := asRows("deribitSummary.summaryDeribitOptionsGreeksMaturities", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsGreeksMaturities", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryDeribitOptionsGreeksMaturitiesRaw — DeriBit Greeks Summary by Maturity, raw download.
@@ -243,6 +395,9 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksMaturities(ctx contex
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1greeks~1maturities~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksMaturitiesRaw(ctx context.Context, p SummaryDeribitOptionsGreeksMaturitiesParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Underlying != nil {
@@ -258,9 +413,15 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksMaturitiesRaw(ctx con
 		q.Set("enddate", *p.EndDate)
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, err
+		}
 		q.Set("offset", strconv.Itoa(*p.Offset))
 	}
 	resp, err := s.client.do(ctx, "deribitSummary.summaryDeribitOptionsGreeksMaturitiesRaw", "/data/summary/deribit/options/greeks/maturities/", q)
@@ -268,6 +429,44 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksMaturitiesRaw(ctx con
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryDeribitOptionsGreeksMaturitiesStream opens a streaming SummaryDeribitOptionsGreeksMaturities download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1greeks~1maturities~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsGreeksMaturitiesStream(ctx context.Context, p SummaryDeribitOptionsGreeksMaturitiesParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Underlying != nil {
+		q.Set("underlying", *p.Underlying)
+	}
+	if p.Expiry != nil {
+		q.Set("expiry", *p.Expiry)
+	}
+	if p.StartDate != nil {
+		q.Set("startdate", *p.StartDate)
+	}
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 5000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, err
+		}
+		q.Set("offset", strconv.Itoa(*p.Offset))
+	}
+	return s.client.doStream(ctx, "deribitSummary.summaryDeribitOptionsGreeksMaturitiesStream", "/data/summary/deribit/options/greeks/maturities/", q)
 }
 
 // SummaryDeribitOptionsLargeTradesParams are the parameters for DeribitSummaryService.SummaryDeribitOptionsLargeTrades.
@@ -289,9 +488,20 @@ type SummaryDeribitOptionsLargeTradesParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1large-trades~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsLargeTrades(ctx context.Context, p SummaryDeribitOptionsLargeTradesParams) (map[string]interface{}, error) {
+	result, _, err := s.SummaryDeribitOptionsLargeTradesWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryDeribitOptionsLargeTradesWithResponse returns SummaryDeribitOptionsLargeTrades's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1large-trades~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsLargeTradesWithResponse(ctx context.Context, p SummaryDeribitOptionsLargeTradesParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("underlying", p.Underlying); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if p.StartDate != nil {
@@ -305,13 +515,23 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsLargeTrades(ctx context.Con
 	}
 	resp, err := s.client.do(ctx, "deribitSummary.summaryDeribitOptionsLargeTrades", "/data/summary/deribit/options/large-trades/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsLargeTrades", resp, err)
 	}
 	v, err := decodeResult("deribitSummary.summaryDeribitOptionsLargeTrades", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsLargeTrades", resp, err)
 	}
-	return asObject("deribitSummary.summaryDeribitOptionsLargeTrades", v)
+	result, err := asObject("deribitSummary.summaryDeribitOptionsLargeTrades", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsLargeTrades", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryDeribitOptionsLargeTradesRaw — Deribit Options Large Trades Analysis, raw download.
@@ -323,6 +543,9 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsLargeTrades(ctx context.Con
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1large-trades~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsLargeTradesRaw(ctx context.Context, p SummaryDeribitOptionsLargeTradesParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if err := requireString("underlying", p.Underlying); err != nil {
@@ -343,6 +566,33 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsLargeTradesRaw(ctx context.
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryDeribitOptionsLargeTradesStream opens a streaming SummaryDeribitOptionsLargeTrades download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1large-trades~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsLargeTradesStream(ctx context.Context, p SummaryDeribitOptionsLargeTradesParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if err := requireString("underlying", p.Underlying); err != nil {
+		return nil, err
+	}
+	q.Set("underlying", p.Underlying)
+	if p.StartDate != nil {
+		q.Set("start_date", *p.StartDate)
+	}
+	if p.EndDate != nil {
+		q.Set("end_date", *p.EndDate)
+	}
+	if p.MinPremiumUSD != nil {
+		q.Set("min_premium_usd", strconv.Itoa(*p.MinPremiumUSD))
+	}
+	return s.client.doStream(ctx, "deribitSummary.summaryDeribitOptionsLargeTradesStream", "/data/summary/deribit/options/large-trades/", q)
 }
 
 // SummaryDeribitOptionsRatiosParams are the parameters for DeribitSummaryService.SummaryDeribitOptionsRatios.
@@ -366,9 +616,20 @@ type SummaryDeribitOptionsRatiosParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1ratios~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsRatios(ctx context.Context, p SummaryDeribitOptionsRatiosParams) (map[string]interface{}, error) {
+	result, _, err := s.SummaryDeribitOptionsRatiosWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryDeribitOptionsRatiosWithResponse returns SummaryDeribitOptionsRatios's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1ratios~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsRatiosWithResponse(ctx context.Context, p SummaryDeribitOptionsRatiosParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("underlying", p.Underlying); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if p.StartDate != nil {
@@ -385,13 +646,23 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsRatios(ctx context.Context,
 	}
 	resp, err := s.client.do(ctx, "deribitSummary.summaryDeribitOptionsRatios", "/data/summary/deribit/options/ratios/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsRatios", resp, err)
 	}
 	v, err := decodeResult("deribitSummary.summaryDeribitOptionsRatios", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsRatios", resp, err)
 	}
-	return asObject("deribitSummary.summaryDeribitOptionsRatios", v)
+	result, err := asObject("deribitSummary.summaryDeribitOptionsRatios", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsRatios", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryDeribitOptionsRatiosRaw — Deribit Options Put/Call Ratios, raw download.
@@ -403,6 +674,9 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsRatios(ctx context.Context,
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1ratios~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsRatiosRaw(ctx context.Context, p SummaryDeribitOptionsRatiosParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if err := requireString("underlying", p.Underlying); err != nil {
@@ -428,6 +702,36 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsRatiosRaw(ctx context.Conte
 	return resp.body, nil
 }
 
+// SummaryDeribitOptionsRatiosStream opens a streaming SummaryDeribitOptionsRatios download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1ratios~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsRatiosStream(ctx context.Context, p SummaryDeribitOptionsRatiosParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if err := requireString("underlying", p.Underlying); err != nil {
+		return nil, err
+	}
+	q.Set("underlying", p.Underlying)
+	if p.StartDate != nil {
+		q.Set("start_date", *p.StartDate)
+	}
+	if p.EndDate != nil {
+		q.Set("end_date", *p.EndDate)
+	}
+	if p.GroupBy != nil {
+		q.Set("group_by", *p.GroupBy)
+	}
+	if p.Maturity != nil {
+		q.Set("maturity", *p.Maturity)
+	}
+	return s.client.doStream(ctx, "deribitSummary.summaryDeribitOptionsRatiosStream", "/data/summary/deribit/options/ratios/", q)
+}
+
 // SummaryDeribitOptionsTransactionsLargestParams are the parameters for DeribitSummaryService.SummaryDeribitOptionsTransactionsLargest.
 //
 // See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1transactions~1largest~1/get
@@ -441,19 +745,43 @@ type SummaryDeribitOptionsTransactionsLargestParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1transactions~1largest~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsTransactionsLargest(ctx context.Context, p SummaryDeribitOptionsTransactionsLargestParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryDeribitOptionsTransactionsLargestWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryDeribitOptionsTransactionsLargestWithResponse returns SummaryDeribitOptionsTransactionsLargest's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1transactions~1largest~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsTransactionsLargestWithResponse(ctx context.Context, p SummaryDeribitOptionsTransactionsLargestParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	resp, err := s.client.do(ctx, "deribitSummary.summaryDeribitOptionsTransactionsLargest", "/data/summary/deribit/options/transactions/largest/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsTransactionsLargest", resp, err)
 	}
 	v, err := decodeResult("deribitSummary.summaryDeribitOptionsTransactionsLargest", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsTransactionsLargest", resp, err)
 	}
-	return asRows("deribitSummary.summaryDeribitOptionsTransactionsLargest", v)
+	result, err := asRows("deribitSummary.summaryDeribitOptionsTransactionsLargest", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsTransactionsLargest", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryDeribitOptionsTransactionsLargestRaw — Top 100 DeriBit Option Transactions per Day in USD, raw download.
@@ -465,9 +793,15 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsTransactionsLargest(ctx con
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1transactions~1largest~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsTransactionsLargestRaw(ctx context.Context, p SummaryDeribitOptionsTransactionsLargestParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	resp, err := s.client.do(ctx, "deribitSummary.summaryDeribitOptionsTransactionsLargestRaw", "/data/summary/deribit/options/transactions/largest/", q)
@@ -475,6 +809,26 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsTransactionsLargestRaw(ctx 
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryDeribitOptionsTransactionsLargestStream opens a streaming SummaryDeribitOptionsTransactionsLargest download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1transactions~1largest~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsTransactionsLargestStream(ctx context.Context, p SummaryDeribitOptionsTransactionsLargestParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, err
+		}
+		q.Set("date", dateString(*p.Date))
+	}
+	return s.client.doStream(ctx, "deribitSummary.summaryDeribitOptionsTransactionsLargestStream", "/data/summary/deribit/options/transactions/largest/", q)
 }
 
 // SummaryDeribitOptionsVolumeParams are the parameters for DeribitSummaryService.SummaryDeribitOptionsVolume.
@@ -498,9 +852,20 @@ type SummaryDeribitOptionsVolumeParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1volume~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsVolume(ctx context.Context, p SummaryDeribitOptionsVolumeParams) (map[string]interface{}, error) {
+	result, _, err := s.SummaryDeribitOptionsVolumeWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryDeribitOptionsVolumeWithResponse returns SummaryDeribitOptionsVolume's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1volume~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsVolumeWithResponse(ctx context.Context, p SummaryDeribitOptionsVolumeParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("underlying", p.Underlying); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if p.StartDate != nil {
@@ -517,13 +882,23 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsVolume(ctx context.Context,
 	}
 	resp, err := s.client.do(ctx, "deribitSummary.summaryDeribitOptionsVolume", "/data/summary/deribit/options/volume/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsVolume", resp, err)
 	}
 	v, err := decodeResult("deribitSummary.summaryDeribitOptionsVolume", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsVolume", resp, err)
 	}
-	return asObject("deribitSummary.summaryDeribitOptionsVolume", v)
+	result, err := asObject("deribitSummary.summaryDeribitOptionsVolume", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.summaryDeribitOptionsVolume", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryDeribitOptionsVolumeRaw — Deribit Options Volume Summary, raw download.
@@ -535,6 +910,9 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsVolume(ctx context.Context,
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1volume~1/get
 func (s *DeribitSummaryService) SummaryDeribitOptionsVolumeRaw(ctx context.Context, p SummaryDeribitOptionsVolumeParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if err := requireString("underlying", p.Underlying); err != nil {
@@ -558,6 +936,36 @@ func (s *DeribitSummaryService) SummaryDeribitOptionsVolumeRaw(ctx context.Conte
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// SummaryDeribitOptionsVolumeStream opens a streaming SummaryDeribitOptionsVolume download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1volume~1/get
+func (s *DeribitSummaryService) SummaryDeribitOptionsVolumeStream(ctx context.Context, p SummaryDeribitOptionsVolumeParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if err := requireString("underlying", p.Underlying); err != nil {
+		return nil, err
+	}
+	q.Set("underlying", p.Underlying)
+	if p.StartDate != nil {
+		q.Set("start_date", *p.StartDate)
+	}
+	if p.EndDate != nil {
+		q.Set("end_date", *p.EndDate)
+	}
+	if p.GroupBy != nil {
+		q.Set("group_by", *p.GroupBy)
+	}
+	if p.Maturity != nil {
+		q.Set("maturity", *p.Maturity)
+	}
+	return s.client.doStream(ctx, "deribitSummary.summaryDeribitOptionsVolumeStream", "/data/summary/deribit/options/volume/", q)
 }
 
 // TransactionsDeribitOptionsParams are the parameters for DeribitSummaryService.TransactionsDeribitOptions.
@@ -585,13 +993,24 @@ type TransactionsDeribitOptionsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1transactions~1deribit~1options~1/get
 func (s *DeribitSummaryService) TransactionsDeribitOptions(ctx context.Context, p TransactionsDeribitOptionsParams) (map[string]interface{}, error) {
+	result, _, err := s.TransactionsDeribitOptionsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// TransactionsDeribitOptionsWithResponse returns TransactionsDeribitOptions's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1transactions~1deribit~1options~1/get
+func (s *DeribitSummaryService) TransactionsDeribitOptionsWithResponse(ctx context.Context, p TransactionsDeribitOptionsParams) (*Result[map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH", "SOL", "SOL_USDC", "BTC_USDC", "ETH_USDC", "XRP_USDC", "BNB_USDC", "PAXG_USDC", "MATIC_USDC"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	if p.Symbol != nil {
@@ -599,28 +1018,47 @@ func (s *DeribitSummaryService) TransactionsDeribitOptions(ctx context.Context, 
 	}
 	if p.PutCall != nil {
 		if err := checkEnum("putcall", *p.PutCall, "P", "C"); err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		q.Set("putcall", *p.PutCall)
 	}
 	if p.MinUSDValue != nil {
+		if err := requireFinite("min_usd_value", *p.MinUSDValue); err != nil {
+			return nil, nil, err
+		}
 		q.Set("min_usd_value", strconv.FormatFloat(*p.MinUSDValue, 'f', -1, 64))
 	}
 	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, nil, err
+		}
 		q.Set("offset", strconv.Itoa(*p.Offset))
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 10000); err != nil {
+			return nil, nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "deribitSummary.transactionsDeribitOptions", "/data/transactions/deribit/options/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.transactionsDeribitOptions", resp, err)
 	}
 	v, err := decodeResult("deribitSummary.transactionsDeribitOptions", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.transactionsDeribitOptions", resp, err)
 	}
-	return asObject("deribitSummary.transactionsDeribitOptions", v)
+	result, err := asObject("deribitSummary.transactionsDeribitOptions", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("deribitSummary.transactionsDeribitOptions", resp, err)
+	}
+	return &Result[map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // TransactionsDeribitOptionsRaw — Deribit Options Transactions, raw download.
@@ -632,6 +1070,9 @@ func (s *DeribitSummaryService) TransactionsDeribitOptions(ctx context.Context, 
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1transactions~1deribit~1options~1/get
 func (s *DeribitSummaryService) TransactionsDeribitOptionsRaw(ctx context.Context, p TransactionsDeribitOptionsParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH", "SOL", "SOL_USDC", "BTC_USDC", "ETH_USDC", "XRP_USDC", "BNB_USDC", "PAXG_USDC", "MATIC_USDC"); err != nil {
@@ -652,12 +1093,21 @@ func (s *DeribitSummaryService) TransactionsDeribitOptionsRaw(ctx context.Contex
 		q.Set("putcall", *p.PutCall)
 	}
 	if p.MinUSDValue != nil {
+		if err := requireFinite("min_usd_value", *p.MinUSDValue); err != nil {
+			return nil, err
+		}
 		q.Set("min_usd_value", strconv.FormatFloat(*p.MinUSDValue, 'f', -1, 64))
 	}
 	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, err
+		}
 		q.Set("offset", strconv.Itoa(*p.Offset))
 	}
 	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 10000); err != nil {
+			return nil, err
+		}
 		q.Set("limit", strconv.Itoa(*p.Limit))
 	}
 	resp, err := s.client.do(ctx, "deribitSummary.transactionsDeribitOptionsRaw", "/data/transactions/deribit/options/", q)
@@ -665,4 +1115,53 @@ func (s *DeribitSummaryService) TransactionsDeribitOptionsRaw(ctx context.Contex
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// TransactionsDeribitOptionsStream opens a streaming TransactionsDeribitOptions download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1transactions~1deribit~1options~1/get
+func (s *DeribitSummaryService) TransactionsDeribitOptionsStream(ctx context.Context, p TransactionsDeribitOptionsParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH", "SOL", "SOL_USDC", "BTC_USDC", "ETH_USDC", "XRP_USDC", "BNB_USDC", "PAXG_USDC", "MATIC_USDC"); err != nil {
+		return nil, err
+	}
+	q.Set("underlying", p.Underlying)
+	if err := requireDate("date", p.Date); err != nil {
+		return nil, err
+	}
+	q.Set("date", dateString(p.Date))
+	if p.Symbol != nil {
+		q.Set("symbol", *p.Symbol)
+	}
+	if p.PutCall != nil {
+		if err := checkEnum("putcall", *p.PutCall, "P", "C"); err != nil {
+			return nil, err
+		}
+		q.Set("putcall", *p.PutCall)
+	}
+	if p.MinUSDValue != nil {
+		if err := requireFinite("min_usd_value", *p.MinUSDValue); err != nil {
+			return nil, err
+		}
+		q.Set("min_usd_value", strconv.FormatFloat(*p.MinUSDValue, 'f', -1, 64))
+	}
+	if p.Offset != nil {
+		if err := checkPagination("offset", *p.Offset, 0); err != nil {
+			return nil, err
+		}
+		q.Set("offset", strconv.Itoa(*p.Offset))
+	}
+	if p.Limit != nil {
+		if err := checkPagination("limit", *p.Limit, 10000); err != nil {
+			return nil, err
+		}
+		q.Set("limit", strconv.Itoa(*p.Limit))
+	}
+	return s.client.doStream(ctx, "deribitSummary.transactionsDeribitOptionsStream", "/data/transactions/deribit/options/", q)
 }

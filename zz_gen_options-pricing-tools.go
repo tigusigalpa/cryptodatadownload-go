@@ -43,6 +43,17 @@ type PricingGreeksParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1risk~1options~1pricing~1greeks~1/get
 func (s *OptionsPricingService) PricingGreeks(ctx context.Context, p PricingGreeksParams) ([]map[string]interface{}, error) {
+	result, _, err := s.PricingGreeksWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// PricingGreeksWithResponse returns PricingGreeks's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1risk~1options~1pricing~1greeks~1/get
+func (s *OptionsPricingService) PricingGreeksWithResponse(ctx context.Context, p PricingGreeksParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	putCall := p.PutCall
 	if putCall == "" {
@@ -82,11 +93,21 @@ func (s *OptionsPricingService) PricingGreeks(ctx context.Context, p PricingGree
 	}
 	resp, err := s.client.do(ctx, "optionsPricing.pricingGreeks", "/risk/options/pricing/greeks/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsPricing.pricingGreeks", resp, err)
 	}
 	v, err := decodeResult("optionsPricing.pricingGreeks", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("optionsPricing.pricingGreeks", resp, err)
 	}
-	return asRows("optionsPricing.pricingGreeks", v)
+	result, err := asRows("optionsPricing.pricingGreeks", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsPricing.pricingGreeks", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }

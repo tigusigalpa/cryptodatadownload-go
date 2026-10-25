@@ -29,19 +29,43 @@ type N52wkHighsLowsParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1breadth~152wk-highs-lows~1/get
 func (s *BreadthService) N52wkHighsLows(ctx context.Context, p N52wkHighsLowsParams) ([]map[string]interface{}, error) {
+	result, _, err := s.N52wkHighsLowsWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// N52wkHighsLowsWithResponse returns N52wkHighsLows's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1breadth~152wk-highs-lows~1/get
+func (s *BreadthService) N52wkHighsLowsWithResponse(ctx context.Context, p N52wkHighsLowsParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	resp, err := s.client.do(ctx, "breadth.n52wkHighsLows", "/data/breadth/52wk-highs-lows/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("breadth.n52wkHighsLows", resp, err)
 	}
 	v, err := decodeResult("breadth.n52wkHighsLows", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("breadth.n52wkHighsLows", resp, err)
 	}
-	return asRows("breadth.n52wkHighsLows", v)
+	result, err := asRows("breadth.n52wkHighsLows", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("breadth.n52wkHighsLows", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // AdvanceDeclineParams are the parameters for BreadthService.AdvanceDecline.
@@ -57,19 +81,40 @@ type AdvanceDeclineParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1breadth~1advance-decline~1/get
 func (s *BreadthService) AdvanceDecline(ctx context.Context, p AdvanceDeclineParams) ([]map[string]interface{}, error) {
+	result, _, err := s.AdvanceDeclineWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// AdvanceDeclineWithResponse returns AdvanceDecline's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1breadth~1advance-decline~1/get
+func (s *BreadthService) AdvanceDeclineWithResponse(ctx context.Context, p AdvanceDeclineParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.EndDate != nil {
 		q.Set("enddate", *p.EndDate)
 	}
 	resp, err := s.client.do(ctx, "breadth.advanceDecline", "/data/breadth/advance-decline/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("breadth.advanceDecline", resp, err)
 	}
 	v, err := decodeResult("breadth.advanceDecline", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("breadth.advanceDecline", resp, err)
 	}
-	return asRows("breadth.advanceDecline", v)
+	result, err := asRows("breadth.advanceDecline", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("breadth.advanceDecline", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // AdvanceDeclineRaw — Advance/Decline Calculations, raw download.
@@ -81,6 +126,9 @@ func (s *BreadthService) AdvanceDecline(ctx context.Context, p AdvanceDeclinePar
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1breadth~1advance-decline~1/get
 func (s *BreadthService) AdvanceDeclineRaw(ctx context.Context, p AdvanceDeclineParams, f ReturnFormat) ([]byte, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
 	q := url.Values{}
 	q.Set("return", string(f))
 	if p.EndDate != nil {
@@ -91,6 +139,23 @@ func (s *BreadthService) AdvanceDeclineRaw(ctx context.Context, p AdvanceDecline
 		return nil, err
 	}
 	return resp.body, nil
+}
+
+// AdvanceDeclineStream opens a streaming AdvanceDecline download with HTTP metadata.
+// Close the returned response when finished. Success bodies are not buffered
+// or automatically retried after reading begins.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1breadth~1advance-decline~1/get
+func (s *BreadthService) AdvanceDeclineStream(ctx context.Context, p AdvanceDeclineParams, f ReturnFormat) (*RawResponse, error) {
+	if err := validateReturnFormat(f); err != nil {
+		return nil, err
+	}
+	q := url.Values{}
+	q.Set("return", string(f))
+	if p.EndDate != nil {
+		q.Set("enddate", *p.EndDate)
+	}
+	return s.client.doStream(ctx, "breadth.advanceDeclineStream", "/data/breadth/advance-decline/", q)
 }
 
 // MovingAverageTrackingParams are the parameters for BreadthService.MovingAverageTracking.
@@ -106,17 +171,41 @@ type MovingAverageTrackingParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1breadth~1moving-average-tracking~1/get
 func (s *BreadthService) MovingAverageTracking(ctx context.Context, p MovingAverageTrackingParams) ([]map[string]interface{}, error) {
+	result, _, err := s.MovingAverageTrackingWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// MovingAverageTrackingWithResponse returns MovingAverageTracking's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1breadth~1moving-average-tracking~1/get
+func (s *BreadthService) MovingAverageTrackingWithResponse(ctx context.Context, p MovingAverageTrackingParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if p.Date != nil {
+		if err := requireDate("date", *p.Date); err != nil {
+			return nil, nil, err
+		}
 		q.Set("date", dateString(*p.Date))
 	}
 	resp, err := s.client.do(ctx, "breadth.movingAverageTracking", "/data/breadth/moving-average-tracking/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("breadth.movingAverageTracking", resp, err)
 	}
 	v, err := decodeResult("breadth.movingAverageTracking", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("breadth.movingAverageTracking", resp, err)
 	}
-	return asRows("breadth.movingAverageTracking", v)
+	result, err := asRows("breadth.movingAverageTracking", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("breadth.movingAverageTracking", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }

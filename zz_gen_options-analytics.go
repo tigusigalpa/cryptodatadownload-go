@@ -33,32 +33,53 @@ type OptionsStrikeHeatmapParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1options~1strike-heatmap~1/get
 func (s *OptionsAnalyticsService) OptionsStrikeHeatmap(ctx context.Context, p OptionsStrikeHeatmapParams) ([]map[string]interface{}, error) {
+	result, _, err := s.OptionsStrikeHeatmapWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// OptionsStrikeHeatmapWithResponse returns OptionsStrikeHeatmap's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1options~1strike-heatmap~1/get
+func (s *OptionsAnalyticsService) OptionsStrikeHeatmapWithResponse(ctx context.Context, p OptionsStrikeHeatmapParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH", "SOL", "XRP", "BNB", "DOGE"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if p.Metric != nil {
 		if err := checkEnum("metric", *p.Metric, "oi", "iv", "delta", "mark_price", "gamma", "vega"); err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		q.Set("metric", *p.Metric)
 	}
 	if p.Side != nil {
 		if err := checkEnum("side", *p.Side, "both", "call", "put"); err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		q.Set("side", *p.Side)
 	}
 	resp, err := s.client.do(ctx, "optionsAnalytics.optionsStrikeHeatmap", "/data/options/strike-heatmap/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.optionsStrikeHeatmap", resp, err)
 	}
 	v, err := decodeResult("optionsAnalytics.optionsStrikeHeatmap", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.optionsStrikeHeatmap", resp, err)
 	}
-	return asRows("optionsAnalytics.optionsStrikeHeatmap", v)
+	result, err := asRows("optionsAnalytics.optionsStrikeHeatmap", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.optionsStrikeHeatmap", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryDeribitOptionsGreeksHigherOrderParams are the parameters for OptionsAnalyticsService.SummaryDeribitOptionsGreeksHigherOrder.
@@ -76,24 +97,45 @@ type SummaryDeribitOptionsGreeksHigherOrderParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1greeks~1higher-order~1/get
 func (s *OptionsAnalyticsService) SummaryDeribitOptionsGreeksHigherOrder(ctx context.Context, p SummaryDeribitOptionsGreeksHigherOrderParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryDeribitOptionsGreeksHigherOrderWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryDeribitOptionsGreeksHigherOrderWithResponse returns SummaryDeribitOptionsGreeksHigherOrder's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1greeks~1higher-order~1/get
+func (s *OptionsAnalyticsService) SummaryDeribitOptionsGreeksHigherOrderWithResponse(ctx context.Context, p SummaryDeribitOptionsGreeksHigherOrderParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "optionsAnalytics.summaryDeribitOptionsGreeksHigherOrder", "/data/summary/deribit/options/greeks/higher-order/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.summaryDeribitOptionsGreeksHigherOrder", resp, err)
 	}
 	v, err := decodeResult("optionsAnalytics.summaryDeribitOptionsGreeksHigherOrder", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.summaryDeribitOptionsGreeksHigherOrder", resp, err)
 	}
-	return asRows("optionsAnalytics.summaryDeribitOptionsGreeksHigherOrder", v)
+	result, err := asRows("optionsAnalytics.summaryDeribitOptionsGreeksHigherOrder", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.summaryDeribitOptionsGreeksHigherOrder", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryDeribitOptionsPinCandidateParams are the parameters for OptionsAnalyticsService.SummaryDeribitOptionsPinCandidate.
@@ -111,24 +153,45 @@ type SummaryDeribitOptionsPinCandidateParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1pin-candidate~1/get
 func (s *OptionsAnalyticsService) SummaryDeribitOptionsPinCandidate(ctx context.Context, p SummaryDeribitOptionsPinCandidateParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryDeribitOptionsPinCandidateWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryDeribitOptionsPinCandidateWithResponse returns SummaryDeribitOptionsPinCandidate's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1pin-candidate~1/get
+func (s *OptionsAnalyticsService) SummaryDeribitOptionsPinCandidateWithResponse(ctx context.Context, p SummaryDeribitOptionsPinCandidateParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "optionsAnalytics.summaryDeribitOptionsPinCandidate", "/data/summary/deribit/options/pin-candidate/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.summaryDeribitOptionsPinCandidate", resp, err)
 	}
 	v, err := decodeResult("optionsAnalytics.summaryDeribitOptionsPinCandidate", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.summaryDeribitOptionsPinCandidate", resp, err)
 	}
-	return asRows("optionsAnalytics.summaryDeribitOptionsPinCandidate", v)
+	result, err := asRows("optionsAnalytics.summaryDeribitOptionsPinCandidate", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.summaryDeribitOptionsPinCandidate", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryDeribitOptionsTermParams are the parameters for OptionsAnalyticsService.SummaryDeribitOptionsTerm.
@@ -146,24 +209,45 @@ type SummaryDeribitOptionsTermParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1term~1/get
 func (s *OptionsAnalyticsService) SummaryDeribitOptionsTerm(ctx context.Context, p SummaryDeribitOptionsTermParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryDeribitOptionsTermWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryDeribitOptionsTermWithResponse returns SummaryDeribitOptionsTerm's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1deribit~1options~1term~1/get
+func (s *OptionsAnalyticsService) SummaryDeribitOptionsTermWithResponse(ctx context.Context, p SummaryDeribitOptionsTermParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "optionsAnalytics.summaryDeribitOptionsTerm", "/data/summary/deribit/options/term/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.summaryDeribitOptionsTerm", resp, err)
 	}
 	v, err := decodeResult("optionsAnalytics.summaryDeribitOptionsTerm", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.summaryDeribitOptionsTerm", resp, err)
 	}
-	return asRows("optionsAnalytics.summaryDeribitOptionsTerm", v)
+	result, err := asRows("optionsAnalytics.summaryDeribitOptionsTerm", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.summaryDeribitOptionsTerm", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // SummaryOptionsVwapPerStrikeParams are the parameters for OptionsAnalyticsService.SummaryOptionsVwapPerStrike.
@@ -181,24 +265,45 @@ type SummaryOptionsVwapPerStrikeParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1options~1vwap-per-strike~1/get
 func (s *OptionsAnalyticsService) SummaryOptionsVwapPerStrike(ctx context.Context, p SummaryOptionsVwapPerStrikeParams) ([]map[string]interface{}, error) {
+	result, _, err := s.SummaryOptionsVwapPerStrikeWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// SummaryOptionsVwapPerStrikeWithResponse returns SummaryOptionsVwapPerStrike's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1summary~1options~1vwap-per-strike~1/get
+func (s *OptionsAnalyticsService) SummaryOptionsVwapPerStrikeWithResponse(ctx context.Context, p SummaryOptionsVwapPerStrikeParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "optionsAnalytics.summaryOptionsVwapPerStrike", "/data/summary/options/vwap-per-strike/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.summaryOptionsVwapPerStrike", resp, err)
 	}
 	v, err := decodeResult("optionsAnalytics.summaryOptionsVwapPerStrike", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.summaryOptionsVwapPerStrike", resp, err)
 	}
-	return asRows("optionsAnalytics.summaryOptionsVwapPerStrike", v)
+	result, err := asRows("optionsAnalytics.summaryOptionsVwapPerStrike", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.summaryOptionsVwapPerStrike", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // VolatilityConeParams are the parameters for OptionsAnalyticsService.VolatilityCone.
@@ -216,24 +321,45 @@ type VolatilityConeParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1volatility~1cone~1/get
 func (s *OptionsAnalyticsService) VolatilityCone(ctx context.Context, p VolatilityConeParams) ([]map[string]interface{}, error) {
+	result, _, err := s.VolatilityConeWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// VolatilityConeWithResponse returns VolatilityCone's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1volatility~1cone~1/get
+func (s *OptionsAnalyticsService) VolatilityConeWithResponse(ctx context.Context, p VolatilityConeParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "optionsAnalytics.volatilityCone", "/data/volatility/cone/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.volatilityCone", resp, err)
 	}
 	v, err := decodeResult("optionsAnalytics.volatilityCone", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.volatilityCone", resp, err)
 	}
-	return asRows("optionsAnalytics.volatilityCone", v)
+	result, err := asRows("optionsAnalytics.volatilityCone", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.volatilityCone", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // VolatilityIvRvSpreadParams are the parameters for OptionsAnalyticsService.VolatilityIvRvSpread.
@@ -251,24 +377,45 @@ type VolatilityIvRvSpreadParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1volatility~1iv-rv-spread~1/get
 func (s *OptionsAnalyticsService) VolatilityIvRvSpread(ctx context.Context, p VolatilityIvRvSpreadParams) ([]map[string]interface{}, error) {
+	result, _, err := s.VolatilityIvRvSpreadWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// VolatilityIvRvSpreadWithResponse returns VolatilityIvRvSpread's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1volatility~1iv-rv-spread~1/get
+func (s *OptionsAnalyticsService) VolatilityIvRvSpreadWithResponse(ctx context.Context, p VolatilityIvRvSpreadParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "optionsAnalytics.volatilityIvRvSpread", "/data/volatility/iv-rv-spread/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.volatilityIvRvSpread", resp, err)
 	}
 	v, err := decodeResult("optionsAnalytics.volatilityIvRvSpread", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.volatilityIvRvSpread", resp, err)
 	}
-	return asRows("optionsAnalytics.volatilityIvRvSpread", v)
+	result, err := asRows("optionsAnalytics.volatilityIvRvSpread", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.volatilityIvRvSpread", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // VolatilitySurfaceParams are the parameters for OptionsAnalyticsService.VolatilitySurface.
@@ -286,22 +433,43 @@ type VolatilitySurfaceParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1volatility~1surface~1/get
 func (s *OptionsAnalyticsService) VolatilitySurface(ctx context.Context, p VolatilitySurfaceParams) ([]map[string]interface{}, error) {
+	result, _, err := s.VolatilitySurfaceWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// VolatilitySurfaceWithResponse returns VolatilitySurface's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1volatility~1surface~1/get
+func (s *OptionsAnalyticsService) VolatilitySurfaceWithResponse(ctx context.Context, p VolatilitySurfaceParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := checkEnum("underlying", p.Underlying, "BTC", "ETH"); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("underlying", p.Underlying)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "optionsAnalytics.volatilitySurface", "/data/volatility/surface/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.volatilitySurface", resp, err)
 	}
 	v, err := decodeResult("optionsAnalytics.volatilitySurface", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.volatilitySurface", resp, err)
 	}
-	return asRows("optionsAnalytics.volatilitySurface", v)
+	result, err := asRows("optionsAnalytics.volatilitySurface", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("optionsAnalytics.volatilitySurface", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }

@@ -31,24 +31,45 @@ type BetaBtcParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1beta-btc~1/get
 func (s *MLCrossSectionalService) BetaBtc(ctx context.Context, p BetaBtcParams) ([]map[string]interface{}, error) {
+	result, _, err := s.BetaBtcWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// BetaBtcWithResponse returns BetaBtc's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1beta-btc~1/get
+func (s *MLCrossSectionalService) BetaBtcWithResponse(ctx context.Context, p BetaBtcParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLCrossSectional.betaBtc", "/data/features/ml/beta-btc/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.betaBtc", resp, err)
 	}
 	v, err := decodeResult("mLCrossSectional.betaBtc", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.betaBtc", resp, err)
 	}
-	return asRows("mLCrossSectional.betaBtc", v)
+	result, err := asRows("mLCrossSectional.betaBtc", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.betaBtc", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // MomentumParams are the parameters for MLCrossSectionalService.Momentum.
@@ -66,24 +87,45 @@ type MomentumParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1momentum~1/get
 func (s *MLCrossSectionalService) Momentum(ctx context.Context, p MomentumParams) ([]map[string]interface{}, error) {
+	result, _, err := s.MomentumWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// MomentumWithResponse returns Momentum's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1momentum~1/get
+func (s *MLCrossSectionalService) MomentumWithResponse(ctx context.Context, p MomentumParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLCrossSectional.momentum", "/data/features/ml/momentum/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.momentum", resp, err)
 	}
 	v, err := decodeResult("mLCrossSectional.momentum", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.momentum", resp, err)
 	}
-	return asRows("mLCrossSectional.momentum", v)
+	result, err := asRows("mLCrossSectional.momentum", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.momentum", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // ReturnRankParams are the parameters for MLCrossSectionalService.ReturnRank.
@@ -101,24 +143,45 @@ type ReturnRankParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1return-rank~1/get
 func (s *MLCrossSectionalService) ReturnRank(ctx context.Context, p ReturnRankParams) ([]map[string]interface{}, error) {
+	result, _, err := s.ReturnRankWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// ReturnRankWithResponse returns ReturnRank's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1return-rank~1/get
+func (s *MLCrossSectionalService) ReturnRankWithResponse(ctx context.Context, p ReturnRankParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLCrossSectional.returnRank", "/data/features/ml/return-rank/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.returnRank", resp, err)
 	}
 	v, err := decodeResult("mLCrossSectional.returnRank", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.returnRank", resp, err)
 	}
-	return asRows("mLCrossSectional.returnRank", v)
+	result, err := asRows("mLCrossSectional.returnRank", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.returnRank", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // ReversalParams are the parameters for MLCrossSectionalService.Reversal.
@@ -136,24 +199,45 @@ type ReversalParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1reversal~1/get
 func (s *MLCrossSectionalService) Reversal(ctx context.Context, p ReversalParams) ([]map[string]interface{}, error) {
+	result, _, err := s.ReversalWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// ReversalWithResponse returns Reversal's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1reversal~1/get
+func (s *MLCrossSectionalService) ReversalWithResponse(ctx context.Context, p ReversalParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLCrossSectional.reversal", "/data/features/ml/reversal/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.reversal", resp, err)
 	}
 	v, err := decodeResult("mLCrossSectional.reversal", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.reversal", resp, err)
 	}
-	return asRows("mLCrossSectional.reversal", v)
+	result, err := asRows("mLCrossSectional.reversal", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.reversal", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
 
 // VolRankParams are the parameters for MLCrossSectionalService.VolRank.
@@ -171,22 +255,43 @@ type VolRankParams struct {
 // See https://api.cryptodatadownload.com/ and
 // https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1vol-rank~1/get
 func (s *MLCrossSectionalService) VolRank(ctx context.Context, p VolRankParams) ([]map[string]interface{}, error) {
+	result, _, err := s.VolRankWithResponse(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return result.Result, nil
+}
+
+// VolRankWithResponse returns VolRank's result and sanitized HTTP metadata.
+//
+// See https://api.cryptodatadownload.com/?format=openapi#/paths/~1data~1features~1ml~1vol-rank~1/get
+func (s *MLCrossSectionalService) VolRankWithResponse(ctx context.Context, p VolRankParams) (*Result[[]map[string]interface{}], *Response, error) {
 	q := url.Values{}
 	if err := requireString("symbol", p.Symbol); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("symbol", p.Symbol)
 	if err := requireDate("date", p.Date); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	q.Set("date", dateString(p.Date))
 	resp, err := s.client.do(ctx, "mLCrossSectional.volRank", "/data/features/ml/vol-rank/", q)
 	if err != nil {
-		return nil, err
+		if resp != nil {
+			return nil, resp.metadata, err
+		}
+		return nil, nil, err
+	}
+	if err := validateJSONContentType(resp.header); err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.volRank", resp, err)
 	}
 	v, err := decodeResult("mLCrossSectional.volRank", resp.body)
 	if err != nil {
-		return nil, err
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.volRank", resp, err)
 	}
-	return asRows("mLCrossSectional.volRank", v)
+	result, err := asRows("mLCrossSectional.volRank", v)
+	if err != nil {
+		return nil, resp.metadata, s.client.decodeError("mLCrossSectional.volRank", resp, err)
+	}
+	return &Result[[]map[string]interface{}]{Result: result}, resp.metadata, nil
 }
