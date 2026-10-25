@@ -3,6 +3,10 @@
 Use Go 1.22 or newer. Keep runtime dependencies in the standard library and
 preserve existing public call signatures when adding functionality.
 
+The repository's `.gitattributes` keeps text files in LF form on all
+platforms. This also applies when Git on Windows uses `core.autocrlf=true`,
+so a fresh checkout agrees with `gofmt` without rewriting source files in CI.
+
 Run the offline checks before proposing a change:
 
 ```bash
