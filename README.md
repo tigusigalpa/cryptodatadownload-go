@@ -1,4 +1,15 @@
-# CryptoDataDownload Go SDK
+# CryptoDataDownload Go Client/SDK/Library
+
+![CryptoDataDownload Go client sdk](https://i.postimg.cc/ZKWG1BfB/cryptodatadownload-go-hero-a.jpg)
+
+[![CI](https://github.com/tigusigalpa/cryptodatadownload-go/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/tigusigalpa/cryptodatadownload-go/actions/workflows/ci.yml)
+[![Tests](https://github.com/tigusigalpa/cryptodatadownload-go/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/tigusigalpa/cryptodatadownload-go/actions/workflows/test.yml)
+[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat-square&logo=go)](https://golang.org/)
+[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
+[![CodeQL](https://github.com/tigusigalpa/cryptodatadownload-go/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/tigusigalpa/cryptodatadownload-go/actions/workflows/codeql.yml)
+[![Codecov](https://codecov.io/gh/tigusigalpa/cryptodatadownload-go/graph/badge.svg)](https://codecov.io/gh/tigusigalpa/cryptodatadownload-go)
+[![GitHub Release](https://img.shields.io/github/v/release/tigusigalpa/cryptodatadownload-go?style=flat-square)](https://github.com/tigusigalpa/cryptodatadownload-go/releases)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue?style=flat-square&logo=go)](https://pkg.go.dev/github.com/tigusigalpa/cryptodatadownload-go)
 
 Fetch market data from [CryptoDataDownload](https://www.cryptodatadownload.com/api/)
 in your Go application. Start with a few candles, look up available contracts,
@@ -7,7 +18,7 @@ Each operation has its own query struct, so your editor can help you find the
 parameters you need.
 
 The SDK covers the **116 GET operations** in the bundled OpenAPI snapshot and
-uses only the Go standard library. It includes request timeouts, retries,
+uses only the Golang standard library. It includes request timeouts, retries,
 rate limiting, HTTP metadata and CSV/XLSX downloads. You need **Go 1.22+** and
 a CryptoDataDownload API token to make live requests.
 
