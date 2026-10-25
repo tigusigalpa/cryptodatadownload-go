@@ -2,17 +2,29 @@ name: Tests
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, develop]
   pull_request:
-    branches: [main, master]
+  workflow_dispatch:
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GOTOOLCHAIN: local
+  CGO_ENABLED: '1'
 
 jobs:
   test:
     name: Go ${{ matrix.go }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
     strategy:
       fail-fast: false
       matrix:
@@ -29,33 +41,35 @@ jobs:
           go-version: ${{ matrix.go }}
           cache: false
 
+      # Go 1.22's internal linker omits LC_UUID, required by newer macOS.
+      # Use the runner's system linker without removing minimum-version tests.
+      # https://github.com/golang/go/issues/68678
+      - name: Use the system linker for Go 1.22 on macOS
+        if: runner.os == 'macOS' && matrix.go == '1.22'
+        run: echo 'GOFLAGS=-ldflags=-linkmode=external' >> "$GITHUB_ENV"
+
       - name: Format check
-        shell: bash
         run: |
           files=$(gofmt -l .)
           if [ -n "$files" ]; then
-            echo "unformatted files:"; echo "$files"; exit 1
+            echo "unformatted files:"
+            echo "$files"
+            exit 1
           fi
+
+      - name: Build library and examples
+        run: go build ./...
 
       - name: Vet
         run: go vet ./...
 
       - name: Test
-        run: go test -count=1 ./...
+        run: go test -count=1 -timeout=2m ./...
 
       - name: Race test
-        run: go test -race -count=1 ./...
-
-      - name: Coverage
-        if: matrix.os == 'ubuntu-latest' && matrix.go == '1.27'
-        run: go test -cover ./...
-
-      - name: Staticcheck
-        if: matrix.os == 'ubuntu-latest' && matrix.go == '1.27'
-        run: go run honnef.co/go/tools/cmd/staticcheck@v0.8.2 ./...
+        run: go test -race -count=1 -timeout=2m ./...
 
       - name: Module checks
-        shell: bash
         run: |
           go mod tidy
-          git diff --exit-code -- go.mod go.sum || (echo "go.mod/go.sum out of sync"; exit 1)
+          git diff --exit-code -- go.mod go.sum

@@ -2,21 +2,58 @@ name: Coverage
 
 on:
   push:
-    branches: [main, master]
+    branches: [main, master, develop]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GOTOOLCHAIN: local
+  CGO_ENABLED: '1'
 
 jobs:
   test:
+    name: Race coverage
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CODECOV_ENABLED: ${{ secrets.CODECOV_TOKEN != '' }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-go@v7
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Go
+        uses: actions/setup-go@v7
         with:
-          go-version: '1.21'
+          go-version: '1.27'
+          cache: false
+
       - name: Run tests with coverage
-        run: go test -race -coverprofile=coverage.out ./...
+        run: go test -race -count=1 -timeout=2m -coverprofile=coverage.out -covermode=atomic ./...
+
+      - name: Display coverage summary
+        run: go tool cover -func=coverage.out
+
+      # Keep the report available without Codecov, including fork pull requests.
+      - name: Save coverage report
+        if: always() && hashFiles('coverage.out') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-go1.27
+          path: coverage.out
+          if-no-files-found: error
+
       - name: Upload to Codecov
+        if: env.CODECOV_ENABLED == 'true'
         uses: codecov/codecov-action@v7
         with:
           files: ./coverage.out
           token: ${{ secrets.CODECOV_TOKEN }}
+          disable_search: true
+          fail_ci_if_error: false

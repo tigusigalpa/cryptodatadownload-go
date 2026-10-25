@@ -67,7 +67,11 @@ func TestStreamingDownloadHonorsCancellation(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer download.Close()
+	defer func() {
+		if err := download.Close(); err != nil {
+			t.Errorf("close download: %v", err)
+		}
+	}()
 	cancel()
 	if _, err := io.ReadAll(download.Body); !errors.Is(err, context.Canceled) {
 		t.Fatalf("cancelled stream read = %v", err)

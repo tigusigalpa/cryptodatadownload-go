@@ -255,7 +255,7 @@ func validateJSONContentType(header http.Header) error {
 	if err != nil {
 		return fmt.Errorf("invalid JSON content type: %w", err)
 	}
-	if mediaType != "application/json" && !(strings.HasPrefix(mediaType, "application/") && strings.HasSuffix(mediaType, "+json")) {
+	if mediaType != "application/json" && (!strings.HasPrefix(mediaType, "application/") || !strings.HasSuffix(mediaType, "+json")) {
 		return fmt.Errorf("expected JSON content type, got %q", mediaType)
 	}
 	return nil
